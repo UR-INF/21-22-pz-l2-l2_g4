@@ -4,15 +4,17 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 
 ## Zespoł projetowy:
 imie i nazwisko z oznaczeniem lidera, pełniona rola, zakres czynności/odpowiedzialność 
-Konrad Pelc - lider, dokumentacja
-Michał Moskal - Panel logowania
-Sebastian Leń - Diagramy UML
-Paweł Niziołek - Widoki JavaFX
-Patryk Mokrzycki - Baza danych
-Tomasz Pitak - CRUD
+Konrad Pelc - lider, Project Manager oraz Scrum Master, organizacja pracy zespołu, rozdzielenie zadań, organizacja spotkań sprintowych, dokumentacja Sprint i Manual.
+Michał Moskal - Developer oraz Tester. Panel logowania i rejestracji oraz implementacja logiki CRUD w aplikacji.
+Sebastian Leń - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.
+Paweł Niziołek - Developer oraz Tester. Stworzenie przykładowych widoków oraz ich implementacja w SceneBuilder JavaFX.
+Patryk Mokrzycki - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.
+Tomasz Pitak - Developer oraz Tester. Odpowiedzialny za logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.
+
+Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
 
 ## Opis programu / systemu
-Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budolanych.
+Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budowlanych.
 
 ## Cel projektu 
 Umożliwienie obsługi i zarządzania sprzedażą materiałów budolanych.
