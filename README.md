@@ -10,18 +10,31 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 <b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków wraz oraz ich implementacja w SceneBuilder JavaFX.  
 <b>Patryk Mokrzycki</b> - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.  
  
-
 Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
 
 ## Opis programu / systemu
 Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budowlanych.  
-Wymiary aplikacji 800.0h x 1550.0w
+Aplikacja zostanie napisana w języku Java 17 wraz z frameworkiem Spring Boot oraz Hibernate i z wykorzystaniem bazy danych MySQL.  
+Wymiary aplikacji to 800.0h x 1550.0w.  
+Przechowywanie danych wpisanych do aplikacji  powierzone jest bazie danych ściśle powiązanej z aplikacją graficznego interfejsu użytkownika (GUI).
+
+W aplikacji rozróżniamy dwie role które w kodzie będą zapisane w klasie enum Role  
+ - ADMIN
+ - EMPLOYEE
+
 Po uruchomieniu aplikacji początkowym panelem jest panel logowania w którym można się zalogować lub przejść do rejestracji nowego konta.  
-Uwierzytelniony(zalogowany) użytkownik z rolą Pracownik przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70.
-Aplikacja zostanie napisana w języku Java 17 wraz z frameworkiem Spring Boot i z wykorzystaniem bazy danych MySQL.
+Rola ADMIN
+Uwierzytelniony(zalogowany) użytkownik z rolą ADMIN przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70. Powyżej panelu głównego znajdują się dwie zakładki - Panel główny oraz Zarządzanie uprawnieniami.  
+W zakładce 'Zarządzanie uprawnieniami' Administrator ma możliwość nadania oraz odebrania uprawnień poszczególnym użytkownikom wybieranym z rozwijanej listy. Nadanie oraz odebranie uprawnienia polega na zmianie roli wybranego przez Administratora użytkownika oraz zaznaczeniu/odznaczeniu poszczególnych checkbox'ów np. Uprawnienie do generowania raportów.
+
+Rola EMPLOYEE  
+Uwierzytelniony(zalogowany) użytkownik z rolą EMPLOYEE przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70.  
+
+Uprawnienie do generowania raportów
+Poniżej struktury bazy danych znajduje się przycisk "Drukuj", po jego naciśnięciu i wpisaniu tytułu raportu zostanie wygenerowany plik PDF z aktualnego widoku danej tabeli (możliwość zastosowania konkretnych filtrów przed wygenerowaniem raportu).
 
 ## Cel projektu 
-Umożliwienie obsługi i zarządzania sprzedażą materiałów budolanych.
+Umożliwienie obsługi i zarządzania sprzedażą materiałów budowlanych wraz z umożliwieniem generowania raportów.
 
 ## Zakres projektu 
 Baza danych.
@@ -44,17 +57,13 @@ Podręcznik użytkownika.
 ...
 
 ## Panele / zakładki systemu, które będą oferowały potrzebne funkcjonalności 
-- Panel administratora 
+- Panel główny 
+  - Dostępny dla ról ADMIN oraz EMPLOYEE
+  - Operacje CRUD dla tabel Produkty, Zamówienia, Elementy Zamówienia w aplikacji. 
   - Główne narzędzie administratorów systemu umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania systemem np. dodawanie, edycja, usuwanie użytkowników, tworzenie i modyfikacja grup, zarządzanie innymi administratorami. Operacje CRUD dla wszystkich tabel w aplikacji.
-- Panel pracownika 
-  -  Operacje CRUD dla tabel Produkty, Zamówienia, Elementy Zamówienia w aplikacji.
-  - ... kolejna funkcjonalność
-...
-- Zakładka raportów 
-  - Generowanie raportów z przefiltrowanymi danymi z tabeli
-  - (Opcjonalne) Generowanie faktury sprzedaży
-- Zakładka ustawień 
-...
+- Panel zarządzania użytkownikami
+  - Tylko dla użytkowników z rolą ADMIN
+  - Możliwość zmiany roli oraz uprawnień użytkownikowi wybranemu z listy
 
 ## Typy wymaganych dokumentów w projekcie oraz dostęp do nich 
 - Raporty PDF 
@@ -64,7 +73,7 @@ Podręcznik użytkownika.
 Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie danych będą możliwe do wykonania z poziomu GUI aplikacji. 
 
 ## Użytkownicy aplikacji i ich uprawnienia 
-- Administrator/Kierownik/Dyrektor
+- Administrator (Administrator Systemu/Kierownik/Dyrektor)
   - Zarządzanie uprawnieniami użytkowników 
   - Możliwości CRUD w aplikacji - Odczytywanie zawartości głównego panelu oraz zmiany zawartości tabel (tworzenie, aktualizacja oraz usuwanie wierszy w tabelach)
 	
@@ -141,7 +150,7 @@ waluta VARCHAR(20)
 - Język Java 17
   - Spring Boot
   - JavaFX
-  - JDBC
+  - Hibernate
   - SceneBuilder
 - Baza danych MySQL
 - Inne z opisem
