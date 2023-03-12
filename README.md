@@ -3,13 +3,12 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 # Dokumentacja projetu: **System do zarządzania zadaniami w hurtowni budowlanej**
 
 ## Zespoł projetowy:
-imie i nazwisko z oznaczeniem lidera, pełniona rola, zakres czynności/odpowiedzialność 
-Konrad Pelc - lider, Project Manager oraz Scrum Master, organizacja pracy zespołu, rozdzielenie zadań, organizacja spotkań sprintowych, dokumentacja Sprint i Manual.
-Michał Moskal - Developer oraz Tester. Panel logowania i rejestracji oraz implementacja logiki CRUD w aplikacji.
-Sebastian Leń - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.
-Paweł Niziołek - Developer oraz Tester. Stworzenie przykładowych widoków oraz ich implementacja w SceneBuilder JavaFX.
-Patryk Mokrzycki - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.
-Tomasz Pitak - Developer oraz Tester. Odpowiedzialny za logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.
+<b>Konrad Pelc</b> - Lider, Project Manager oraz Scrum Master, organizacja pracy zespołu, rozdzielenie zadań, organizacja spotkań sprintowych, dokumentacja Sprint i Manual.  
+<b>Michał Moskal</b> - Developer oraz Tester. Panel logowania i rejestracji oraz implementacja logiki CRUD w aplikacji.  
+<b>Sebastian Leń</b> - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.  
+<b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków oraz ich implementacja w SceneBuilder JavaFX.  
+<b>Patryk Mokrzycki</b> - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.  
+<b>Tomasz Pitak</b> - Developer oraz Tester. Odpowiedzialny za logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.  
 
 Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
 
@@ -48,32 +47,24 @@ Podręcznik użytkownika.
 ...
 - Zakładka raportów 
   - Generowanie raportów z przefiltrowanymi danymi z tabeli
-  - Generowanie faktury sprzedaży
+  - (Opcjonalne) Generowanie faktury sprzedaży
 - Zakładka ustawień 
 ...
 
 ## Typy wymaganych dokumentów w projekcie oraz dostęp do nich 
 - Raporty PDF 
-  - rodzaje raportów
-- Inne dokumenty:
-  - ...
+  - Generowany z aktualnego widoku danej tabeli (możliwość zastosowania konkretnych filtrów przed wygenerowaniem raportu).
 
 ## Przepływ informacji w środowisku systemu 
-Scentralizowany oparty na bazie danych.
+Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie danych będą możliwe do wykonania z poziomu GUI aplikacji. 
 
 ## Użytkownicy aplikacji i ich uprawnienia 
-- Administrator 
-  - uprawnienie 1 
-  - uprawnienie 2
-  - ...
-- Kierownik 
-  - uprawnienie 1 
-  - uprawnienie 2
-  - ...
-- Użytkownik
-  - uprawnienie 1 
-  - uprawnienie 2
-  - ...
+- Administrator/Kierownik/Dyrektor
+  - Zarządzanie uprawnieniami użytkowników 
+  - Możliwości CRUD w aplikacji - Odczytywanie zawartości głównego panelu oraz zmiany zawartości tabel (tworzenie, aktualizacja oraz usuwanie wierszy w tabelach)
+	
+- Pracownik 
+  - Możliwości CRUD w aplikacji - Odczytywanie zawartości głównego panelu oraz zmiany zawartości tabel (tworzenie, aktualizacja oraz usuwanie wierszy w tabelach)
 
 ## Interesariusze 
 - Interesariusze wewnętrzni 
@@ -81,7 +72,7 @@ Scentralizowany oparty na bazie danych.
   - Administrator systemu
   - Pracownicy
 - Interesariusze zewnętrzni 
-  - 
+  - Brak interesariuszy zewnętrznych
 
 ## Diagramy UML
 - ###### [Diagram przypadków użycia]
