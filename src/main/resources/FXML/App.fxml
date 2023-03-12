@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
+   <children>
+      <Pane fx:id="topPane" layoutX="250.0">
+         <children>
+            <HBox fx:id="topPanel" prefHeight="100.0" prefWidth="1300.0" styleClass="blue2" stylesheets="@../CSS/css.css">
+               <children>
+                  <Label alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="366.0" text="Połączono z bazą:  " textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="24.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+                  <Label fx:id="labelBaza" alignment="BASELINE_LEFT" prefHeight="100.0" prefWidth="286.0" stylesheets="@../CSS/css.css" textAlignment="CENTER" textFill="#00ff1b">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </Pane>
+      <Pane fx:id="leftPane">
+         <children>
+            <VBox fx:id="leftPanel" prefHeight="800.0" prefWidth="250.0" style="-fx-background-color: white;" stylesheets="@../CSS/css.css">
+               <children>
+                  <Label text="Menu">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets left="20.0" top="20.0" />
+                     </VBox.margin>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </Pane>
+      <StackPane fx:id="stack" layoutX="250.0" layoutY="100.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0" styleClass="blue" stylesheets="@../CSS/css.css">
+         <children>
+            <Pane fx:id="pane1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="250.0" styleClass="blue" stylesheets="@../CSS/css.css" StackPane.alignment="TOP_LEFT" />
+            <Pane fx:id="pane2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="300.0" styleClass="blue" stylesheets="@../CSS/css.css" StackPane.alignment="TOP_LEFT" />
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>
