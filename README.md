@@ -23,15 +23,29 @@ W aplikacji rozróżniamy dwie role które w kodzie będą zapisane w klasie enu
  - EMPLOYEE
 
 Po uruchomieniu aplikacji początkowym panelem jest panel logowania w którym można się zalogować lub przejść do rejestracji nowego konta.  
-Rola ADMIN
+<b>Rola ADMIN</b>
 Uwierzytelniony(zalogowany) użytkownik z rolą ADMIN przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70. Powyżej panelu głównego znajdują się dwie zakładki - Panel główny oraz Zarządzanie uprawnieniami.  
 W zakładce 'Zarządzanie uprawnieniami' Administrator ma możliwość nadania oraz odebrania uprawnień poszczególnym użytkownikom wybieranym z rozwijanej listy. Nadanie oraz odebranie uprawnienia polega na zmianie roli wybranego przez Administratora użytkownika oraz zaznaczeniu/odznaczeniu poszczególnych checkbox'ów np. Uprawnienie do generowania raportów.
 
-Rola EMPLOYEE  
+<b>Rola EMPLOYEE</b>  
 Uwierzytelniony(zalogowany) użytkownik z rolą EMPLOYEE przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70.  
 
-Uprawnienie do generowania raportów
+<b>Uprawnienie do generowania raportów</b>  
 Poniżej struktury bazy danych znajduje się przycisk "Drukuj", po jego naciśnięciu i wpisaniu tytułu raportu zostanie wygenerowany plik PDF z aktualnego widoku danej tabeli (możliwość zastosowania konkretnych filtrów przed wygenerowaniem raportu).
+
+<b>Uprawnienie do używania kodów rabatowych</b>  
+Poniżej struktury bazy danych znajdują się dwa pola z etykietą "Kod rabatowy", należą do nich pola "ID zamówienia" - któremu chcemy dodać kod rabatowy oraz pole "Kod rabatowy" - do którego należy wpisać kod rabatowy. Należy uwzględnić wykorzystanie maksymalnie jednego kodu rabatowego dla każdego zamówienia. Udzielenie kodu rabatowego będzie możliwe tylko dla użytkowników z takim uprawnieniem.  
+
+Ceny każdego produktu będą zapisywane w dwóch kolumnach:  
+<b>Cena</b> – typu double w zaokrągleniu do dwóch miejsc po przecinku  
+<b>Waluta</b> – typu string zawierająca nazwę waluty (PLN)  
+Wszystkie ceny pokazywane będą w walucie Polskich Złotych (PLN, zł).
+
+Przewidujemy również możliwość nadawania kodów rabatowych przez użytkowników z rolą ADMIN lub z rolą EMPLOYEE mających upoważnienie do używania kodów rabatowych.  
+Kod rabatowy używany będzie w tabeli zamówienia i będzie zmieniał cenę konkretnego zamówienia o przypisany do kodu rabatowego procent zniżki.  
+
+Kwota złożonego do realizacji zamówienia (zapisanego w tabeli Zamówienia oraz Elementy zamówienia), nie może ulec zmianie poprzez zmianę bieżącej ceny produktu. Zmiana kwoty złożonego zamówienia jest możliwa tylko poprzez użycie kodów rabatowych.  
+
 
 ## Cel projektu 
 Umożliwienie obsługi i zarządzania sprzedażą materiałów budowlanych wraz z umożliwieniem generowania raportów.
@@ -54,13 +68,11 @@ Podręcznik użytkownika.
 - System powinien umożliwiać wykorzystywanie kodów rabatowych
 - System powinien umożliwiać generowanie raportów PDF
 - System powinien współpracować z bazą danych
-...
 
 ## Panele / zakładki systemu, które będą oferowały potrzebne funkcjonalności 
 - Panel główny 
   - Dostępny dla ról ADMIN oraz EMPLOYEE
   - Operacje CRUD dla tabel Produkty, Zamówienia, Elementy Zamówienia w aplikacji. 
-  - Główne narzędzie administratorów systemu umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania systemem np. dodawanie, edycja, usuwanie użytkowników, tworzenie i modyfikacja grup, zarządzanie innymi administratorami. Operacje CRUD dla wszystkich tabel w aplikacji.
 - Panel zarządzania użytkownikami
   - Tylko dla użytkowników z rolą ADMIN
   - Możliwość zmiany roli oraz uprawnień użytkownikowi wybranemu z listy
@@ -99,6 +111,8 @@ Wstawić rys. diagramu UML
   Wstawić rys. diagramu UML
 
 ## Baza danych
+Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nadany przez producenta towaru numer seryjny. Dzięki wykorzystaniu numeru seryjnego unikniemy problemu z rozróżnieniem np. Czerwonej i zielonej cegły lub odmiany paneli podłogowych. W tabelach nie będą znajdowały się zdjęcia produktu, jedyną możliwością rozróżnienia podobnych produktów będzie weryfikacja numeru seryjnego produktu.
+
 ###### Diagram ERD
 ![image](https://user-images.githubusercontent.com/76397174/223494468-1402ec51-7244-42fc-bc88-bae9bdd09709.png)
 
