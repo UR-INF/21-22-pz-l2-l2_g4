@@ -4,16 +4,21 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 
 ## Zespoł projetowy:
 <b>Konrad Pelc</b> - Lider, Project Manager oraz Scrum Master, organizacja pracy zespołu, rozdzielenie zadań, organizacja spotkań sprintowych, dokumentacja Sprint i Manual.  
+<b>Tomasz Pitak</b> - Lider Techniczny. Odpowiedzialny za kod, logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.  
 <b>Michał Moskal</b> - Developer oraz Tester. Panel logowania i rejestracji oraz implementacja logiki CRUD w aplikacji.  
 <b>Sebastian Leń</b> - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.  
-<b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków oraz ich implementacja w SceneBuilder JavaFX.  
+<b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków wraz oraz ich implementacja w SceneBuilder JavaFX.  
 <b>Patryk Mokrzycki</b> - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.  
-<b>Tomasz Pitak</b> - Developer oraz Tester. Odpowiedzialny za logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.  
+ 
 
 Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
 
 ## Opis programu / systemu
-Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budowlanych.
+Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budowlanych.  
+Wymiary aplikacji 800.0h x 1550.0w
+Po uruchomieniu aplikacji początkowym panelem jest panel logowania w którym można się zalogować lub przejść do rejestracji nowego konta.  
+Uwierzytelniony(zalogowany) użytkownik z rolą Pracownik przechodzi następnie do panelu głównego aplikacji który zawiera z prawej strony listę dostępnych tabel, a z lewej strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powienien wynosić 30:70.
+Aplikacja zostanie napisana w języku Java 17 wraz z frameworkiem Spring Boot i z wykorzystaniem bazy danych MySQL.
 
 ## Cel projektu 
 Umożliwienie obsługi i zarządzania sprzedażą materiałów budolanych.
