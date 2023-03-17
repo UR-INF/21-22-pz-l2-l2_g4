@@ -3,14 +3,17 @@ package Entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * Reprezentuje tabelę 'dostawca' w bazie danych.
+ */
 @Entity
 @Table(name = "dostawca")
 public class Dostawca implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idDostawcy")
-    private int idDostawcy;
+    @Column(name = "id")
+    private int id;
 
     @Column(name = "email")
     private String email;
@@ -27,60 +30,87 @@ public class Dostawca implements Serializable {
     @Column(name = "nazwa")
     private String nazwa;
 
-    public Dostawca(int idDostawcy, String email, String kraj, String miejscowosc, String ulica, String nazwa) {
-        this.idDostawcy = idDostawcy;
+    @Column(name = "nip")
+    private String nip;
+
+    public Dostawca() {
+    }
+
+    public Dostawca(String email, String kraj, String miejscowosc, String ulica, String nazwa, String nip) {
         this.email = email;
         this.kraj = kraj;
         this.miejscowosc = miejscowosc;
         this.ulica = ulica;
         this.nazwa = nazwa;
+        this.nip = nip;
     }
 
-    public int getIdDostawcy() {
-        return idDostawcy;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getKraj() {
-        return kraj;
-    }
-
-    public String getMiejscowosc() {
-        return miejscowosc;
-    }
-
-    public String getUlica() {
-        return ulica;
-    }
-
-    public String getNazwa() {
-        return nazwa;
-    }
-
-    public void setIdDostawcy(int idDostawcy) {
-        this.idDostawcy = idDostawcy;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getKraj() {
+        return kraj;
     }
 
     public void setKraj(String kraj) {
         this.kraj = kraj;
     }
 
+    public String getMiejscowosc() {
+        return miejscowosc;
+    }
+
     public void setMiejscowosc(String miejscowosc) {
         this.miejscowosc = miejscowosc;
+    }
+
+    public String getUlica() {
+        return ulica;
     }
 
     public void setUlica(String ulica) {
         this.ulica = ulica;
     }
 
+    public String getNazwa() {
+        return nazwa;
+    }
+
     public void setNazwa(String nazwa) {
         this.nazwa = nazwa;
+    }
+
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    @Override
+    public String toString() {
+        return "Dostawca{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", kraj='" + kraj + '\'' +
+                ", miejscowosc='" + miejscowosc + '\'' +
+                ", ulica='" + ulica + '\'' +
+                ", nazwa='" + nazwa + '\'' +
+                ", nip='" + nip + '\'' +
+                '}';
     }
 }

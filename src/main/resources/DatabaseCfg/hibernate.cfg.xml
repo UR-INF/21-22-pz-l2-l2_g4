@@ -16,5 +16,7 @@
         <mapping class="Entities.Produkt"/>
         <mapping class="Entities.Zamowienie"/>
         <mapping class="Entities.ElementZamowienia"/>
+        <mapping class="Entities.Uzytkownik"/>
+        <mapping class="Entities.StanZamowienia"/>
     </session-factory>
 </hibernate-configuration>

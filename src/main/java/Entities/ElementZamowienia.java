@@ -1,87 +1,92 @@
 package Entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
+/**
+ * Reprezentuje tabelę 'elementZamowienia' w bazie danych.
+ */
 @Entity
-@Table(name = "element_zamowienia")
-public class ElementZamowienia {
+@Table(name = "elementZamowienia")
+public class ElementZamowienia implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idElementZamowienia")
-    private int idElementZamowienia;
+    @Column(name = "id")
+    private int id;
 
     @ManyToOne(targetEntity = Zamowienie.class)
-    @JoinColumn(name = "idZamowienia")
-    private int idZamowienia;
+    @JoinColumn(name = "idZamowienie")
+    private Zamowienie idZamowienie;
 
     @ManyToOne(targetEntity = Produkt.class)
-    @JoinColumn(name = "idProduktu")
-    private int idProduktu;
+    @JoinColumn(name = "idProdukt")
+    private Produkt idProdukt;
 
     @Column(name = "ilosc")
     private int ilosc;
 
-    @Column(name = "cena")
-    private Double cena;
+    @Column(name = "cenaProduktu")
+    private Double cenaProduktu;
 
-    @Column(name = "waluta")
-    private String waluta;
+    public ElementZamowienia() {
+    }
 
-    public ElementZamowienia(int idElementZamowienia, int idZamowienia, int idProduktu, int ilosc, Double cena, String waluta) {
-        this.idElementZamowienia = idElementZamowienia;
-        this.idZamowienia = idZamowienia;
-        this.idProduktu = idProduktu;
+    public ElementZamowienia(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaProduktu) {
+        this.idZamowienie = idZamowienie;
+        this.idProdukt = idProdukt;
         this.ilosc = ilosc;
-        this.cena = cena;
-        this.waluta = waluta;
+        this.cenaProduktu = cenaProduktu;
     }
 
-    public int getIdElementZamowienia() {
-        return idElementZamowienia;
+    public int getId() {
+        return id;
     }
 
-    public int getIdZamowienia() {
-        return idZamowienia;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getIdProduktu() {
-        return idProduktu;
+    public Zamowienie getZamowienie() {
+        return idZamowienie;
+    }
+
+    public void setZamowienie(Zamowienie idZamowienie) {
+        this.idZamowienie = idZamowienie;
+    }
+
+    public Produkt getProdukt() {
+        return idProdukt;
+    }
+
+    public void setProdukt(Produkt idProdukt) {
+        this.idProdukt = idProdukt;
     }
 
     public int getIlosc() {
         return ilosc;
     }
 
-    public Double getCena() {
-        return cena;
-    }
-
-    public String getWaluta() {
-        return waluta;
-    }
-
-    public void setIdElementZamowienia(int idElementZamowienia) {
-        this.idElementZamowienia = idElementZamowienia;
-    }
-
-    public void setIdZamowienia(int idZamowienia) {
-        this.idZamowienia = idZamowienia;
-    }
-
-    public void setIdProduktu(int idProduktu) {
-        this.idProduktu = idProduktu;
-    }
-
     public void setIlosc(int ilosc) {
         this.ilosc = ilosc;
     }
 
-    public void setCena(Double cena) {
-        this.cena = cena;
+    public Double getCenaProduktu() {
+        return cenaProduktu;
     }
 
-    public void setWaluta(String waluta) {
-        this.waluta = waluta;
+    public void setCenaProduktu(Double cenaProduktu) {
+        this.cenaProduktu = cenaProduktu;
+    }
+
+    @Override
+    public String toString() {
+        return "ElementZamowienia{" +
+                "id=" + id +
+                ", idZamowienie=" + idZamowienie +
+                ", idProdukt=" + idProdukt +
+                ", ilosc=" + ilosc +
+                ", cenaProduktu=" + cenaProduktu +
+                '}';
     }
 }

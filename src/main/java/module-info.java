@@ -15,6 +15,8 @@ module com.example.hurtownia {
     exports Controllers;
     exports Main;
     exports DatabaseAccess;
+    exports DatabaseQueries;
     exports Entities;
     exports Singleton;
+    exports PDFGeneration;
 }
