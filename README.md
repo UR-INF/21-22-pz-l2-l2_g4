@@ -113,11 +113,7 @@ Wstawić rys. diagramu UML
   Wstawić rys. diagramu UML
 
 ## Baza danych
-Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nadany przez producenta towaru numer seryjny. Dzięki wykorzystaniu numeru seryjnego unikniemy problemu z rozróżnieniem np. Czerwonej i zielonej cegły lub odmiany paneli podłogowych. W tabelach nie będą znajdowały się zdjęcia, jedyną możliwością rozróżnienia podobnych produktów będzie weryfikacja numeru seryjnego.  
 
-Tabela 'Produkt' zawiera kolumnę 'Stan' która określa zapotrzebowanie magazynu na dostawę danego produktu. Kolumna ta będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
-
-Tabela 'Zamówienia' zawiera kolumnę 'Stan zamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia.  
 
 ###### Diagram ERD
 ![image](https://user-images.githubusercontent.com/76397174/223494468-1402ec51-7244-42fc-bc88-bae9bdd09709.png)
@@ -126,6 +122,11 @@ Tabela 'Zamówienia' zawiera kolumnę 'Stan zamówienia' która określa jednym 
 
 
 ###### Opis bazy danych
+Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nadany przez producenta towaru numer seryjny. Dzięki wykorzystaniu numeru seryjnego unikniemy problemu z rozróżnieniem np. Czerwonej i zielonej cegły lub odmiany paneli podłogowych. W tabelach nie będą znajdowały się zdjęcia, jedyną możliwością rozróżnienia podobnych produktów będzie weryfikacja numeru seryjnego.  
+
+Tabela 'Produkt' zawiera kolumnę 'Stan' która określa zapotrzebowanie magazynu na dostawę danego produktu. Kolumna ta będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
+
+Tabela 'Zamówienia' zawiera kolumnę 'Stan zamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia.  
 
 ## Wykorzystane technologie 
 - Język Java 17
