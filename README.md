@@ -123,46 +123,7 @@ Tabela 'Zamówienia' zawiera kolumnę 'Stan zamówienia' która określa jednym 
 ![image](https://user-images.githubusercontent.com/76397174/223494468-1402ec51-7244-42fc-bc88-bae9bdd09709.png)
 
 ###### Skrypt do utworzenia struktury bazy danych
-create table Klienci (
-kl_id INT,
-kl_imie VARCHAR(50),
-kl_nazwisko VARCHAR(50),
-kl_miejscowosc VARCHAR(50),
-kl_ulica VARCHAR(50),
-kl_nrMieszkania VARCHAR(20),
-kl_nrTelefonu VARCHAR(20),
-kl_email VARCHAR(20)
-);
-create table Dostawcy (
-dost_id INT,
-dost_nazwa VARCHAR(50),
-dost_miejscowosc VARCHAR(50),
-dost_ulica VARCHAR(50),
-dost_kraj VARCHAR(20),
-dost_email VARCHAR(20)
-);
-create table Produkty (
-prod_id INT,
-dost_id INT,
-prod_nazwa VARCHAR(50),
-prod_cena VARCHAR(50),
-prod_waluta VARCHAR(20),
-prod_kraj VARCHAR(20)
-);
-create table Zamowienia (
-zam_numer INT,
-zam_data DATE,
-kl_id INT
-);
-create table Elementyzamowienia (
-zam_id INT,
-zam_numer INT,
-zam_elem INT,
-prod_id INT,
-ilosc INT,
-cena_elem DECIMAL(5,2),
-waluta VARCHAR(20)
-);
+
 
 ###### Opis bazy danych
 
