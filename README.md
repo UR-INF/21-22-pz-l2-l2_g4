@@ -124,9 +124,15 @@ Wstawić rys. diagramu UML
 ###### Opis bazy danych
 Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nadany przez producenta towaru numer seryjny. Dzięki wykorzystaniu numeru seryjnego unikniemy problemu z rozróżnieniem np. Czerwonej i zielonej cegły lub odmiany paneli podłogowych. W tabelach nie będą znajdowały się zdjęcia, jedyną możliwością rozróżnienia podobnych produktów będzie weryfikacja numeru seryjnego.  
 
-Tabela 'Produkt' zawiera kolumnę 'Stan' która określa zapotrzebowanie magazynu na dostawę danego produktu. Kolumna ta będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
+Tabela 'Produkt' zawiera kolumny 'Ilosc' oraz 'MaxIlosc', ktore zawierają informacje o tym, jak dużo danego produktu jest na stanie hurtowni oraz jak dużo tego produktu hurtownia jest w stanie pomieścić. Na postawie tych danych, określane będzie zapotrzebowanie magazynu na dostawę danego produktu. Informacja w interfejsie graficznym będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
 
-Tabela 'Zamówienia' zawiera kolumnę 'Stan zamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia.  
+Tabela 'Zamówienia' zawiera kolumnę 'StanZamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia.  
+
+Tabela 'dostawca' zawiera informacje odnośnie dostawców, którzy dostarczają towary do hurtowni.
+
+Tabela 'uzytkownik' zawiera informacje dotyczące kont użytkowników. Dodatkowo parametr w kolumnie 'isAdmin' określa dostęp do funkcji, jakie ma dany użytkownik.
+
+Tabela 'element_zamowienia' zawiera pola 'cena' oraz 'cena za jednostke'. Wartosci te po złożonym zamówieniu nie będą się aktualizowały z aktualną ceną produktu. Jest to funkcjonalność, która pozwoli nam sprawdzić ceny w danym zamówieniu przed podwyżką/zmianą cen (nie będą one aktualizowane).
 
 ## Wykorzystane technologie 
 - Język Java 17
