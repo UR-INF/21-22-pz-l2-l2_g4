@@ -653,7 +653,6 @@ public class MainController implements Initializable {
 
     @FXML
     public void btnWyloguj(MouseEvent event) {
-        //TODO: obsłużyć logowanie
         loginService.wyloguj();
         paneLogowanie.toFront();
     }
