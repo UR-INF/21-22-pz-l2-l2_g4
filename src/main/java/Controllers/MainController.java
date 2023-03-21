@@ -34,8 +34,17 @@ public class MainController implements Initializable {
     @FXML
     private Pane paneLogowanie;
 
+    @FXML
+    private TextField textFieldLogin;
+
+    @FXML
+    private PasswordField passwordFieldHaslo;
     //tabele
             //tab dostawcy
+
+            //tab zarzadzanie
+            @FXML
+            private Tab tabZarzadzanie;
             @FXML
             private TableView<Dostawca> tabDostawcy;
 
@@ -209,7 +218,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-      //  paneLogowanie.toFront();
+        paneLogowanie.toFront();
 
         dbAccess = new DbAccess();
         dbAccess.getDatabaseName();
@@ -635,9 +644,19 @@ public class MainController implements Initializable {
     @FXML
     public void btnZaloguj(MouseEvent event) {
         //TODO: obsłużyć logowanie
-        loginService.zaloguj();
+        if(loginService.zaloguj(textFieldLogin.getText(),passwordFieldHaslo.getText()) == true) {
+            if(loginService.isAdmin==false)
+                tabZarzadzanie.setDisable(true);
+            paneLogowanie.toBack();
+        }
     }
 
+    @FXML
+    public void btnWyloguj(MouseEvent event) {
+        //TODO: obsłużyć logowanie
+        loginService.wyloguj();
+        paneLogowanie.toFront();
+    }
     @FXML
     public void btnDostawcyPobierzClicked(MouseEvent event) {
         tabDostawcy.getItems().clear();

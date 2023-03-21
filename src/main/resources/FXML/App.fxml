@@ -13,12 +13,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../CSS/css.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
    <children>
-      <Pane fx:id="paneLogowanie" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" style="-fx-background-color: blue;" />
+      <Pane fx:id="paneLogowanie" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" style="-fx-background-color: blue;" >
+         <VBox>
+            <TextField fx:id="textFieldLogin" />
+            <PasswordField fx:id="passwordFieldHaslo"/>
+            <Button onMouseClicked="#btnZaloguj">Zaloguj</Button>
+         </VBox>
+      </Pane>
       <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Zarządzanie">
+          <Tab fx:id="tabZarzadzanie" text="Zarządzanie">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -156,7 +164,9 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <HBox layoutY="650.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="122.0" prefWidth="1550.0" style="-fx-background-color: lightgreen;" />
+                        <HBox layoutY="650.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="122.0" prefWidth="1550.0" style="-fx-background-color: lightgreen;" >
+                           <Button onMouseClicked="#btnWyloguj">wyloguj</Button>
+                        </HBox>
                      </children>
                   </AnchorPane>
                </content>
