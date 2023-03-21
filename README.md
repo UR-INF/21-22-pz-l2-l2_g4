@@ -104,13 +104,17 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
 
 ## Diagramy UML
 - ###### [Diagram przypadków użycia]
-- ![obraz](https://user-images.githubusercontent.com/83063779/226652408-3e2ed8d4-041b-43d6-ae31-5c3ae1746d81.png)
+ ![obraz](https://user-images.githubusercontent.com/83063779/226652408-3e2ed8d4-041b-43d6-ae31-5c3ae1746d81.png)
 - ###### [Diagram aktywności]
-Wstawić rys. diagramu UML
+![1](https://user-images.githubusercontent.com/103111656/226665165-1e471afa-35a5-459d-a7c0-542da360ea00.PNG)
+![2](https://user-images.githubusercontent.com/103111656/226665261-11f0e924-d6dd-439d-be39-e8191de05691.PNG)
 - ###### [Diagram sekwencji]
-Wstawić rys. diagramu UML
-- ###### [Diagram klas]
-  Wstawić rys. diagramu UML
+![3](https://user-images.githubusercontent.com/103111656/226665359-6b56d81a-dd43-45ed-b353-e897e7a16bf5.PNG)
+![4](https://user-images.githubusercontent.com/103111656/226665419-4d739cf3-ef4d-4d9c-9b61-1a20dbe00d34.PNG)
+- ###### [Diagram stanów]
+![5](https://user-images.githubusercontent.com/103111656/226665593-7dbcd5af-0370-4242-a8e9-0c9b9acf9989.PNG)
+![6](https://user-images.githubusercontent.com/103111656/226665652-69c3ddc6-5c97-453b-9a84-fafd79d0c4ce.PNG)
+
 
 ## Baza danych
 
