@@ -103,7 +103,7 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
   - Brak interesariuszy zewnętrznych
 
 ## Diagramy UML
-- ###### [Diagram przypadków użycia]
+- ![obraz](https://user-images.githubusercontent.com/83063779/226652408-3e2ed8d4-041b-43d6-ae31-5c3ae1746d81.png)
   Wstawić rys. diagramu UML
 - ###### [Diagram aktywności]
 Wstawić rys. diagramu UML
