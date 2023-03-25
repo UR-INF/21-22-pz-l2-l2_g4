@@ -39,6 +39,9 @@ Poniżej struktury bazy danych znajduje się przycisk "Drukuj", po jego naciśni
 <b>Uprawnienie do używania kodów rabatowych</b>  
 Poniżej struktury bazy danych znajdują się dwa pola z etykietą "Kod rabatowy", należą do nich pola "ID zamówienia" - któremu chcemy dodać kod rabatowy oraz pole "Kod rabatowy" - do którego należy wpisać kod rabatowy. Należy uwzględnić wykorzystanie maksymalnie jednego kodu rabatowego dla każdego zamówienia. Udzielenie kodu rabatowego będzie możliwe tylko dla użytkowników z takim uprawnieniem.  
 
+<b>Uprawnienie do używania kodów rabatowych</b>  
+Realizacja zamówień do hurtowni (zakup materiałów przez hurtownię) możliwa jest dla użytkowników z rolą ADMIN. Wykonywana zostaje poprzez zaznaczenie (np. Checkboxów) odpowiednich produktów w tabeli Produkty, wpisanie ilości którą hurtownia chce zamówić oraz naciśnięcie przycisku generującego plik. W wygenerowanym pliku znajdą się wskazane przez pracownika produkty wraz z ilością pożądaną przez hurtownię.  
+
 Ceny każdego produktu będą zapisywane w kolumnie:  
 <b>Cena</b> – typu double w zaokrągleniu do dwóch miejsc po przecinku  
 Wszystkie ceny pokazywane będą w walucie Polskich Złotych (PLN, zł).
@@ -47,8 +50,6 @@ Przewidujemy również możliwość nadawania kodów rabatowych przez użytkowni
 Kod rabatowy używany będzie w tabeli zamówienia i będzie zmieniał cenę konkretnego zamówienia o przypisany do kodu rabatowego procent zniżki.  
 
 Kwota złożonego do realizacji zamówienia (zapisanego w tabeli Zamówienia oraz Elementy zamówienia), nie może ulec zmianie poprzez zmianę bieżącej ceny produktu. Zmiana kwoty złożonego zamówienia jest możliwa tylko poprzez użycie kodów rabatowych.  
-
-Realizacja zamówień do hurtowni (zakup materiałów przez hurtownię) możliwa jest dla użytkowników z rolą ADMIN. Wykonywana zostaje poprzez zaznaczenie (np. Checkboxów) odpowiednich produktów w tabeli Produkty, wpisanie ilości którą hurtownia chce zamówić oraz naciśnięcie przycisku generującego plik. W wygenerowanym pliku znajdą się wskazane przez pracownika produkty wraz z ilością pożądaną przez hurtownię.  
 
 ## Cel projektu 
 Umożliwienie obsługi i zarządzania sprzedażą materiałów budowlanych wraz z umożliwieniem generowania raportów.
