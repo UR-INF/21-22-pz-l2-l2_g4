@@ -4,11 +4,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'zamowienie' w bazie danych.
+ * Reprezentuje tabelę 'Zamowienie' w bazie danych.
  */
 @Entity
-@Table(name = "zamowienie")
+@Table(name = "Zamowienie")
 public class Zamowienie implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -18,12 +19,11 @@ public class Zamowienie implements Serializable {
     @JoinColumn(name = "idKlient")
     private Klient idKlient;
 
-    @ManyToOne(targetEntity = StanZamowienia.class)
-    @JoinColumn(name = "idStanZamowienia")
-    private StanZamowienia idStanZamowienia;
-
     @Column(name = "data")
     private String data;
+
+    @Column(name = "stanZamowienia")
+    private String stanZamowienia;
 
     @Column(name = "rabat")
     private String rabat;
@@ -31,10 +31,10 @@ public class Zamowienie implements Serializable {
     public Zamowienie() {
     }
 
-    public Zamowienie(Klient idKlient, StanZamowienia idStanZamowienia, String data, String rabat) {
+    public Zamowienie(Klient idKlient, String data, String stanZamowienia, String rabat) {
         this.idKlient = idKlient;
-        this.idStanZamowienia = idStanZamowienia;
         this.data = data;
+        this.stanZamowienia = stanZamowienia;
         this.rabat = rabat;
     }
 
@@ -54,20 +54,20 @@ public class Zamowienie implements Serializable {
         this.idKlient = idKlient;
     }
 
-    public StanZamowienia getStanZamowienia() {
-        return idStanZamowienia;
-    }
-
-    public void setStanZamowienia(StanZamowienia idStanZamowienia) {
-        this.idStanZamowienia = idStanZamowienia;
-    }
-
     public String getData() {
         return data;
     }
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getStanZamowienia() {
+        return stanZamowienia;
+    }
+
+    public void setStanZamowienia(String stanZamowienia) {
+        this.stanZamowienia = stanZamowienia;
     }
 
     public String getRabat() {
@@ -83,8 +83,8 @@ public class Zamowienie implements Serializable {
         return "Zamowienie{" +
                 "id=" + id +
                 ", idKlient=" + idKlient +
-                ", idStanZamowienia=" + idStanZamowienia +
                 ", data='" + data + '\'' +
+                ", stanZamowienia='" + stanZamowienia + '\'' +
                 ", rabat='" + rabat + '\'' +
                 '}';
     }

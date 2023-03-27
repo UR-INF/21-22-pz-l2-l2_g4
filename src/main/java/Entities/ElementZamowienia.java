@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'elementZamowienia' w bazie danych.
+ * Reprezentuje tabelę 'ElementZamowienia' w bazie danych.
  */
 @Entity
-@Table(name = "elementZamowienia")
+@Table(name = "element_zamowienia")
 public class ElementZamowienia implements Serializable {
 
     @Id
@@ -26,17 +26,21 @@ public class ElementZamowienia implements Serializable {
     @Column(name = "ilosc")
     private int ilosc;
 
-    @Column(name = "cenaProduktu")
-    private Double cenaProduktu;
+    @Column(name = "cenaElementu")
+    private Double cenaElementu;
+
+    @Column(name = "cenaZaJednostke")
+    private Double cenaZaJednostke;
 
     public ElementZamowienia() {
     }
 
-    public ElementZamowienia(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaProduktu) {
+    public ElementZamowienia(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaElementu, Double cenaZaJednostke) {
         this.idZamowienie = idZamowienie;
         this.idProdukt = idProdukt;
         this.ilosc = ilosc;
-        this.cenaProduktu = cenaProduktu;
+        this.cenaElementu = cenaElementu;
+        this.cenaZaJednostke = cenaZaJednostke;
     }
 
     public int getId() {
@@ -71,12 +75,20 @@ public class ElementZamowienia implements Serializable {
         this.ilosc = ilosc;
     }
 
-    public Double getCenaProduktu() {
-        return cenaProduktu;
+    public Double getCenaElementu() {
+        return cenaElementu;
     }
 
-    public void setCenaProduktu(Double cenaProduktu) {
-        this.cenaProduktu = cenaProduktu;
+    public void setCenaElementu(Double cenaElementu) {
+        this.cenaElementu = cenaElementu;
+    }
+
+    public Double getCenaZaJednostke() {
+        return cenaZaJednostke;
+    }
+
+    public void setCenaZaJednostke(Double cenaZaJednostke) {
+        this.cenaZaJednostke = cenaZaJednostke;
     }
 
     @Override
@@ -86,7 +98,8 @@ public class ElementZamowienia implements Serializable {
                 ", idZamowienie=" + idZamowienie +
                 ", idProdukt=" + idProdukt +
                 ", ilosc=" + ilosc +
-                ", cenaProduktu=" + cenaProduktu +
+                ", cenaElementu=" + cenaElementu +
+                ", cenaZaJednostke=" + cenaZaJednostke +
                 '}';
     }
 }

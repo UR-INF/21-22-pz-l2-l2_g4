@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'produkt' w bazie danych.
+ * Reprezentuje tabelę 'Produkt' w bazie danych.
  */
 @Entity
-@Table(name = "produkt")
+@Table(name = "Produkt")
 public class Produkt implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

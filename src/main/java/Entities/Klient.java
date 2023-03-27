@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'klient' w bazie danych.
+ * Reprezentuje tabelę 'Klient' w bazie danych.
  */
 @Entity
-@Table(name = "klient")
+@Table(name = "Klient")
 public class Klient implements Serializable {
 
     @Id
@@ -37,12 +37,15 @@ public class Klient implements Serializable {
     private String ulica;
 
     @Column(name = "numerMieszkania")
-    private String numerMieszkania;
+    private int numerMieszkania;
+
+    @Column(name = "numerBudynku")
+    private int numerBudynku;
 
     public Klient() {
     }
 
-    public Klient(String imie, String nazwisko, String pesel, String numerTelefonu, String email, String miejscowosc, String ulica, String numerMieszkania) {
+    public Klient(String imie, String nazwisko, String pesel, String numerTelefonu, String email, String miejscowosc, String ulica, int numerMieszkania, int numerBudynku) {
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.pesel = pesel;
@@ -51,6 +54,7 @@ public class Klient implements Serializable {
         this.miejscowosc = miejscowosc;
         this.ulica = ulica;
         this.numerMieszkania = numerMieszkania;
+        this.numerBudynku = numerBudynku;
     }
 
     public int getId() {
@@ -117,12 +121,20 @@ public class Klient implements Serializable {
         this.ulica = ulica;
     }
 
-    public String getNumerMieszkania() {
+    public int getNumerMieszkania() {
         return numerMieszkania;
     }
 
-    public void setNumerMieszkania(String numerMieszkania) {
+    public void setNumerMieszkania(int numerMieszkania) {
         this.numerMieszkania = numerMieszkania;
+    }
+
+    public int getNumerBudynku() {
+        return numerBudynku;
+    }
+
+    public void setNumerBudynku(int numerBudynku) {
+        this.numerBudynku = numerBudynku;
     }
 
     @Override
@@ -137,6 +149,7 @@ public class Klient implements Serializable {
                 ", miejscowosc='" + miejscowosc + '\'' +
                 ", ulica='" + ulica + '\'' +
                 ", numerMieszkania='" + numerMieszkania + '\'' +
+                ", numerBudynku='" + numerBudynku + '\'' +
                 '}';
     }
 }

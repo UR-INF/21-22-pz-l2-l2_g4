@@ -4,10 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'uzytkownik' w bazie danych.
+ * Reprezentuje tabelę 'Uzytkownik' w bazie danych.
  */
 @Entity
-@Table(name = "uzytkownik")
+@Table(name = "Uzytkownik")
 public class Uzytkownik implements Serializable {
 
     @Id

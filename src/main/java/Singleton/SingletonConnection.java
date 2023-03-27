@@ -12,16 +12,16 @@ public class SingletonConnection {
 
     /**
      * Tworzy instancję obiektu SessionFactory jeśli taki obiekt nie istnieje.
-     * 
+     *
      * @return obiekt SessionFactory
      */
     private SingletonConnection() {
     }
 
     public static synchronized SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
+        if (sessionFactory == null)
             sessionFactory = new Configuration().configure(SingletonConnection.class.getResource("/DatabaseCfg/hibernate.cfg.xml")).buildSessionFactory();
-        }
+
         return sessionFactory;
     }
 }
