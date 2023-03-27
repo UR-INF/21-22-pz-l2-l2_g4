@@ -123,7 +123,8 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
 
 
 ###### Diagram ERD
-![image](https://user-images.githubusercontent.com/82969695/227926709-24010d34-6872-447c-8eb9-155136576186.png)
+![image](https://user-images.githubusercontent.com/82969695/227928724-17a6a989-f68a-4159-8303-968ac4c3f3a6.png)
+
 
 
 
@@ -135,7 +136,7 @@ Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nad
 
 Tabela 'Produkt' zawiera kolumny 'Ilosc' oraz 'MaxIlosc', ktore zawierają informacje o tym, jak dużo danego produktu jest na stanie hurtowni oraz jak dużo tego produktu hurtownia jest w stanie pomieścić. Na postawie tych danych, określane będzie zapotrzebowanie magazynu na dostawę danego produktu. Informacja w interfejsie graficznym będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
 
-Tabela 'Zamówienia' zawiera kolumnę 'StanZamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia.  
+Tabela 'Zamówienia' zawiera kolumnę 'stanZamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia. Oprócz tego zawiera kolumnę procentRabatu, gdzie będzie określone jak duży rabat dostał dany klient.  
 
 Tabela 'dostawca' zawiera informacje odnośnie dostawców, którzy dostarczają towary do hurtowni.
 
