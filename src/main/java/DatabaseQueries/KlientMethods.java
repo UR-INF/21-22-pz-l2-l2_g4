@@ -46,7 +46,7 @@ public class KlientMethods {
      *
      * @param klient
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteKlient(Klient klient) {
         session = sessionFactory.openSession();

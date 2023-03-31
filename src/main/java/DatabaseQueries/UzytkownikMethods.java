@@ -46,7 +46,7 @@ public class UzytkownikMethods {
      *
      * @param uzytkownik
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteUzytkownik(Uzytkownik uzytkownik) {
         session = sessionFactory.openSession();

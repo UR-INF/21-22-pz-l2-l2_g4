@@ -4,120 +4,153 @@ import DatabaseAccess.DbAccess;
 import DatabaseQueries.*;
 import Entities.*;
 import Singleton.SingletonConnection;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 /**
  * Kontroler głównego okna aplikacji.
  */
 public class MainController implements Initializable {
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Elementy FXML
-        //Tab Dostawcy
-            //Przyciski
-            @FXML private Button dostawcyBtnDodaj; @FXML private Button dostawcyBtnOdswiez; @FXML private Button dostawcyBtnPokaz; @FXML private Button dostawcyBtnSzukaj; @FXML private Button dostawcyBtnUsun;
-
-            //Pola
-            @FXML private TextField dostawcyInformacje; @FXML private TextField dostawcyPoleEmail; @FXML private TextField dostawcyPoleKraj; @FXML private TextField dostawcyPoleMiejscowosc; @FXML private TextField dostawcyPoleNazwa; @FXML private TextField dostawcyPoleNip; @FXML private TextField dostawcyPoleUlica;
-
-            //Tabela
-            @FXML private TableView<Dostawca> dostawcyTabela; @FXML private TableColumn<Dostawca, String> dostawcyKolEmail; @FXML private TableColumn<Dostawca, String> dostawcyKolId; @FXML private TableColumn<Dostawca, String> dostawcyKolKraj; @FXML  private TableColumn<Dostawca, String> dostawcyKolMiejscowosc; @FXML private TableColumn<Dostawca, String> dostawcyKolNazwa; @FXML private TableColumn<Dostawca, String> dostawcyKolUlica; @FXML private TableColumn<Dostawca, Void> dostawcyKolUsun;
-
-            //Filtry
-            @FXML private TextField dostawcySzukajEmail; @FXML private TextField dostawcySzukajId; @FXML private TextField dostawcySzukajKraj; @FXML private TextField dostawcySzukajMiejscowosc; @FXML private TextField dostawcySzukajNazwa; @FXML private TextField dostawcySzukajUlica;
-
-        //Tab Elementy zamowienia
-            //Przyciski
-            @FXML private Button elemZamBtnDodaj; @FXML private Button elemZamBtnOdswiez; @FXML private Button elemZamBtnPokaz; @FXML private Button elemZamBtnSzukaj; @FXML private Button elemZamBtnUsun;
-
-            //Pola
-            @FXML private TextField elemZamInformacje; @FXML private TextField elemZamPoleIdProduktu; @FXML private TextField elemZamPoleIdZamowienia; @FXML private TextField elemZamPoleIlosc;
-
-            //Tabela
-            @FXML private TableView<ElementZamowienia> elemZamTabela; @FXML private TableColumn<ElementZamowienia, String> elemZamKolCenaEl; @FXML private TableColumn<ElementZamowienia, String> elemZamKolCenaJM; @FXML private TableColumn<ElementZamowienia, String> elemZamKolId; @FXML private TableColumn<ElementZamowienia, String> elemZamKolIdProduktu; @FXML private TableColumn<ElementZamowienia, String> elemZamKolIdZamowienia; @FXML private TableColumn<ElementZamowienia, String> elemZamKolIlosc; @FXML private TableColumn<ElementZamowienia, Void> elemZamKolUsun;
-
-            //Filtry
-            @FXML private TextField elemZamSzukajCenaEl; @FXML private TextField elemZamSzukajCenaJM; @FXML private TextField elemZamSzukajId; @FXML private TextField elemZamSzukajIdProduktu; @FXML private TextField elemZamSzukajIdZamowienia; @FXML private TextField elemZamSzukajIlosc;
-
-        //Tab Klienci
-            //Przyciski
-            @FXML private Button klienciBtnDodaj; @FXML private Button klienciBtnOdswiez; @FXML private Button klienciBtnPokaz; @FXML private Button klienciBtnSzukaj; @FXML private Button klienciBtnUsun;
-
-            //Pola
-            @FXML private TextField klienciInformacje; @FXML private TextField klienciPoleEmail; @FXML private TextField klienciPoleImie; @FXML private TextField klienciPoleMiejscowosc; @FXML private TextField klienciPoleNazwisko; @FXML private TextField klienciPoleNrBud; @FXML private TextField klienciPoleNrMieszkania; @FXML private TextField klienciPoleNrTel; @FXML private TextField klienciPolePesel; @FXML private TextField klienciPoleUlica;
-
-            //Tabela
-            @FXML private TableView<Klient> klienciTabela; @FXML private TableColumn<Klient, String> klienciKolEmail; @FXML private TableColumn<Klient, String> klienciKolId; @FXML private TableColumn<Klient, String> klienciKolImie; @FXML private TableColumn<Klient, String> klienciKolMiejscowosc; @FXML private TableColumn<Klient, String> klienciKolNazwisko; @FXML private TableColumn<Klient, String> klienciKolNrBud; @FXML private TableColumn<Klient, String> klienciKolNrMieszk; @FXML private TableColumn<Klient, String> klienciKolNrTel; @FXML private TableColumn<Klient, String> klienciKolPesel; @FXML private TableColumn<Klient, String> klienciKolUlica; @FXML private TableColumn<Klient, Void> klienciKolUsun;
-
-            //Filtry
-            @FXML private TextField klienciSzukajEmail; @FXML private TextField klienciSzukajId; @FXML private TextField klienciSzukajImie; @FXML private TextField klienciSzukajMiejscowosc; @FXML private TextField klienciSzukajNazwisko; @FXML private TextField klienciSzukajNrBud; @FXML private TextField klienciSzukajNrMieszk; @FXML private TextField klienciSzukajNrTel; @FXML private TextField klienciSzukajPesel; @FXML private TextField klienciSzukajUlica;
-
-        //Tab Produkty
-            //Przyciski
-            @FXML private Button produktyBtnDodaj; @FXML private Button produktyBtnOdswiez; @FXML private Button produktyBtnPokaz; @FXML private Button produktyBtnSzukaj; @FXML private Button produktyBtnUsun;
-
-            //Pola
-            @FXML private TextField produktyInformacje; @FXML private TextField produktyPoleCena; @FXML private TextField produktyPoleIdDostawcy; @FXML private TextField produktyPoleIlosc; @FXML private TextField produktyPoleJM; @FXML private TextField produktyPoleKod; @FXML private TextField produktyPoleKolor; @FXML private TextField produktyPoleKraj; @FXML private TextField produktyPoleMaxIlosc; @FXML private TextField produktyPoleNazwa;
-
-            //Tabela
-            @FXML private TableView<Produkt> produktyTabela; @FXML private TableColumn<Produkt, String> produktyKolCena; @FXML private TableColumn<Produkt, String> produktyKolId; @FXML private TableColumn<Produkt, String> produktyKolIdDostawcy; @FXML private TableColumn<Produkt, String> produktyKolIlosc; @FXML private TableColumn<Produkt, String> produktyKolJM; @FXML private TableColumn<Produkt, String> produktyKolKod; @FXML private TableColumn<Produkt, String> produktyKolKolor; @FXML private TableColumn<Produkt, String> produktyKolKraj; @FXML private TableColumn<Produkt, String> produktyKolMaxIlosc; @FXML private TableColumn<Produkt, String> produktyKolStan; @FXML private TableColumn<Produkt, Void> produktyKolUsun;
-
-            //Filtry
-            @FXML private TextField produktySzukajCena; @FXML private TextField produktySzukajId; @FXML private TextField produktySzukajIdDostawcy; @FXML private TextField produktySzukajIlosc; @FXML private TextField produktySzukajJm; @FXML private TextField produktySzukajKod; @FXML private TextField produktySzukajKolor; @FXML private TextField produktySzukajKraj; @FXML private TextField produktySzukajMaxIlosc;
-
-        //Tab Uzytkownicy
-            //Przyciski
-            @FXML private Button uzytkownicyBtnDodaj; @FXML private Button uzytkownicyBtnOdswiez; @FXML private Button uzytkownicyBtnPokaz; @FXML private Button uzytkownicyBtnSzukaj; @FXML private Button uzytkownicyBtnUsun;
-
-            //Pola
-            @FXML private CheckBox uzytkownicyAdmin; @FXML private TextField uzytkownicyInformacje; @FXML private TextField uzytkownicyPoleEmail; @FXML private TextField uzytkownicyPoleHaslo; @FXML private TextField uzytkownicyPoleImie; @FXML private TextField uzytkownicyPoleNazwisko; @FXML private TextField uzytkownicyPoleNrTel; @FXML private CheckBox uzytkownicyRabat;
-
-            //Tabela
-            @FXML private TableView<Uzytkownik> uzytkownicyTabela; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolAdmin; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolEmail; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolHaslo; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolId; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolImie; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolNazwisko; @FXML private TableColumn<Uzytkownik, String> uzytkownicyKolNrTel; @FXML private TableColumn<Uzytkownik, Void> uzytkownicyKolUsun;
-
-            //Filtry
-            @FXML private TextField uzytkownicySzukajAdmin; @FXML private TextField uzytkownicySzukajEmail; @FXML private TextField uzytkownicySzukajHaslo; @FXML private TextField uzytkownicySzukajId; @FXML private TextField uzytkownicySzukajImie; @FXML private TextField uzytkownicySzukajNazwisko; @FXML private TextField uzytkownicySzukajNrTel;
-
-        //Tab Zamowienia
-            //Przyciski
-            @FXML private Button zamowieniaBtnDodaj; @FXML private Button zamowieniaBtnOdswiez; @FXML private Button zamowieniaBtnPokaz; @FXML private Button zamowieniaBtnSzukaj; @FXML private Button zamowieniaBtnUsun;
-
-            //Pola
-            @FXML private TextField zamowieniaIdKlienta; @FXML private TextField zamowieniaInformacje; @FXML private TextField zamowieniaPoleData; @FXML private TextField zamowieniaPoleRabat;
-
-            //Tabela
-            @FXML private TableView<Zamowienie> zamowieniaTabela; @FXML private TableColumn<Zamowienie, String> zamowieniaKolData; @FXML private TableColumn<Zamowienie, String> zamowieniaKolId; @FXML private TableColumn<Zamowienie, String> zamowieniaKolIdKlienta; @FXML private TableColumn<Zamowienie, String> zamowieniaKolRabat; @FXML private TableColumn<Zamowienie, String> zamowieniaKolStan; @FXML private TableColumn<Zamowienie, Void> zamowieniaKolUsun;
-
-            //Filtry
-            @FXML private TextField zamowieniaSzukajData; @FXML private TextField zamowieniaSzukajId; @FXML private TextField zamowieniaSzukajIdKlienta; @FXML private TextField zamowieniaSzukajRabat; @FXML private TextField zamowieniaSzukajStan;
-
-        //Zakładki
-        @FXML private Tab tabDostawcy; @FXML private Tab tabElementyZamowienia; @FXML private Tab tabKlienci; @FXML private Tab tabProdukty; @FXML private Tab tabZamowienia; @FXML private Tab tabZarządzanie;
-
-        @FXML private Button btnWyloguj; @FXML private Button btnZakoncz;
-
-        @FXML private Text labelTime; @FXML private Text labelUzytkownik;
+    //Tab Dostawcy
+    //Pola
+    @FXML
+    private TextArea dostawcyInformacje;
+    @FXML
+    private TextField dostawcyPoleEmail, dostawcyPoleKraj, dostawcyPoleMiejscowosc, dostawcyPoleNazwa, dostawcyPoleNip, dostawcyPoleUlica;
+    //Tabela
+    @FXML
+    private TableView<Dostawca> dostawcyTabela;
+    @FXML
+    private TableColumn<Dostawca, String> dostawcyKolEmail, dostawcyKolId, dostawcyKolKraj, dostawcyKolMiejscowosc, dostawcyKolNazwa, dostawcyKolUlica;
+    @FXML
+    private TableColumn<Dostawca, Void> dostawcyKolUsun;
+    //Filtry
+    @FXML
+    private TextField dostawcySzukajEmail, dostawcySzukajId, dostawcySzukajKraj, dostawcySzukajMiejscowosc, dostawcySzukajNazwa, dostawcySzukajUlica;
+    //Tab Elementy zamowienia
+    //Pola
+    @FXML
+    private TextArea elemZamInformacje;
+    @FXML
+    private TextField elemZamPoleIdProduktu, elemZamPoleIdZamowienia, elemZamPoleIlosc;
+    //Tabela
+    @FXML
+    private TableView<ElementZamowienia> elemZamTabela;
+    @FXML
+    private TableColumn<ElementZamowienia, String> elemZamKolCenaEl, elemZamKolCenaJM, elemZamKolId, elemZamKolIdProduktu, elemZamKolIdZamowienia, elemZamKolIlosc;
+    @FXML
+    private TableColumn<ElementZamowienia, Void> elemZamKolUsun;
+    //Filtry
+    @FXML
+    private TextField elemZamSzukajCenaEl, elemZamSzukajCenaJM, elemZamSzukajId, elemZamSzukajIdProduktu, elemZamSzukajIdZamowienia, elemZamSzukajIlosc;
+    //Tab Klienci
+    //Pola
+    @FXML
+    private TextArea klienciInformacje;
+    @FXML
+    private TextField klienciPoleEmail, klienciPoleImie, klienciPoleMiejscowosc, klienciPoleNazwisko, klienciPoleNrBud, klienciPoleNrMieszkania, klienciPoleNrTel, klienciPolePesel, klienciPoleUlica;
+    //Tabela
+    @FXML
+    private TableView<Klient> klienciTabela;
+    @FXML
+    private TableColumn<Klient, String> klienciKolEmail, klienciKolId, klienciKolImie, klienciKolMiejscowosc, klienciKolNazwisko, klienciKolNrBud, klienciKolNrMieszk, klienciKolNrTel, klienciKolPesel, klienciKolUlica;
+    @FXML
+    private TableColumn<Klient, Void> klienciKolUsun;
+    //Filtry
+    @FXML
+    private TextField klienciSzukajEmail, klienciSzukajId, klienciSzukajImie, klienciSzukajMiejscowosc, klienciSzukajNazwisko, klienciSzukajNrBud, klienciSzukajNrMieszk, klienciSzukajNrTel, klienciSzukajPesel, klienciSzukajUlica;
+    //Tab Produkty
+    //Pola
+    @FXML
+    private TextArea produktyInformacje;
+    @FXML
+    private TextField produktyPoleCena, produktyPoleIdDostawcy, produktyPoleIlosc, produktyPoleJM, produktyPoleKod, produktyPoleKolor, produktyPoleKraj, produktyPoleMaxIlosc, produktyPoleNazwa;
+    //Tabela
+    @FXML
+    private TableView<Produkt> produktyTabela;
+    @FXML
+    private TableColumn<Produkt, String> produktyKolCena, produktyKolId, produktyKolIdDostawcy, produktyKolIlosc, produktyKolJM, produktyKolKod, produktyKolKolor, produktyKolKraj, produktyKolMaxIlosc, produktyKolStan;
+    @FXML
+    private TableColumn<Produkt, Boolean> produktyKolUwz;
+    @FXML
+    private TableColumn<Produkt, Void> produktyKolUsun;
+    //Filtry
+    @FXML
+    private TextField produktySzukajCena, produktySzukajId, produktySzukajIdDostawcy, produktySzukajIlosc, produktySzukajJm, produktySzukajKod, produktySzukajKolor, produktySzukajKraj, produktySzukajMaxIlosc;
+    //Tab Uzytkownicy
+    //Pola
+    @FXML
+    private CheckBox uzytkownicyAdmin, uzytkownicyRabat, uzytkownicyRaport;
+    @FXML
+    private TextArea uzytkownicyInformacje;
+    @FXML
+    private TextField uzytkownicyPoleEmail, uzytkownicyPoleHaslo, uzytkownicyPoleImie, uzytkownicyPoleNazwisko, uzytkownicyPoleNrTel;
+    //Tabela
+    @FXML
+    private TableView<Uzytkownik> uzytkownicyTabela;
+    @FXML
+    private TableColumn<Uzytkownik, String> uzytkownicyKolAdmin, uzytkownicyKolEmail, uzytkownicyKolHaslo, uzytkownicyKolId, uzytkownicyKolImie, uzytkownicyKolNazwisko, uzytkownicyKolNrTel, uzytkownicyKolGenRap, uzytkownicyKolUdzRab;
+    @FXML
+    private TableColumn<Uzytkownik, Void> uzytkownicyKolUsun;
+    //Filtry
+    @FXML
+    private TextField uzytkownicySzukajAdmin, uzytkownicySzukajEmail, uzytkownicySzukajHaslo, uzytkownicySzukajId, uzytkownicySzukajImie, uzytkownicySzukajNazwisko, uzytkownicySzukajNrTel, uzytkownicySzukajGenRap, uzytkownicySzukajUdzRab;
+    //Tab Zamowienia
+    //Pola
+    @FXML
+    private TextField zamowieniaIdKlienta, zamowieniaPoleData, zamowieniaPoleRabat;
+    @FXML
+    private TextArea zamowieniaInformacje;
+    //Tabela
+    @FXML
+    private TableView<Zamowienie> zamowieniaTabela;
+    @FXML
+    private TableColumn<Zamowienie, String> zamowieniaKolData, zamowieniaKolId, zamowieniaKolIdKlienta, zamowieniaKolRabat, zamowieniaKolStan;
+    @FXML
+    private TableColumn<Zamowienie, Void> zamowieniaKolFaktura, zamowieniaKolUsun;
+    //Filtry
+    @FXML
+    private TextField zamowieniaSzukajData, zamowieniaSzukajId, zamowieniaSzukajIdKlienta, zamowieniaSzukajRabat, zamowieniaSzukajStan;
+    //Zakładki
+    @FXML
+    private Tab tabDostawcy, tabElementyZamowienia, tabKlienci, tabProdukty, tabZamowienia, tabZarządzanie;
+    @FXML
+    private Button btnWyloguj, btnZakoncz;
+    @FXML
+    private Text labelTime, labelUzytkownik;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Obiekty
@@ -129,7 +162,7 @@ public class MainController implements Initializable {
     private ElementZamowieniaMethods elementZamowieniaMethods;
     private ProduktMethods produktMethods;
     private UzytkownikMethods uzytkownikMethods;
-
+    private Scene scene;
     //Listy
     public static ObservableList<Dostawca> dostawcy = FXCollections.observableArrayList();
     public static ObservableList<Uzytkownik> uzytkownicy = FXCollections.observableArrayList();
@@ -137,9 +170,6 @@ public class MainController implements Initializable {
     public static ObservableList<Klient> klienci = FXCollections.observableArrayList();
     public static ObservableList<Zamowienie> zamowienia = FXCollections.observableArrayList();
     public static ObservableList<ElementZamowienia> elementyZamowienia = FXCollections.observableArrayList();
-
-    private Scene scene;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -152,6 +182,13 @@ public class MainController implements Initializable {
         produktyTabela.setPlaceholder(new Label("Brak danych w tabeli"));
         zamowieniaTabela.setPlaceholder(new Label("Brak danych w tabeli"));
         elemZamTabela.setPlaceholder(new Label("Brak danych w tabeli"));
+
+        uzytkownicyInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> uzytkownicyInformacje.setScrollTop(Double.MAX_VALUE));
+        klienciInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> klienciInformacje.setScrollTop(Double.MAX_VALUE));
+        dostawcyInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> dostawcyInformacje.setScrollTop(Double.MAX_VALUE));
+        produktyInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> produktyInformacje.setScrollTop(Double.MAX_VALUE));
+        zamowieniaInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> zamowieniaInformacje.setScrollTop(Double.MAX_VALUE));
+        elemZamInformacje.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> elemZamInformacje.setScrollTop(Double.MAX_VALUE));
 
         dbAccess = new DbAccess();
         dbAccess.getDatabaseName();
@@ -166,14 +203,38 @@ public class MainController implements Initializable {
 
         setTables();
         insertData();
+        new Thread(() -> runClock()).start(); //wątek zegara
+
+        loginService.zaloguj("admin", "1234");
+        labelUzytkownik.setText(loginService.getLogin());
     }
 
-    public void setScene(Scene scene) { this.scene = scene; }
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
 
     /**
-    * Testowy insert danych
-    */
-    public void insertData(){
+     * Odpowiedzialna za działanie zegara.
+     */
+    private void runClock() {
+        DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String date;
+
+        while (true) {
+            date = outputformat.format(Calendar.getInstance().getTime());
+            labelTime.setText(date);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Testowy insert danych.
+     */
+    private void insertData() {
         //TODO: insert rzeczywistych danych
 
         SessionFactory sessionFactory = SingletonConnection.getSessionFactory();
@@ -183,22 +244,28 @@ public class MainController implements Initializable {
         session.beginTransaction();
         session.flush();
 
-        session.save(new Uzytkownik("imie","nazwisko","123456789","email","haslo",1));
-        Uzytkownik u = (Uzytkownik) session.createSQLQuery("select * from uzytkownik where id=\'" + 1 + "\'").addEntity(Uzytkownik.class).getSingleResult();
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
+        session.save(new Uzytkownik("imie", "nazwisko", "email", "haslo", "123456789", 1, 1, 1));
 
-        session.save(new Dostawca("email","chiny","pekin","ulica","nazwa","NIP"));
-        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + 1 + "\'").addEntity(Dostawca.class).getSingleResult();
+        Uzytkownik u = (Uzytkownik) session.createSQLQuery("select * from uzytkownik where id='" + 1 + "'").addEntity(Uzytkownik.class).getSingleResult();
 
-        session.save(new Klient("imie","nazwisko","pesel","nrtel","email","miejscowosc","ulica",10,12));
-        Klient k = (Klient) session.createSQLQuery("select * from klient where id=\'" + 1 + "\'").addEntity(Klient.class).getSingleResult();
+        session.save(new Dostawca("email", "chiny", "pekin", "ulica", "nazwa", "NIP"));
+        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id='" + 1 + "'").addEntity(Dostawca.class).getSingleResult();
 
-        session.save(new Produkt(d,"nazwa","sztuka",22.56,"Polska","AS2345","brak",80,100));
-        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + 1 + "\'").addEntity(Produkt.class).getSingleResult();
+        session.save(new Klient("imie", "nazwisko", "pesel", "nrtel", "email", "miejscowosc", "ulica", 10, 12));
+        Klient k = (Klient) session.createSQLQuery("select * from klient where id='" + 1 + "'").addEntity(Klient.class).getSingleResult();
 
-        session.save(new Zamowienie(k,"22-02-2022", "złożone","-20%"));
-        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + 1 + "\'").addEntity(Zamowienie.class).getSingleResult();
+        session.save(new Produkt(d, "nazwa", "sztuka", 22.56, "Polska", "AS2345", "brak", 80, 100));
+        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id='" + 1 + "'").addEntity(Produkt.class).getSingleResult();
 
-        session.save(new ElementZamowienia(z,p,10, p.getCena()*10, p.getCena()));
+        session.save(new Zamowienie(k, "22-02-2022", "złożone", "-20%"));
+        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id='" + 1 + "'").addEntity(Zamowienie.class).getSingleResult();
+
+        session.save(new ElementZamowienia(z, p, 10, p.getCena() * 10, p.getCena()));
 
         session.getTransaction().commit();
         session.close();
@@ -207,7 +274,7 @@ public class MainController implements Initializable {
     /**
      * Ustawienie wypełniania poszczególnych kolumn w tabelach
      */
-    public void setTables(){
+    private void setTables() {
         //Tabela Uzytkownicy
         uzytkownicyKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         uzytkownicyKolImie.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImie()));
@@ -216,17 +283,23 @@ public class MainController implements Initializable {
         uzytkownicyKolEmail.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         uzytkownicyKolHaslo.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHaslo()));
         uzytkownicyKolAdmin.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIsAdmin())));
+        uzytkownicyKolGenRap.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getGenerowanieRaportow())));
+        uzytkownicyKolUdzRab.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getUdzielanieRabatow())));
         uzytkownicyKolUsun.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Uzytkownik, Void> call(final TableColumn<Uzytkownik, Void> param) {
                 final TableCell<Uzytkownik, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Uzytkownik u = getTableView().getItems().get(getIndex());
-                            if(uzytkownikMethods.deleteUzytkownik(u)) uzytkownicy.remove(u);
+                            if (uzytkownikMethods.deleteUzytkownik(u)) {
+                                uzytkownicy.remove(u);
+                                uzytkownicyInformacje.appendText("\nPomyślnie usunięto użytkownika o id " + u.getId());
+                            } else
+                                uzytkownicyInformacje.appendText("\nBłąd przy próbie usunięcia użytkownika o id " + u.getId());
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
@@ -235,7 +308,15 @@ public class MainController implements Initializable {
                                 scene.setCursor(Cursor.HAND);
                             }
                         });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
+                            }
+                        });
                     }
+
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -265,19 +346,30 @@ public class MainController implements Initializable {
             @Override
             public TableCell<Dostawca, Void> call(final TableColumn<Dostawca, Void> param) {
                 final TableCell<Dostawca, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Dostawca d = getTableView().getItems().get(getIndex());
-                            if(dostawcaMethods.deleteDostawca(d)) dostawcy.remove(d);
+                            if (dostawcaMethods.deleteDostawca(d)) {
+                                dostawcy.remove(d);
+                                dostawcyInformacje.appendText("\nPomyślnie usunięto dostawcę o id " + d.getId());
+                            } else
+                                dostawcyInformacje.appendText("\nBłąd przy próbie usunięcia dostawcy o id " + d.getId());
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
                             @Override
                             public void handle(Event event) {
                                 scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
                             }
                         });
                     }
@@ -315,19 +407,30 @@ public class MainController implements Initializable {
             @Override
             public TableCell<Klient, Void> call(final TableColumn<Klient, Void> param) {
                 final TableCell<Klient, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Klient k = getTableView().getItems().get(getIndex());
-                            if(klientMethods.deleteKlient(k)) klienci.remove(k);
+                            if (klientMethods.deleteKlient(k)) {
+                                klienci.remove(k);
+                                klienciInformacje.appendText("\nPomyślnie usunięto klienta o id " + k.getId());
+                            } else
+                                klienciInformacje.appendText("\nBłąd przy próbie usunięcia klienta o id " + k.getId());
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
                             @Override
                             public void handle(Event event) {
                                 scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
                             }
                         });
                     }
@@ -360,25 +463,38 @@ public class MainController implements Initializable {
         produktyKolKraj.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKraj()));
         produktyKolKolor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKolor()));
         produktyKolMaxIlosc.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMaxIlosc())));
-        produktyKolStan.setCellValueFactory(cellData ->  new SimpleStringProperty(obliczStan(cellData.getValue().getIlosc()/cellData.getValue().getMaxIlosc())));
+        produktyKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(obliczStan(cellData.getValue().getIlosc() / cellData.getValue().getMaxIlosc())));
+        produktyKolUwz.setCellValueFactory(cellData -> new SimpleBooleanProperty(false));
+        produktyKolUwz.setCellFactory(tc -> new CheckBoxTableCell<>());
 
         produktyKolUsun.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Produkt, Void> call(final TableColumn<Produkt, Void> param) {
                 final TableCell<Produkt, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Produkt p = getTableView().getItems().get(getIndex());
-                            if(produktMethods.deleteProdukt(p)) produkty.remove(p);
+                            if (produktMethods.deleteProdukt(p)) {
+                                produkty.remove(p);
+                                produktyInformacje.appendText("\nPomyślnie usunięto produktu o id " + p.getId());
+                            } else
+                                produktyInformacje.appendText("\nBłąd przy próbie usunięcia produktu o id " + p.getId());
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
                             @Override
                             public void handle(Event event) {
                                 scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
                             }
                         });
                     }
@@ -407,23 +523,90 @@ public class MainController implements Initializable {
         zamowieniaKolData.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getData()));
         zamowieniaKolRabat.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRabat()));
         zamowieniaKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStanZamowienia()));
-        zamowieniaKolUsun.setCellFactory(new Callback<>() {
+        zamowieniaKolFaktura.setCellFactory(new Callback<>() {
             @Override
             public TableCell<Zamowienie, Void> call(final TableColumn<Zamowienie, Void> param) {
                 final TableCell<Zamowienie, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/faktura.png"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Zamowienie z = getTableView().getItems().get(getIndex());
-                            if(zamowienieMethods.deleteZamowienie(z)) zamowienia.remove(z);
+                            try {
+                                Stage stage = new Stage();
+                                stage.initModality(Modality.APPLICATION_MODAL);
+                                stage.setOpacity(1);
+                                stage.setTitle("Generuj raport");
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+                                Parent root = fxmlLoader.load();
+                                Scene scene = new Scene(root);
+                                stage.setScene(scene);
+                                stage.showAndWait();
+                            } catch (IOException e) {
+                                uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania faktury");
+                            }
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
                             @Override
                             public void handle(Event event) {
                                 scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else {
+                            btn.setStyle("-fx-background-color: #ffffff; ");
+                            btn.setGraphic(new ImageView(image));
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+
+        zamowieniaKolUsun.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Zamowienie, Void> call(final TableColumn<Zamowienie, Void> param) {
+                final TableCell<Zamowienie, Void> cell = new TableCell<>() {
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    private final Button btn = new Button();
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Zamowienie z = getTableView().getItems().get(getIndex());
+                            if (zamowienieMethods.deleteZamowienie(z)) {
+                                zamowienia.remove(z);
+                                zamowieniaInformacje.appendText("\nPomyślnie usunięto zamowienia o id " + z.getId());
+                            } else
+                                zamowieniaInformacje.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + z.getId());
+                        });
+
+                        btn.setOnMouseEntered(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
                             }
                         });
                     }
@@ -457,19 +640,30 @@ public class MainController implements Initializable {
             @Override
             public TableCell<ElementZamowienia, Void> call(final TableColumn<ElementZamowienia, Void> param) {
                 final TableCell<ElementZamowienia, Void> cell = new TableCell<>() {
-                    Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             ElementZamowienia ez = getTableView().getItems().get(getIndex());
-                            if(elementZamowieniaMethods.deleteElementZamowienia(ez)) elementyZamowienia.remove(ez);
+                            if (elementZamowieniaMethods.deleteElementZamowienia(ez)) {
+                                elementyZamowienia.remove(ez);
+                                elemZamInformacje.appendText("\nPomyślnie usunięto element zamowienia o id " + ez.getId());
+                            } else
+                                zamowieniaInformacje.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + ez.getId());
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
                             @Override
                             public void handle(Event event) {
                                 scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        btn.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
                             }
                         });
                     }
@@ -499,10 +693,10 @@ public class MainController implements Initializable {
      * @param stosunek stosunek ilości produktu w magazynie i całkowitej pojemności magazynu na dany produkt
      * @return stan magazynowy produktu
      */
-    public String obliczStan(double stosunek){
+    public String obliczStan(double stosunek) {
         //TODO: ustalić progi
-        if(stosunek<30) return "niski";
-        else if(stosunek<60) return "umiarkowany";
+        if (stosunek < 30) return "niski";
+        else if (stosunek < 60) return "umiarkowany";
         else return "wysoki";
     }
 
@@ -538,7 +732,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Obsługuje przycisk wyjścia z aplikacji
+     * Obsługuje przycisk wyjścia z aplikacji.
      *
      * @param event
      */
@@ -581,6 +775,29 @@ public class MainController implements Initializable {
         //TODO: obsłużyć przycisk wyszukiwania
     }
 
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli użytkowników.
+     *
+     * @param event
+     */
+    @FXML
+    public void uzytkownicyBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
+    }
+
     //Tab klienci
 
     /**
@@ -612,6 +829,29 @@ public class MainController implements Initializable {
     @FXML
     public void klienciBtnSzukajClicked(MouseEvent event) {
         //TODO: obsłużyć przycisk wyszukiwania
+    }
+
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli klientów.
+     *
+     * @param event
+     */
+    @FXML
+    public void klienciBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
     }
 
     //Tab dostawcy
@@ -647,6 +887,29 @@ public class MainController implements Initializable {
         //TODO: obsłużyć przycisk wyszukiwania
     }
 
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli dostawców.
+     *
+     * @param event
+     */
+    @FXML
+    public void dostawcyBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
+    }
+
     //Tab produkty
 
     /**
@@ -678,6 +941,52 @@ public class MainController implements Initializable {
     @FXML
     public void produktyBtnSzukajClicked(MouseEvent event) {
         //TODO: obsłużyć przycisk wyszukiwania
+    }
+
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli produktów.
+     *
+     * @param event
+     */
+    @FXML
+    public void produktyBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
+    }
+
+    /**
+     * Obsługuje przycisk generowania raportu dostaw.
+     *
+     * @param event
+     */
+    @FXML
+    public void produktyBtnRaportDostawClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu dostaw
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
     }
 
     //Tab zamowienia
@@ -713,6 +1022,29 @@ public class MainController implements Initializable {
         //TODO: obsłużyć przycisk wyszukiwania
     }
 
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli zamówień.
+     *
+     * @param event
+     */
+    @FXML
+    public void zamowieniaBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
+    }
+
     //Tab elementy zamowienia
 
     /**
@@ -744,6 +1076,29 @@ public class MainController implements Initializable {
     @FXML
     public void elemZamBtnSzukajClicked(MouseEvent event) {
         //TODO: obsłużyć przycisk wyszukiwania
+    }
+
+    /**
+     * Obsługuje przycisk generowania raportu z aktualnego widoku tabeli elementów zamówienia.
+     *
+     * @param event
+     */
+    @FXML
+    public void elemZamBtnRaportClicked(MouseEvent event) {
+        //TODO: obsłużyć generowanie raportu
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+        }
     }
 
 }

@@ -46,7 +46,7 @@ public class DostawcaMethods {
      *
      * @param dostawca
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteDostawca(Dostawca dostawca) {
         session = sessionFactory.openSession();

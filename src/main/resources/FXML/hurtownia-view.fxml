@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -48,7 +49,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Text fx:id="labelUzytkownik" fill="WHITE" layoutX="1021.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nazwa użytkownika">
+            <Text fx:id="labelUzytkownik" fill="WHITE" layoutX="998.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nazwa użytkownika">
                <font>
                   <Font name="Arial" size="18.0" />
                </font>
@@ -63,7 +64,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="uzytkownicyTabela" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1191.0" styleClass="table">
+                        <TableView fx:id="uzytkownicyTabela" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1191.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="uzytkownicyKolId" prefWidth="50.0" text="Id" />
                               <TableColumn fx:id="uzytkownicyKolImie" prefWidth="144.7999267578125" text="Imię" />
@@ -72,6 +73,8 @@
                               <TableColumn fx:id="uzytkownicyKolEmail" prefWidth="122.39996337890625" text="E-mail" />
                               <TableColumn fx:id="uzytkownicyKolHaslo" prefWidth="99.20001220703125" text="Hasło" />
                               <TableColumn fx:id="uzytkownicyKolAdmin" prefWidth="96.0" text="Admin" />
+                              <TableColumn fx:id="uzytkownicyKolGenRap" prefWidth="119.9998779296875" text="Generowanie raportów" />
+                              <TableColumn fx:id="uzytkownicyKolUdzRab" prefWidth="123.2000732421875" text="Udzielanie rabatów" />
                               <TableColumn fx:id="uzytkownicyKolUsun" prefWidth="108.0" text="Usuń" />
                            </columns>
                         </TableView>
@@ -91,7 +94,7 @@
                               <TextField fx:id="uzytkownicyPoleHaslo" layoutX="220.0" layoutY="300.0" />
                               <Text layoutX="110.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adres e-mail" />
                               <Text layoutX="110.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasło" />
-                              <Button fx:id="uzytkownicyBtnDodaj" layoutX="110.0" layoutY="432.0" mnemonicParsing="false" onMouseClicked="#uzytkownicyBtnDodajClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
+                              <Button fx:id="uzytkownicyBtnDodaj" layoutX="115.0" layoutY="442.0" mnemonicParsing="false" onMouseClicked="#uzytkownicyBtnDodajClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -99,7 +102,6 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="uzytkownicyInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="169.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Użytkownicy">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -107,8 +109,10 @@
                               </Text>
                               <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:" />
                               <TextField fx:id="uzytkownicyPoleNazwisko" layoutX="220.0" layoutY="182.0" />
-                              <CheckBox fx:id="uzytkownicyRabat" layoutX="220.0" layoutY="357.0" mnemonicParsing="false" text="Udzielanie rabatu" />
-                              <CheckBox fx:id="uzytkownicyAdmin" layoutX="220.0" layoutY="390.0" mnemonicParsing="false" text="Administrator" />
+                              <CheckBox fx:id="uzytkownicyRabat" layoutX="220.0" layoutY="375.0" mnemonicParsing="false" text="Udzielanie rabatu" />
+                              <CheckBox fx:id="uzytkownicyAdmin" layoutX="220.0" layoutY="403.0" mnemonicParsing="false" text="Administrator" />
+                              <CheckBox fx:id="uzytkownicyRaport" layoutX="220.0" layoutY="348.0" mnemonicParsing="false" text="Generowanie raportów" />
+                              <TextArea fx:id="uzytkownicyInformacje" layoutX="111.0" layoutY="613.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="uzytkownicySzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="50.0" />
@@ -126,7 +130,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="uzytkownicyBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="uzytkownicyBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#uzytkownicyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -134,7 +138,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="uzytkownicyBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
+                        <Button fx:id="uzytkownicyBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#uzytkownicyBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -142,14 +146,8 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="uzytkownicyBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#uzytkownicyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
+                        <TextField fx:id="uzytkownicySzukajGenRap" layoutX="1130.0" layoutY="100.0" prefHeight="26.0" prefWidth="119.0" />
+                        <TextField fx:id="uzytkownicySzukajUdzRab" layoutX="1249.0" layoutY="100.0" prefHeight="26.0" prefWidth="119.0" />
                      </children>
                   </AnchorPane>
                </content>
@@ -158,7 +156,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="klienciTabela" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1186.0" styleClass="table">
+                        <TableView fx:id="klienciTabela" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1186.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="klienciKolId" prefWidth="50.0" text="Id" />
                               <TableColumn fx:id="klienciKolImie" prefWidth="100.0" text="Imię" />
@@ -200,7 +198,6 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Button>
-                              <TextField fx:id="klienciInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="187.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" Klienci">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -211,6 +208,7 @@
                               <TextField fx:id="klienciPoleNazwisko" layoutX="220.0" layoutY="182.0" />
                               <Text layoutX="110.0" layoutY="480.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pesel" />
                               <TextField fx:id="klienciPolePesel" layoutX="220.0" layoutY="460.0" />
+                              <TextArea fx:id="klienciInformacje" layoutX="110.0" layoutY="614.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="klienciSzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="50.0" />
@@ -230,7 +228,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="klienciBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="klienciBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#klienciBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -238,15 +236,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="klienciBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="klienciBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#klienciBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+                        <Button fx:id="klienciBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#klienciBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -263,7 +253,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="dostawcyTabela" layoutX="330.0" layoutY="131.0" prefHeight="555.0" prefWidth="1186.0" styleClass="table">
+                        <TableView fx:id="dostawcyTabela" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="555.0" prefWidth="1186.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="dostawcyKolId" prefWidth="100.0" text="Id" />
                               <TableColumn fx:id="dostawcyKolNazwa" prefWidth="200.0" text="Nazwa" />
@@ -298,7 +288,6 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="dostawcyInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="184.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dostawcy">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -308,6 +297,7 @@
                               <TextField fx:id="dostawcyPoleEmail" layoutX="220.0" layoutY="182.0" />
                               <Text layoutX="111.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NIP" />
                               <TextField fx:id="dostawcyPoleNip" layoutX="221.0" layoutY="336.0" />
+                              <TextArea fx:id="dostawcyInformacje" layoutX="111.0" layoutY="617.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="dostawcySzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0" />
@@ -324,7 +314,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="dostawcyBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="dostawcyBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#dostawcyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -332,15 +322,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="dostawcyBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="dostawcyBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#dostawcyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+                        <Button fx:id="dostawcyBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#dostawcyBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -356,7 +338,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="produktyTabela" layoutX="330.0" layoutY="131.0" prefHeight="554.0" prefWidth="1188.0" styleClass="table">
+                        <TableView fx:id="produktyTabela" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="554.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="produktyKolId" prefWidth="55.20001220703125" text="Id" />
                               <TableColumn fx:id="produktyKolIdDostawcy" prefWidth="102.4000244140625" text="Id dostawcy" />
@@ -366,9 +348,10 @@
                               <TableColumn fx:id="produktyKolJM" prefWidth="116.79998779296875" text="Jednostka miary" />
                               <TableColumn fx:id="produktyKolKraj" prefWidth="123.20001220703125" text="Kraj" />
                               <TableColumn fx:id="produktyKolKolor" prefWidth="102.4000244140625" text="Kolor" />
-                              <TableColumn fx:id="produktyKolMaxIlosc" prefWidth="102.4000244140625" text="Max. ilość" />
-                              <TableColumn fx:id="produktyKolStan" prefWidth="102.4000244140625" text="Stan" />
-                              <TableColumn fx:id="produktyKolUsun" prefWidth="102.4000244140625" text="Usuń" />
+                              <TableColumn fx:id="produktyKolMaxIlosc" prefWidth="96.800048828125" text="Max. ilość" />
+                              <TableColumn fx:id="produktyKolStan" prefWidth="82.4000244140625" text="Stan" />
+                              <TableColumn fx:id="produktyKolUwz" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
+                              <TableColumn fx:id="produktyKolUsun" prefWidth="60.7999267578125" text="Usuń" />
                            </columns>
                         </TableView>
                         <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
@@ -395,7 +378,6 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="produktyInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="188.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Produkty">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -411,6 +393,7 @@
                               <TextField fx:id="produktyPoleKolor" layoutX="220.0" layoutY="384.0" />
                               <TextField fx:id="produktyPoleMaxIlosc" layoutX="220.0" layoutY="422.0" />
                               <TextField fx:id="produktyPoleIdDostawcy" layoutX="220.0" layoutY="462.0" />
+                              <TextArea fx:id="produktyInformacje" layoutX="111.0" layoutY="618.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="produktySzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="60.0" />
@@ -426,7 +409,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="produktyBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="produktyBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#produktyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -434,15 +417,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="produktyBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="produktyBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#produktyBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+                        <Button fx:id="produktyBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#produktyBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -454,6 +429,14 @@
                         <TextField fx:id="produktySzukajCena" layoutX="594.0" layoutY="100.0" prefHeight="26.0" prefWidth="102.0" />
                         <TextField fx:id="produktySzukajJm" layoutX="798.0" layoutY="100.0" prefHeight="26.0" prefWidth="117.0" />
                         <TextField fx:id="produktySzukajKolor" layoutX="1043.0" layoutY="100.0" prefHeight="26.0" prefWidth="101.0" />
+                        <Button fx:id="produktyBtnRaportDostaw" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#produktyBtnRaportDostawClicked" prefHeight="38.0" prefWidth="190.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport dostaw">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
                      </children>
                   </AnchorPane>
                </content>
@@ -462,13 +445,14 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="zamowieniaTabela" layoutX="330.0" layoutY="131.0" prefHeight="557.0" prefWidth="1188.0" styleClass="table">
+                        <TableView fx:id="zamowieniaTabela" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="557.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="zamowieniaKolId" prefWidth="81.60003662109375" text="Id" />
                               <TableColumn fx:id="zamowieniaKolIdKlienta" prefWidth="135.99993896484375" text="Id klienta" />
                               <TableColumn fx:id="zamowieniaKolData" prefWidth="160.79998779296875" text="Data zamówienia" />
                               <TableColumn fx:id="zamowieniaKolRabat" prefWidth="205.60003662109375" text="Rabat" />
                               <TableColumn fx:id="zamowieniaKolStan" prefWidth="218.39996337890625" text="Stan zamówienia" />
+                              <TableColumn fx:id="zamowieniaKolFaktura" prefWidth="137.5999755859375" text="Generuj fakturę" />
                               <TableColumn fx:id="zamowieniaKolUsun" prefWidth="137.5999755859375" text="Usuń" />
                            </columns>
                         </TableView>
@@ -490,7 +474,6 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="zamowieniaInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="179.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zamówienia">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -500,6 +483,7 @@
                               <TextField fx:id="zamowieniaIdKlienta" layoutX="220.0" layoutY="182.0" />
                               <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rabat" />
                               <TextField fx:id="zamowieniaPoleRabat" layoutX="220.0" layoutY="223.0" />
+                              <TextArea fx:id="zamowieniaInformacje" layoutX="114.0" layoutY="619.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="zamowieniaSzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="84.0" />
@@ -513,7 +497,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="zamowieniaBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="zamowieniaBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#zamowieniaBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -521,15 +505,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="zamowieniaBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="zamowieniaBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#zamowieniaBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+                        <Button fx:id="zamowieniaBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#zamowieniaBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -547,7 +523,7 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0">
                      <children>
-                        <TableView fx:id="elemZamTabela" layoutX="333.0" layoutY="131.0" prefHeight="558.0" prefWidth="1185.0" styleClass="table">
+                        <TableView fx:id="elemZamTabela" editable="true" layoutX="333.0" layoutY="131.0" prefHeight="558.0" prefWidth="1185.0" styleClass="table" tableMenuButtonVisible="true">
                            <columns>
                               <TableColumn fx:id="elemZamKolId" prefWidth="74.4000244140625" text="Id" />
                               <TableColumn fx:id="elemZamKolIdZamowienia" prefWidth="120.0" text="Id zamówienia" />
@@ -570,7 +546,7 @@
                               <TextField fx:id="elemZamPoleIdProduktu" layoutX="220.0" layoutY="140.0" />
                               <Text layoutX="110.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id produktu" />
                               <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ilość" />
-                              <Button fx:id="elemZamBtnDodaj" layoutX="110.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#elemZamBtnDodajClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
+                              <Button fx:id="elemZamBtnDodaj" layoutX="114.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#elemZamBtnDodajClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -578,7 +554,6 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="elemZamInformacje" editable="false" layoutX="110.0" layoutY="616.0" prefHeight="78.0" prefWidth="260.0" />
                               <Text fill="#427aa1" layoutX="133.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Elementy zamówienia" textAlignment="CENTER" wrappingWidth="211.60000610351562">
                                  <font>
                                     <Font name="Arial Bold" size="24.0" />
@@ -586,6 +561,7 @@
                               </Text>
                               <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:" />
                               <TextField fx:id="elemZamPoleIdZamowienia" layoutX="220.0" layoutY="182.0" />
+                              <TextArea fx:id="elemZamInformacje" layoutX="114.0" layoutY="616.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
                            </children>
                         </AnchorPane>
                         <TextField fx:id="elemZamSzukajId" layoutX="335.0" layoutY="100.0" prefHeight="26.0" prefWidth="71.0" />
@@ -602,7 +578,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="elemZamBtnOdswiez" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Odśwież">
+                        <Button fx:id="elemZamBtnPokaz" layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#elemZamBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
                            <font>
                               <Font size="16.0" />
                            </font>
@@ -610,15 +586,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="elemZamBtnUsun" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #CC3300; -fx-border-width: 1;" text="Usuń">
-                           <font>
-                              <Font size="16.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="elemZamBtnPokaz" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#elemZamBtnPokazClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+                        <Button fx:id="elemZamBtnRaport" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#elemZamBtnRaportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
                            <font>
                               <Font size="16.0" />
                            </font>

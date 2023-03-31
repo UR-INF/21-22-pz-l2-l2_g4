@@ -139,17 +139,6 @@ public class Klient implements Serializable {
 
     @Override
     public String toString() {
-        return "Klient{" +
-                "id=" + id +
-                ", imie='" + imie + '\'' +
-                ", nazwisko='" + nazwisko + '\'' +
-                ", pesel='" + pesel + '\'' +
-                ", numerTelefonu='" + numerTelefonu + '\'' +
-                ", email='" + email + '\'' +
-                ", miejscowosc='" + miejscowosc + '\'' +
-                ", ulica='" + ulica + '\'' +
-                ", numerMieszkania='" + numerMieszkania + '\'' +
-                ", numerBudynku='" + numerBudynku + '\'' +
-                '}';
+        return "Klient{" + "id=" + id + ", imie='" + imie + '\'' + ", nazwisko='" + nazwisko + '\'' + ", pesel='" + pesel + '\'' + ", numerTelefonu='" + numerTelefonu + '\'' + ", email='" + email + '\'' + ", miejscowosc='" + miejscowosc + '\'' + ", ulica='" + ulica + '\'' + ", numerMieszkania='" + numerMieszkania + '\'' + ", numerBudynku='" + numerBudynku + '\'' + '}';
     }
 }

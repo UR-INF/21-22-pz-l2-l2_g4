@@ -93,13 +93,6 @@ public class ElementZamowienia implements Serializable {
 
     @Override
     public String toString() {
-        return "ElementZamowienia{" +
-                "id=" + id +
-                ", idZamowienie=" + idZamowienie +
-                ", idProdukt=" + idProdukt +
-                ", ilosc=" + ilosc +
-                ", cenaElementu=" + cenaElementu +
-                ", cenaZaJednostke=" + cenaZaJednostke +
-                '}';
+        return "ElementZamowienia{" + "id=" + id + ", idZamowienie=" + idZamowienie + ", idProdukt=" + idProdukt + ", ilosc=" + ilosc + ", cenaElementu=" + cenaElementu + ", cenaZaJednostke=" + cenaZaJednostke + '}';
     }
 }

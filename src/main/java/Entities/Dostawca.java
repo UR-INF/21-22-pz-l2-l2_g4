@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'Dostawca' w bazie danych.
+ * Reprezentuje tabelę 'dostawca' w bazie danych.
  */
 @Entity
 @Table(name = "Dostawca")

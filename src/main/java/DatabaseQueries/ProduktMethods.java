@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ProduktMethods {
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
@@ -46,7 +46,7 @@ public class ProduktMethods {
      *
      * @param produkt
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteProdukt(Produkt produkt) {
         session = sessionFactory.openSession();

@@ -139,17 +139,6 @@ public class Produkt implements Serializable {
 
     @Override
     public String toString() {
-        return "Produkt{" +
-                "id=" + id +
-                ", idDostawca=" + idDostawca +
-                ", nazwa='" + nazwa + '\'' +
-                ", jednostkaMiary='" + jednostkaMiary + '\'' +
-                ", cena=" + cena +
-                ", kraj='" + kraj + '\'' +
-                ", kod='" + kod + '\'' +
-                ", kolor='" + kolor + '\'' +
-                ", ilosc=" + ilosc +
-                ", maxIlosc=" + maxIlosc +
-                '}';
+        return "Produkt{" + "id=" + id + ", idDostawca=" + idDostawca + ", nazwa='" + nazwa + '\'' + ", jednostkaMiary='" + jednostkaMiary + '\'' + ", cena=" + cena + ", kraj='" + kraj + '\'' + ", kod='" + kod + '\'' + ", kolor='" + kolor + '\'' + ", ilosc=" + ilosc + ", maxIlosc=" + maxIlosc + '}';
     }
 }

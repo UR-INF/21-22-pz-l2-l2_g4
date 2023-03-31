@@ -80,12 +80,6 @@ public class Zamowienie implements Serializable {
 
     @Override
     public String toString() {
-        return "Zamowienie{" +
-                "id=" + id +
-                ", idKlient=" + idKlient +
-                ", data='" + data + '\'' +
-                ", stanZamowienia='" + stanZamowienia + '\'' +
-                ", rabat='" + rabat + '\'' +
-                '}';
+        return "Zamowienie{" + "id=" + id + ", idKlient=" + idKlient + ", data='" + data + '\'' + ", stanZamowienia='" + stanZamowienia + '\'' + ", rabat='" + rabat + '\'' + '}';
     }
 }

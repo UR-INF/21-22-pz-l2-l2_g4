@@ -46,7 +46,7 @@ public class ZamowienieMethods {
      *
      * @param zamowienie
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteZamowienie(Zamowienie zamowienie) {
         session = sessionFactory.openSession();

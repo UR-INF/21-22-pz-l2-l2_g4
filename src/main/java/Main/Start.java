@@ -2,17 +2,23 @@ package Main;
 
 import Controllers.MainController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+
 import static DatabaseAccess.DbAccess.CONNECTION;
 
 /**
  * Klasa odpowiedzialna za uruchomienie aplikacji.
  */
 public class Start extends Application {
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -23,10 +29,15 @@ public class Start extends Application {
         stage.setScene(scene);
         stage.show();
 
-        MainController myController = fxmlLoader.getController();
-        myController.setScene(scene);
-        
-        if (CONNECTION==false) {
+        stage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        MainController mainController = fxmlLoader.getController();
+        mainController.setScene(scene);
+
+        if (!CONNECTION) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("ERROR");
             alert.setHeaderText("ERROR");
@@ -34,9 +45,4 @@ public class Start extends Application {
             alert.showAndWait();
         }
     }
-
-    public static void main(String[] args) {
-        launch();
-    }
-
 }

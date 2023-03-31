@@ -1,18 +1,18 @@
 package DatabaseAccess;
 
+import Singleton.SingletonConnection;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import Singleton.SingletonConnection;
 
 /**
  * Sprawdza połączenie z bazą danych
  */
 public class DbAccess {
 
+    public static boolean CONNECTION;
     private static SessionFactory sessionFactory;
     private static Session session;
-    public static boolean CONNECTION;
-    
+
     static {
         try {
             sessionFactory = SingletonConnection.getSessionFactory();

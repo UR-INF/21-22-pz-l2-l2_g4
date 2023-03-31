@@ -33,16 +33,24 @@ public class Uzytkownik implements Serializable {
     @Column(name = "isAdmin")
     private int isAdmin;
 
+    @Column(name = "generowanieRaportow")
+    private int generowanieRaportow;
+
+    @Column(name = "udzielanieRabatow")
+    private int udzielanieRabatow;
+
     public Uzytkownik() {
     }
 
-    public Uzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin) {
+    public Uzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin, int generowanieRaportow, int udzielanieRabatow) {
         this.imie = imie;
         this.nazwisko = nazwisko;
         this.email = email;
         this.haslo = haslo;
         this.numerTelefonu = numerTelefonu;
         this.isAdmin = isAdmin;
+        this.generowanieRaportow = generowanieRaportow;
+        this.udzielanieRabatow = udzielanieRabatow;
     }
 
     public int getId() {
@@ -101,16 +109,24 @@ public class Uzytkownik implements Serializable {
         this.isAdmin = isAdmin;
     }
 
+    public int getGenerowanieRaportow() {
+        return generowanieRaportow;
+    }
+
+    public void setGenerowanieRaportow(int generowanieRaportow) {
+        this.generowanieRaportow = generowanieRaportow;
+    }
+
+    public int getUdzielanieRabatow() {
+        return udzielanieRabatow;
+    }
+
+    public void setUdzielanieRabatow(int udzielanieRabatow) {
+        this.udzielanieRabatow = udzielanieRabatow;
+    }
+
     @Override
     public String toString() {
-        return "Uzytkownik{" +
-                "id=" + id +
-                ", imie='" + imie + '\'' +
-                ", nazwisko='" + nazwisko + '\'' +
-                ", email='" + email + '\'' +
-                ", haslo='" + haslo + '\'' +
-                ", numerTelefonu='" + numerTelefonu + '\'' +
-                ", isAdmin=" + isAdmin +
-                '}';
+        return "Uzytkownik{" + "id=" + id + ", imie='" + imie + '\'' + ", nazwisko='" + nazwisko + '\'' + ", email='" + email + '\'' + ", haslo='" + haslo + '\'' + ", numerTelefonu='" + numerTelefonu + '\'' + ", isAdmin=" + isAdmin + ", generowanieRaportow=" + generowanieRaportow + ", udzielanieRabatow=" + udzielanieRabatow + '}';
     }
 }

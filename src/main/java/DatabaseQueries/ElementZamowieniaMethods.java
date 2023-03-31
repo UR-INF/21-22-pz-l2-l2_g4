@@ -1,7 +1,6 @@
 package DatabaseQueries;
 
 import Entities.ElementZamowienia;
-import Entities.Klient;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -12,7 +11,7 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Zawiera metody dla tabeli 'elementZamowienia'.
+ * Zawiera metody dla tabeli 'element_zamowienia'.
  */
 public class ElementZamowieniaMethods {
 
@@ -54,7 +53,7 @@ public class ElementZamowieniaMethods {
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from elementzamowienia where idZamowienie =" + id ).addEntity(ElementZamowienia.class).list();
+        List<ElementZamowienia> list = session.createSQLQuery("select * from elementzamowienia where idZamowienie =" + id).addEntity(ElementZamowienia.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -67,7 +66,7 @@ public class ElementZamowieniaMethods {
      *
      * @param elementZamowienia
      * @return true - jeśli pomyślnie usunięto;
-     *         false - jeśli wystąpiły błędy
+     * false - jeśli wystąpiły błędy
      */
     public boolean deleteElementZamowienia(ElementZamowienia elementZamowienia) {
         session = sessionFactory.openSession();
