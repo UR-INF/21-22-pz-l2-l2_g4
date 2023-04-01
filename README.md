@@ -123,7 +123,7 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
 
 
 ###### Diagram ERD
-![ERD](https://user-images.githubusercontent.com/101945722/229322728-ed8a3e9d-e473-4757-b0ba-a0ebff31bfcf.PNG)
+![ERD](https://user-images.githubusercontent.com/101945722/229322756-70a6d276-24de-4883-bf04-e3916451418a.PNG)
 
 
 
