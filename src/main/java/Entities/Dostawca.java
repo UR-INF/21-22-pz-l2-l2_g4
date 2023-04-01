@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Reprezentuje tabelę 'dostawca' w bazie danych.
  */
 @Entity
-@Table(name = "dostawca")
+@Table(name = "Dostawca")
 public class Dostawca implements Serializable {
 
     @Id

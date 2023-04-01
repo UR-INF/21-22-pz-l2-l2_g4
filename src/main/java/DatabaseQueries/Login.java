@@ -1,37 +1,44 @@
 package DatabaseQueries;
 
-import Entities.Uzytkownik;
-import javafx.fxml.FXML;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-
 /**
  * Zawiera metody do obsługi logowania.
  */
 public class Login {
 
-    // tymczasowe pole do rozpoznania admina po logowaniu
-    public boolean isAdmin;
+    private boolean isAdmin;
 
-    //
-    public boolean zaloguj(String login, String haslo){
-        isAdmin=false;
-        if(login.equals("user")&&haslo.equals("1234"))
-        {
+    private String login;
+
+
+    public boolean zaloguj(String login, String haslo) {
+        isAdmin = false;
+        if (login.equals("user") && haslo.equals("1234")) {
+            this.login = login;
             return true;
-        }
-        else if(login.equals("admin")&&haslo.equals("1234"))
-        {
+        } else if (login.equals("admin") && haslo.equals("1234")) {
+            this.login = login;
             isAdmin = true;
             return true;
-        }
-        else
-            return false;
-    }
-    public void wyloguj(){
-        isAdmin=false;
+        } else return false;
     }
 
+    public void wyloguj() {
+        isAdmin = false;
+    }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 }

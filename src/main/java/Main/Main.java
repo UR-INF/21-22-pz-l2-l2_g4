@@ -7,10 +7,10 @@ public class Main {
 
     /**
      * Uruchamia metodę main z klasy Start
-     * 
-     * @param args 
+     *
+     * @param args
      */
     public static void main(String[] args) {
         Start.main(args);
-    }  
+    }
 }
