@@ -74,4 +74,46 @@ public class UzytkownikMethods {
 
         return result;
     }
+
+    /**
+     * Dodaje nowego użytkownika.
+     *
+     * @param imie
+     * @param nazwisko
+     * @param email
+     * @param haslo
+     * @param numerTelefonu
+     * @param isAdmin
+     * @param generowanieRaportow
+     * @param udzielanieRabatow
+     * @return
+     */
+    public Uzytkownik saveUzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin, int generowanieRaportow, int udzielanieRabatow) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Uzytkownik u = new Uzytkownik(imie, nazwisko, email, haslo, numerTelefonu, isAdmin, generowanieRaportow, udzielanieRabatow);
+
+        session.save(u);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return u;
+    }
+
+    /**
+     * Aktualizuje użytkownika.
+     *
+     * @param u
+     */
+    public void updateUzytkownik(Uzytkownik u) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+        session.update(u);
+        session.getTransaction().commit();
+        session.close();
+    }
 }

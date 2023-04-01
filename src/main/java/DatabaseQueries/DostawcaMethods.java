@@ -1,6 +1,8 @@
 package DatabaseQueries;
 
 import Entities.Dostawca;
+import Entities.Klient;
+import Entities.Uzytkownik;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -42,6 +44,25 @@ public class DostawcaMethods {
     }
 
     /**
+     * Zwraca dostawcę o podanym id.
+     *
+     * @param id
+     * @return
+     */
+    public Dostawca getDostawca(String id) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + id + "\'").addEntity(Dostawca.class).getSingleResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return d;
+    }
+
+    /**
      * Usuwa dostawcę z bazy danych.
      *
      * @param dostawca
@@ -73,6 +94,46 @@ public class DostawcaMethods {
         }
 
         return result;
+    }
+
+    /**
+     * Dodaje nowego dostawcę.
+     *
+     * @param email
+     * @param kraj
+     * @param miejscowosc
+     * @param ulica
+     * @param nazwa
+     * @param nip
+     * @return
+     */
+    public Dostawca saveDostawca(String email, String kraj, String miejscowosc, String ulica, String nazwa, String nip) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Dostawca d = new Dostawca(email, kraj, miejscowosc, ulica, nazwa, nip);
+
+        session.save(d);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return d;
+    }
+
+    /**
+     * Aktualizuje dostawcę.
+     *
+     * @param d
+     */
+    public void updateDostawca(Dostawca d) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+        session.update(d);
+        session.getTransaction().commit();
+        session.close();
     }
 
 }
