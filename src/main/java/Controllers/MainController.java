@@ -1406,21 +1406,6 @@ public class MainController implements Initializable {
         elemZamTabela.setItems(elementyZamowienia);
     }
 
-    private void validate(CheckBox checkBox, Produkt item, Event event){
-        // Validate here
-        event.consume();
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Look, a Confirmation Dialog");
-        alert.setContentText("Are you ok with this?");
-
-        // Set the checkbox if the user want to continue
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK)
-            checkBox.setSelected(!checkBox.isSelected());
-    }
-
     /**
      * Oblicza stan produktu.
      *
@@ -1432,7 +1417,6 @@ public class MainController implements Initializable {
         else if (stosunek < 70) return "umiarkowany";
         else return "wysoki";
     }
-
 
     /**
      * Załadowanie okna zapisu raportu.
@@ -1487,6 +1471,11 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Załadowanie okna zapisu faktury.
+     *
+     * @param z zamówienie, z którego generowana jest faktura
+     */
     public void loadModal(Zamowienie z) {
         RaportAbstract raport=new FakturaRaport(z);
 

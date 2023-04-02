@@ -1,6 +1,5 @@
 package PDFGeneration;
 
-import Entities.Uzytkownik;
 import Entities.Zamowienie;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
