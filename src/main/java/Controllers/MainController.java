@@ -3,11 +3,15 @@ package Controllers;
 import DatabaseAccess.DbAccess;
 import DatabaseQueries.*;
 import Entities.*;
+import PDFGeneration.*;
 import Singleton.SingletonConnection;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -21,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,9 +43,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Kontroler głównego okna aplikacji.
@@ -113,7 +116,7 @@ public class MainController implements Initializable {
     private TableColumn<Produkt, Void> produktyKolUsun;
     //Filtry
     @FXML
-    private TextField produktySzukajCena, produktySzukajId, produktySzukajIdDostawcy, produktySzukajIlosc, produktySzukajJm, produktySzukajKod, produktySzukajKolor, produktySzukajKraj, produktySzukajMaxIlosc;
+    private TextField produktySzukajCena, produktySzukajId, produktySzukajIdDostawcy, produktySzukajIlosc, produktySzukajJm, produktySzukajKod, produktySzukajKolor, produktySzukajKraj, produktySzukajMaxIlosc, produktySzukajStan;
     //Tab Uzytkownicy
     //Pola
     @FXML
@@ -142,12 +145,12 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Zamowienie> zamowieniaTabela;
     @FXML
-    private TableColumn<Zamowienie, String> zamowieniaKolData, zamowieniaKolId, zamowieniaKolIdKlienta, zamowieniaKolRabat, zamowieniaKolStan;
+    private TableColumn<Zamowienie, String> zamowieniaKolData, zamowieniaKolId, zamowieniaKolIdKlienta, zamowieniaKolRabat, zamowieniaKolStan, zamowieniaKolWartosc;
     @FXML
     private TableColumn<Zamowienie, Void> zamowieniaKolFaktura, zamowieniaKolUsun;
     //Filtry
     @FXML
-    private TextField zamowieniaSzukajData, zamowieniaSzukajId, zamowieniaSzukajIdKlienta, zamowieniaSzukajRabat, zamowieniaSzukajStan;
+    private TextField zamowieniaSzukajData, zamowieniaSzukajId, zamowieniaSzukajIdKlienta, zamowieniaSzukajRabat, zamowieniaSzukajStan, zamowieniaSzukajWartosc;
     //Zakładki
     @FXML
     private Tab tabDostawcy, tabElementyZamowienia, tabKlienci, tabProdukty, tabZamowienia, tabZarządzanie;
@@ -174,6 +177,7 @@ public class MainController implements Initializable {
     public static ObservableList<Klient> klienci = FXCollections.observableArrayList();
     public static ObservableList<Zamowienie> zamowienia = FXCollections.observableArrayList();
     public static ObservableList<ElementZamowienia> elementyZamowienia = FXCollections.observableArrayList();
+    private final String[] stanyZamowienia = {"w przygotowaniu", "gotowe", "odebrane"};
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -1001,8 +1005,40 @@ public class MainController implements Initializable {
         produktyKolKolor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKolor()));
         produktyKolMaxIlosc.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMaxIlosc())));
         produktyKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(obliczStan(cellData.getValue().getIlosc()/cellData.getValue().getMaxIlosc())));
-        produktyKolUwz.setCellValueFactory(cellData -> new SimpleBooleanProperty(false));
-        produktyKolUwz.setCellFactory(tc -> new CheckBoxTableCell<>());
+        produktyKolUwz.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Produkt, Boolean> call(final TableColumn<Produkt, Boolean> param) {
+                final TableCell<Produkt, Boolean> cell = new TableCell<>() {
+                    private final CheckBox check = new CheckBox();
+
+                    {
+                        check.setOnAction((ActionEvent event) -> produkty.get(getIndex()).setDostawa(!produkty.get(getIndex()).isDostawa()));
+                        check.setOnMouseEntered(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        check.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else setGraphic(check);
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
 
         produktyKolUsun.setCellFactory(new Callback<>() {
             @Override
@@ -1126,31 +1162,34 @@ public class MainController implements Initializable {
                 default:
                     value = "nie udzielono";
             }
-
-            e.getTableView().getItems().get(e.getTablePosition().getRow()).setData(value);
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setData(e.getNewValue());
         });
 
-        zamowieniaKolStan.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
-                    try{
-                        z.setStanZamowienia(newValue);
-                        zamowienieMethods.updateZamowienie(z);
-                        zamowieniaInformacje.appendText("\nPomyślnie edytowano zamowienie o id "+z.getId());
-                    } catch(Exception e) {
-                        zamowieniaInformacje.appendText("\nNie udało się edytować zamowienia o id "+z.getId());
-                    }
+        zamowieniaKolStan.setCellFactory(ComboBoxTableCell.forTableColumn(stanyZamowienia));
+        zamowieniaKolStan.setOnEditCommit(t -> {
+            Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
+            if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                try {
+                    z.setStanZamowienia(t.getNewValue());
+                    zamowienieMethods.updateZamowienie(z);
+                    zamowieniaInformacje.appendText("\nPomyślnie edytowano zamowienie o id " + z.getId());
+                } catch (Exception e) {
+                    zamowieniaInformacje.appendText("\nNie udało się edytować zamowienia o id " + z.getId());
                 }
-                super.commitEdit(newValue);
             }
         });
-        zamowieniaKolStan.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setStanZamowienia(e.getNewValue()));
 
         zamowieniaKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         zamowieniaKolIdKlienta.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getKlient().getId())));
         zamowieniaKolData.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getData()));
+        zamowieniaKolWartosc.setCellValueFactory(cellData -> {
+            List<ElementZamowienia> list = elementZamowieniaMethods.getElementZamowienia(cellData.getValue().getId());
+            double cena = 0.0;
+            for (ElementZamowienia el : list) {
+                cena+=el.getCenaElementu()*el.getIlosc();
+            }
+            return new SimpleStringProperty(String.valueOf(Math.round(cena*100.0)/100.0));
+        });
         zamowieniaKolRabat.setCellValueFactory(cellData -> {
             String kod = String.valueOf(cellData.getValue().getRabat());
             switch(kod) {
@@ -1174,19 +1213,7 @@ public class MainController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Zamowienie z = getTableView().getItems().get(getIndex());
-                            try {
-                                Stage stage = new Stage();
-                                stage.initModality(Modality.APPLICATION_MODAL);
-                                stage.setOpacity(1);
-                                stage.setTitle("Generuj raport");
-                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-                                Parent root = fxmlLoader.load();
-                                Scene scene = new Scene(root);
-                                stage.setScene(scene);
-                                stage.showAndWait();
-                            } catch (IOException e) {
-                                uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania faktury");
-                            }
+                            loadModal(z);
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
@@ -1379,6 +1406,21 @@ public class MainController implements Initializable {
         elemZamTabela.setItems(elementyZamowienia);
     }
 
+    private void validate(CheckBox checkBox, Produkt item, Event event){
+        // Validate here
+        event.consume();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Look, a Confirmation Dialog");
+        alert.setContentText("Are you ok with this?");
+
+        // Set the checkbox if the user want to continue
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK)
+            checkBox.setSelected(!checkBox.isSelected());
+    }
+
     /**
      * Oblicza stan produktu.
      *
@@ -1386,16 +1428,44 @@ public class MainController implements Initializable {
      * @return stan magazynowy produktu
      */
     public String obliczStan(double stosunek) {
-        //TODO: ustalić progi
         if (stosunek < 30) return "niski";
-        else if (stosunek < 60) return "umiarkowany";
+        else if (stosunek < 70) return "umiarkowany";
         else return "wysoki";
     }
 
+
     /**
      * Załadowanie okna zapisu raportu.
+     *
+     * @param type typ raportu
+     * @return
      */
-    public void loadModal(){
+    public void loadModal(int type) {
+        RaportAbstract raport=null;
+        switch (type){
+            case 1:
+                raport = new UzytkownicyRaport(uzytkownicyTabela.getItems());
+                break;
+            case 2:
+                raport = new KlienciRaport(klienciTabela.getItems());
+                break;
+            case 3:
+                raport = new DostawcyRaport(dostawcyTabela.getItems());
+                break;
+            case 4:
+                raport = new ProduktyRaport(produktyTabela.getItems());
+                break;
+            case 5:
+                raport = new ZamowieniaRaport(zamowieniaTabela.getItems());
+                break;
+            case 6:
+                raport = new ElementyZamowieniaRaport(elemZamTabela.getItems());
+                break;
+            case 7:
+                raport = new DostawaRaport(produktyTabela.getItems());
+                break;
+        }
+
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -1403,11 +1473,41 @@ public class MainController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
             Parent root = fxmlLoader.load();
+            PDFController controller = fxmlLoader.getController();
+            controller.setRaport(raport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();
         } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Błąd załadowania modułu generowania raportu.");
+            alert.showAndWait();
+        }
+    }
+
+    public void loadModal(Zamowienie z) {
+        RaportAbstract raport=new FakturaRaport(z);
+
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            PDFController controller = fxmlLoader.getController();
+            controller.setRaport(raport);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Błąd załadowania modułu generowania raportu.");
+            alert.showAndWait();
         }
     }
 
@@ -1498,8 +1598,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void uzytkownicyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
+        loadModal(1);
     }
 
     //Tab klienci
@@ -1547,8 +1646,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void klienciBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
+        loadModal(2);
     }
 
     //Tab dostawcy
@@ -1596,8 +1694,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void dostawcyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
+        loadModal(3);
     }
 
     //Tab produkty
@@ -1644,10 +1741,7 @@ public class MainController implements Initializable {
      * @param event
      */
     @FXML
-    public void produktyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
-    }
+    public void produktyBtnRaportClicked(MouseEvent event) {loadModal(4);}
 
     /**
      * Obsługuje przycisk generowania raportu dostaw.
@@ -1656,8 +1750,8 @@ public class MainController implements Initializable {
      */
     @FXML
     public void produktyBtnRaportDostawClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu dostaw
-        loadModal();
+        loadModal(7);
+
     }
 
     //Tab zamowienia
@@ -1718,8 +1812,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void zamowieniaBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
+        loadModal(5);
     }
 
     //Tab elementy zamowienia
@@ -1767,8 +1860,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void elemZamBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        loadModal();
+        loadModal(6);
     }
 
 }

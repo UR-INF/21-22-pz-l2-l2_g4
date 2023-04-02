@@ -1,16 +1,21 @@
 package Controllers;
 
+import PDFGeneration.RaportAbstract;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,11 +27,16 @@ import java.util.ResourceBundle;
 public class PDFController implements Initializable {
 
     @FXML
+    private AnchorPane ap;
+    @FXML
     private Button saveBtn;
     @FXML
     private TextField fileNameTextField, directoryTextField, titleTextField;
     @FXML
     private ComboBox<String> fileExtensionComboBox;
+
+    private RaportAbstract raport;
+    private Stage stage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,11 +59,17 @@ public class PDFController implements Initializable {
      */
     @FXML
     public void handleSaveBtnClick() {
+        stage = (Stage) ap.getScene().getWindow();
         Path file = Paths.get(directoryTextField.getText(), fileNameTextField.getText().trim() + fileExtensionComboBox.getSelectionModel().getSelectedItem());
         if (!Files.exists(file)) {
             try {
-                Files.createFile(file.toAbsolutePath());
-                //...
+                raport.generatePDF(file.toAbsolutePath().toString(), titleTextField.getText());
+                stage.close();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("SUCCESS");
+                alert.setHeaderText("SUCCESS");
+                alert.setContentText("Pomyślnie zapisano plik o nazwie "+fileNameTextField.getText().trim()+" w lokalizacji "+file.toAbsolutePath());
+                alert.showAndWait();
             } catch (IOException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
@@ -62,5 +78,9 @@ public class PDFController implements Initializable {
                 alert.showAndWait();
             }
         }
+    }
+
+    public void setRaport(RaportAbstract raport) {
+        this.raport = raport;
     }
 }

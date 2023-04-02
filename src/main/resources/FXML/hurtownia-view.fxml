@@ -352,7 +352,7 @@
                               <TableColumn fx:id="produktyKolKolor" prefWidth="102.4000244140625" text="Kolor" />
                               <TableColumn fx:id="produktyKolMaxIlosc" prefWidth="96.800048828125" text="Max. ilość" />
                               <TableColumn fx:id="produktyKolStan" editable="false" prefWidth="82.4000244140625" text="Stan" />
-                              <TableColumn fx:id="produktyKolUwz" editable="false" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
+                              <TableColumn fx:id="produktyKolUwz" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
                               <TableColumn fx:id="produktyKolUsun" editable="false" prefWidth="60.7999267578125" text="Usuń" />
                            </columns>
                         </TableView>
@@ -439,6 +439,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
+                        <TextField fx:id="produktySzukajStan" layoutX="1249.0" layoutY="100.0" prefHeight="26.0" prefWidth="75.0" />
                      </children>
                   </AnchorPane>
                </content>
@@ -452,10 +453,11 @@
                               <TableColumn fx:id="zamowieniaKolId" editable="false" prefWidth="81.60003662109375" text="Id" />
                               <TableColumn fx:id="zamowieniaKolIdKlienta" prefWidth="135.99993896484375" text="Id klienta" />
                               <TableColumn fx:id="zamowieniaKolData" prefWidth="160.79998779296875" text="Data zamówienia" />
-                              <TableColumn fx:id="zamowieniaKolRabat" prefWidth="205.60003662109375" text="Rabat" />
-                              <TableColumn fx:id="zamowieniaKolStan" prefWidth="218.39996337890625" text="Stan zamówienia" />
-                              <TableColumn fx:id="zamowieniaKolFaktura" editable="false" prefWidth="137.5999755859375" text="Generuj fakturę" />
-                              <TableColumn fx:id="zamowieniaKolUsun" editable="false" prefWidth="137.5999755859375" text="Usuń" />
+                              <TableColumn fx:id="zamowieniaKolWartosc" editable="false" prefWidth="202.4000244140625" text="Wartosc" />
+                              <TableColumn fx:id="zamowieniaKolRabat" prefWidth="104.7999267578125" text="Rabat" />
+                              <TableColumn fx:id="zamowieniaKolStan" prefWidth="140.0001220703125" text="Stan zamówienia" />
+                              <TableColumn fx:id="zamowieniaKolFaktura" editable="false" prefWidth="150.4000244140625" text="Generuj fakturę" />
+                              <TableColumn fx:id="zamowieniaKolUsun" editable="false" prefWidth="133.60009765625" text="Usuń" />
                            </columns>
                         </TableView>
                         <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
@@ -489,7 +491,7 @@
                            </children>
                         </AnchorPane>
                         <TextField fx:id="zamowieniaSzukajId" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="84.0" />
-                        <TextField fx:id="zamowieniaSzukajStan" layoutX="914.0" layoutY="100.0" prefHeight="26.0" prefWidth="233.0" />
+                        <TextField fx:id="zamowieniaSzukajRabat" layoutX="914.0" layoutY="100.0" prefHeight="26.0" prefWidth="103.0" />
                         <TextField fx:id="zamowieniaSzukajData" layoutX="548.0" layoutY="100.0" prefHeight="26.0" prefWidth="164.0" />
                         <Button fx:id="zamowieniaBtnSzukaj" layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#zamowieniaBtnSzukajClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
                            <font>
@@ -516,7 +518,8 @@
                            </cursor>
                         </Button>
                         <TextField fx:id="zamowieniaSzukajIdKlienta" layoutX="413.0" layoutY="100.0" prefHeight="26.0" prefWidth="135.0" />
-                        <TextField fx:id="zamowieniaSzukajRabat" layoutX="712.0" layoutY="100.0" prefHeight="26.0" prefWidth="201.0" />
+                        <TextField fx:id="zamowieniaSzukajWartosc" layoutX="712.0" layoutY="100.0" prefHeight="26.0" prefWidth="201.0" />
+                        <TextField fx:id="zamowieniaSzukajStan" layoutX="1017.0" layoutY="100.0" prefHeight="26.0" prefWidth="139.0" />
                      </children>
                   </AnchorPane>
                </content>
@@ -531,7 +534,7 @@
                               <TableColumn fx:id="elemZamKolIdZamowienia" prefWidth="120.0" text="Id zamówienia" />
                               <TableColumn fx:id="elemZamKolIdProduktu" prefWidth="157.60003662109375" text="Id produktu" />
                               <TableColumn fx:id="elemZamKolCenaEl" editable="false" prefWidth="172.800048828125" text="Cena elementu" />
-                              <TableColumn fx:id="elemZamKolCenaJM" prefWidth="182.39990234375" text="Cena za jednostkę" />
+                              <TableColumn fx:id="elemZamKolCenaJM" editable="false" prefWidth="182.39990234375" text="Cena za jednostkę" />
                               <TableColumn fx:id="elemZamKolIlosc" prefWidth="170.4000244140625" text="Ilość" />
                               <TableColumn fx:id="elemZamKolUsun" editable="false" prefWidth="159.2000732421875" text="Usuń" />
                            </columns>

@@ -42,6 +42,24 @@ public class ElementZamowieniaMethods {
     }
 
     /**
+     * Pobiera elementy zamówienia o podanym id.
+     *
+     * @return lista elementów zamówienia o podanym id
+     */
+    public List<ElementZamowienia> getElementZamowienia(int idZamowienie) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(ElementZamowienia.class).list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return list;
+    }
+
+    /**
      * Usuwa element zamówienia z bazy danych.
      *
      * @param elementZamowienia
@@ -83,7 +101,7 @@ public class ElementZamowieniaMethods {
      * @param ilosc
      * @return
      */
-    public ElementZamowienia saveElementZamowienia(int idZamowienie, int idProdukt, int ilosc) {
+    public ElementZamowienia saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
