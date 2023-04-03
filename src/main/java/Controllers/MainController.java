@@ -3,11 +3,15 @@ package Controllers;
 import DatabaseAccess.DbAccess;
 import DatabaseQueries.*;
 import Entities.*;
+import PDFGeneration.*;
 import Singleton.SingletonConnection;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -21,6 +25,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +34,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -35,15 +43,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Kontroler głównego okna aplikacji.
  */
 public class MainController implements Initializable {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Elementy FXML
+    //Elementy FXML
     //Tab Dostawcy
     //Pola
     @FXML
@@ -54,12 +61,12 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Dostawca> dostawcyTabela;
     @FXML
-    private TableColumn<Dostawca, String> dostawcyKolEmail, dostawcyKolId, dostawcyKolKraj, dostawcyKolMiejscowosc, dostawcyKolNazwa, dostawcyKolUlica;
+    private TableColumn<Dostawca, String> dostawcyKolEmail, dostawcyKolNip, dostawcyKolId, dostawcyKolKraj, dostawcyKolMiejscowosc, dostawcyKolNazwa, dostawcyKolUlica;
     @FXML
     private TableColumn<Dostawca, Void> dostawcyKolUsun;
     //Filtry
     @FXML
-    private TextField dostawcySzukajEmail, dostawcySzukajId, dostawcySzukajKraj, dostawcySzukajMiejscowosc, dostawcySzukajNazwa, dostawcySzukajUlica;
+    private TextField dostawcySzukajEmail, dostawcySzukajNip, dostawcySzukajId, dostawcySzukajKraj, dostawcySzukajMiejscowosc, dostawcySzukajNazwa, dostawcySzukajUlica;
     //Tab Elementy zamowienia
     //Pola
     @FXML
@@ -109,7 +116,7 @@ public class MainController implements Initializable {
     private TableColumn<Produkt, Void> produktyKolUsun;
     //Filtry
     @FXML
-    private TextField produktySzukajCena, produktySzukajId, produktySzukajIdDostawcy, produktySzukajIlosc, produktySzukajJm, produktySzukajKod, produktySzukajKolor, produktySzukajKraj, produktySzukajMaxIlosc;
+    private TextField produktySzukajCena, produktySzukajId, produktySzukajIdDostawcy, produktySzukajIlosc, produktySzukajJm, produktySzukajKod, produktySzukajKolor, produktySzukajKraj, produktySzukajMaxIlosc, produktySzukajStan;
     //Tab Uzytkownicy
     //Pola
     @FXML
@@ -138,12 +145,12 @@ public class MainController implements Initializable {
     @FXML
     private TableView<Zamowienie> zamowieniaTabela;
     @FXML
-    private TableColumn<Zamowienie, String> zamowieniaKolData, zamowieniaKolId, zamowieniaKolIdKlienta, zamowieniaKolRabat, zamowieniaKolStan;
+    private TableColumn<Zamowienie, String> zamowieniaKolData, zamowieniaKolId, zamowieniaKolIdKlienta, zamowieniaKolRabat, zamowieniaKolStan, zamowieniaKolWartosc;
     @FXML
     private TableColumn<Zamowienie, Void> zamowieniaKolFaktura, zamowieniaKolUsun;
     //Filtry
     @FXML
-    private TextField zamowieniaSzukajData, zamowieniaSzukajId, zamowieniaSzukajIdKlienta, zamowieniaSzukajRabat, zamowieniaSzukajStan;
+    private TextField zamowieniaSzukajData, zamowieniaSzukajId, zamowieniaSzukajIdKlienta, zamowieniaSzukajRabat, zamowieniaSzukajStan, zamowieniaSzukajWartosc;
     //Zakładki
     @FXML
     private Tab tabDostawcy, tabElementyZamowienia, tabKlienci, tabProdukty, tabZamowienia, tabZarządzanie;
@@ -170,6 +177,7 @@ public class MainController implements Initializable {
     public static ObservableList<Klient> klienci = FXCollections.observableArrayList();
     public static ObservableList<Zamowienie> zamowienia = FXCollections.observableArrayList();
     public static ObservableList<ElementZamowienia> elementyZamowienia = FXCollections.observableArrayList();
+    private final String[] stanyZamowienia = {"w przygotowaniu", "gotowe", "odebrane"};
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -262,7 +270,7 @@ public class MainController implements Initializable {
         session.save(new Produkt(d, "nazwa", "sztuka", 22.56, "Polska", "AS2345", "brak", 80, 100));
         Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id='" + 1 + "'").addEntity(Produkt.class).getSingleResult();
 
-        session.save(new Zamowienie(k, "22-02-2022", "złożone", "-20%"));
+        session.save(new Zamowienie(k, "22-02-2022", "złożone", 0.2));
         Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id='" + 1 + "'").addEntity(Zamowienie.class).getSingleResult();
 
         session.save(new ElementZamowienia(z, p, 10, p.getCena() * 10, p.getCena()));
@@ -275,7 +283,146 @@ public class MainController implements Initializable {
      * Ustawienie wypełniania poszczególnych kolumn w tabelach
      */
     private void setTables() {
+        StringConverter<String> converter = new DefaultStringConverter();
+
         //Tabela Uzytkownicy
+        uzytkownicyKolImie.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setImie(newValue);
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolImie.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setImie(e.getNewValue()));
+        uzytkownicyKolNazwisko.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setNazwisko(newValue);
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolNazwisko.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNazwisko(e.getNewValue()));
+        uzytkownicyKolNrTel.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setNumerTelefonu(newValue);
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolNrTel.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNumerTelefonu(e.getNewValue()));
+        uzytkownicyKolEmail.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setEmail(newValue);
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolEmail.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setEmail(e.getNewValue()));
+        uzytkownicyKolHaslo.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setHaslo(newValue);
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolHaslo.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setHaslo(e.getNewValue()));
+        uzytkownicyKolAdmin.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setIsAdmin(Integer.parseInt(newValue));
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolAdmin.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setIsAdmin(Integer.parseInt(e.getNewValue())));
+        uzytkownicyKolGenRap.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setGenerowanieRaportow(Integer.parseInt(newValue));
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolGenRap.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setGenerowanieRaportow(Integer.parseInt(e.getNewValue())));
+        uzytkownicyKolUdzRab.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        u.setUdzielanieRabatow(Integer.parseInt(newValue));
+                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
+                    } catch(Exception e) {
+                        uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        uzytkownicyKolUdzRab.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setUdzielanieRabatow(Integer.parseInt(e.getNewValue())));
+
         uzytkownicyKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         uzytkownicyKolImie.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImie()));
         uzytkownicyKolNazwisko.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNazwisko()));
@@ -336,8 +483,112 @@ public class MainController implements Initializable {
         uzytkownicyTabela.setItems(uzytkownicy);
 
         //Tabela Dostawcy
+        dostawcyKolNazwa.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setNazwa(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolNazwa.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNazwa(e.getNewValue()));
+        dostawcyKolNip.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setNip(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolNip.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNip(e.getNewValue()));
+        dostawcyKolEmail.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setEmail(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolEmail.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setEmail(e.getNewValue()));
+        dostawcyKolMiejscowosc.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setMiejscowosc(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolMiejscowosc.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setMiejscowosc(e.getNewValue()));
+        dostawcyKolUlica.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setUlica(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolUlica.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setUlica(e.getNewValue()));
+        dostawcyKolKraj.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Dostawca d = dostawcyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        d.setKraj(newValue);
+                        dostawcaMethods.updateDostawca(d);
+                        dostawcyInformacje.appendText("\nPomyślnie edytowano dostawcę o id "+d.getId());
+                    } catch(Exception e) {
+                        dostawcyInformacje.appendText("\nNie udało się edytować dostawcy o id "+d.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        dostawcyKolKraj.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setKraj(e.getNewValue()));
+
         dostawcyKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         dostawcyKolNazwa.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNazwa()));
+        dostawcyKolNip.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
         dostawcyKolEmail.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         dostawcyKolMiejscowosc.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMiejscowosc()));
         dostawcyKolUlica.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUlica()));
@@ -393,6 +644,160 @@ public class MainController implements Initializable {
         dostawcyTabela.setItems(dostawcy);
 
         //Tabela Klienci
+        klienciKolImie.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setImie(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolImie.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setImie(e.getNewValue()));
+        klienciKolNazwisko.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setNazwisko(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolNazwisko.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNazwisko(e.getNewValue()));
+        klienciKolMiejscowosc.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setMiejscowosc(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolMiejscowosc.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setMiejscowosc(e.getNewValue()));
+        klienciKolUlica.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setUlica(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolUlica.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setUlica(e.getNewValue()));
+        klienciKolNrBud.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setNumerBudynku(Integer.parseInt(newValue));
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolNrBud.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNumerBudynku(Integer.parseInt(e.getNewValue())));
+        klienciKolNrMieszk.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setNumerMieszkania(Integer.parseInt(newValue));
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolNrMieszk.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNumerMieszkania(Integer.parseInt(e.getNewValue())));
+        klienciKolEmail.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setEmail(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolEmail.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setEmail(e.getNewValue()));
+        klienciKolNrTel.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setNumerTelefonu(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolNrTel.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setNumerTelefonu(e.getNewValue()));
+        klienciKolPesel.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Klient k = klienciTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        k.setPesel(newValue);
+                        klientMethods.updateKlient(k);
+                        klienciInformacje.appendText("\nPomyślnie edytowano klienta o id "+k.getId());
+                    } catch(Exception e) {
+                        klienciInformacje.appendText("\nNie udało się edytować klienta o id "+k.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        klienciKolPesel.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setPesel(e.getNewValue()));
+
         klienciKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         klienciKolImie.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImie()));
         klienciKolNazwisko.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNazwisko()));
@@ -454,6 +859,142 @@ public class MainController implements Initializable {
         klienciTabela.setItems(klienci);
 
         //Tabela Produkty
+        produktyKolIdDostawcy.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        produktMethods.updateProduktDostawca(p, newValue);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolIdDostawcy.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setDostawca(dostawcaMethods.getDostawca(e.getNewValue())));
+        produktyKolKod.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setKod(newValue);
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolKod.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setKod(e.getNewValue()));
+        produktyKolCena.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setCena(Double.parseDouble(newValue));
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolCena.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setCena(Double.parseDouble(e.getNewValue())));
+        produktyKolIlosc.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setIlosc(Integer.parseInt(newValue));
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolIlosc.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setIlosc(Integer.parseInt(e.getNewValue())));
+        produktyKolJM.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setJednostkaMiary(newValue);
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolJM.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setJednostkaMiary(e.getNewValue()));
+        produktyKolKraj.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setKraj(newValue);
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolKraj.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setKraj(e.getNewValue()));
+        produktyKolKolor.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setKolor(newValue);
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolKolor.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setKolor(e.getNewValue()));
+        produktyKolMaxIlosc.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Produkt p = produktyTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        p.setMaxIlosc(Integer.parseInt(newValue));
+                        produktMethods.updateProdukt(p);
+                        produktyInformacje.appendText("\nPomyślnie edytowano produkt o id "+p.getId());
+                    } catch(Exception e) {
+                        produktyInformacje.appendText("\nNie udało się edytować produktu o id "+p.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        produktyKolMaxIlosc.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setMaxIlosc(Integer.parseInt(e.getNewValue())));
+
         produktyKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         produktyKolIdDostawcy.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getDostawca().getId())));
         produktyKolKod.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKod()));
@@ -463,9 +1004,41 @@ public class MainController implements Initializable {
         produktyKolKraj.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKraj()));
         produktyKolKolor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getKolor()));
         produktyKolMaxIlosc.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getMaxIlosc())));
-        produktyKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(obliczStan(cellData.getValue().getIlosc() / cellData.getValue().getMaxIlosc())));
-        produktyKolUwz.setCellValueFactory(cellData -> new SimpleBooleanProperty(false));
-        produktyKolUwz.setCellFactory(tc -> new CheckBoxTableCell<>());
+        produktyKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(obliczStan(cellData.getValue().getIlosc()/cellData.getValue().getMaxIlosc())));
+        produktyKolUwz.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Produkt, Boolean> call(final TableColumn<Produkt, Boolean> param) {
+                final TableCell<Produkt, Boolean> cell = new TableCell<>() {
+                    private final CheckBox check = new CheckBox();
+
+                    {
+                        check.setOnAction((ActionEvent event) -> produkty.get(getIndex()).setDostawa(!produkty.get(getIndex()).isDostawa()));
+                        check.setOnMouseEntered(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.HAND);
+                            }
+                        });
+
+                        check.setOnMouseExited(new EventHandler() {
+                            @Override
+                            public void handle(Event event) {
+                                scene.setCursor(Cursor.DEFAULT);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else setGraphic(check);
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
 
         produktyKolUsun.setCellFactory(new Callback<>() {
             @Override
@@ -518,10 +1091,117 @@ public class MainController implements Initializable {
         produktyTabela.setItems(produkty);
 
         //Tabela Zamówień
+        zamowieniaKolIdKlienta.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
+                    zamowienieMethods.updateZamowienieKlient(z, newValue);
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        zamowieniaKolIdKlienta.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setKlient(klientMethods.getKlient(e.getNewValue())));
+        zamowieniaKolData.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        z.setData(newValue);
+                        zamowienieMethods.updateZamowienie(z);
+                        zamowieniaInformacje.appendText("\nPomyślnie edytowano zamowienie o id "+z.getId());
+                    } catch(Exception e) {
+                        zamowieniaInformacje.appendText("\nNie udało się edytować zamowienia o id "+z.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        zamowieniaKolData.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setData(e.getNewValue()));
+        zamowieniaKolRabat.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
+                    double rabat;
+                    switch(newValue) {
+                        case "KOD1":
+                            rabat = 0.1;
+                            newValue = "-10%";
+                            break;
+                        case "KOD2":
+                            rabat = 0.2;
+                            newValue = "-20%";
+                            break;
+                        default:
+                            rabat = 0.0;
+                            newValue = "nie udzielono";
+                    }
+
+                    try{
+                        z.setRabat(rabat);
+                        zamowienieMethods.updateZamowienie(z);
+                        zamowieniaInformacje.appendText("\nPomyślnie edytowano zamowienie o id "+z.getId());
+                    } catch(Exception e) {
+                        zamowieniaInformacje.appendText("\nNie udało się edytować zamowienia o id "+z.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        zamowieniaKolRabat.setOnEditCommit(e-> {
+            String value;
+            switch(e.getNewValue()) {
+                case "KOD1":
+                    value = "-10%";
+                    break;
+                case "KOD2":
+                    value = "-20%";
+                    break;
+                default:
+                    value = "nie udzielono";
+            }
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setData(e.getNewValue());
+        });
+
+        zamowieniaKolStan.setCellFactory(ComboBoxTableCell.forTableColumn(stanyZamowienia));
+        zamowieniaKolStan.setOnEditCommit(t -> {
+            Zamowienie z = zamowieniaTabela.getSelectionModel().getSelectedItem();
+            if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                try {
+                    z.setStanZamowienia(t.getNewValue());
+                    zamowienieMethods.updateZamowienie(z);
+                    zamowieniaInformacje.appendText("\nPomyślnie edytowano zamowienie o id " + z.getId());
+                } catch (Exception e) {
+                    zamowieniaInformacje.appendText("\nNie udało się edytować zamowienia o id " + z.getId());
+                }
+            }
+        });
+
         zamowieniaKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         zamowieniaKolIdKlienta.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getKlient().getId())));
         zamowieniaKolData.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getData()));
-        zamowieniaKolRabat.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRabat()));
+        zamowieniaKolWartosc.setCellValueFactory(cellData -> {
+            List<ElementZamowienia> list = elementZamowieniaMethods.getElementZamowienia(cellData.getValue().getId());
+            double cena = 0.0;
+            for (ElementZamowienia el : list) {
+                cena+=el.getCenaElementu()*el.getIlosc();
+            }
+            return new SimpleStringProperty(String.valueOf(Math.round(cena*100.0)/100.0));
+        });
+        zamowieniaKolRabat.setCellValueFactory(cellData -> {
+            String kod = String.valueOf(cellData.getValue().getRabat());
+            switch(kod) {
+                case "0.1":
+                    return new SimpleStringProperty("-10%");
+                case "0.2":
+                    return new SimpleStringProperty("-20%");
+                default:
+                    return new SimpleStringProperty("nie udzielono");
+            }
+        });
+
         zamowieniaKolStan.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStanZamowienia()));
         zamowieniaKolFaktura.setCellFactory(new Callback<>() {
             @Override
@@ -533,19 +1213,7 @@ public class MainController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Zamowienie z = getTableView().getItems().get(getIndex());
-                            try {
-                                Stage stage = new Stage();
-                                stage.initModality(Modality.APPLICATION_MODAL);
-                                stage.setOpacity(1);
-                                stage.setTitle("Generuj raport");
-                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-                                Parent root = fxmlLoader.load();
-                                Scene scene = new Scene(root);
-                                stage.setScene(scene);
-                                stage.showAndWait();
-                            } catch (IOException e) {
-                                uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania faktury");
-                            }
+                            loadModal(z);
                         });
 
                         btn.setOnMouseEntered(new EventHandler() {
@@ -591,7 +1259,7 @@ public class MainController implements Initializable {
                             Zamowienie z = getTableView().getItems().get(getIndex());
                             if (zamowienieMethods.deleteZamowienie(z)) {
                                 zamowienia.remove(z);
-                                zamowieniaInformacje.appendText("\nPomyślnie usunięto zamowienia o id " + z.getId());
+                                zamowieniaInformacje.appendText("\nPomyślnie usunięto zamowienie o id " + z.getId());
                             } else
                                 zamowieniaInformacje.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + z.getId());
                         });
@@ -630,6 +1298,57 @@ public class MainController implements Initializable {
         zamowieniaTabela.setItems(zamowienia);
 
         //Tabela Elemety zamówienia
+        elemZamKolIdZamowienia.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        elementZamowieniaMethods.updateElementZamowieniaZamowienie(ez, newValue);
+                        elemZamInformacje.appendText("\nPomyślnie edytowano element zamówienia o id "+ez.getId());
+                    } catch(Exception e) {
+                        elemZamInformacje.appendText("\nNie udało się edytować elementu zamowienia o id "+ez.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        elemZamKolIdZamowienia.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setZamowienie(zamowienieMethods.getZamowienie(e.getNewValue())));
+        elemZamKolIdProduktu.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    try{
+                        elementZamowieniaMethods.updateElementZamowieniaProdukt(ez, newValue);
+                        elemZamInformacje.appendText("\nPomyślnie edytowano element zamówienia o id "+ez.getId());
+                    } catch(Exception e) {
+                        elemZamInformacje.appendText("\nNie udało się edytować elementu zamowienia o id "+ez.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        elemZamKolIdProduktu.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setProdukt(produktMethods.getProdukt(e.getNewValue())));
+        elemZamKolIlosc.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    ez.setIlosc(Integer.parseInt(newValue));
+                    ez.setCenaElementu(ez.getIlosc()*ez.getCenaZaJednostke());
+                    try{
+                        elementZamowieniaMethods.updateElementZamowienia(ez);
+                        elemZamInformacje.appendText("\nPomyślnie edytowano element zamówienia o id "+ez.getId());
+                    } catch(Exception e) {
+                        elemZamInformacje.appendText("\nNie udało się edytować elementu zamowienia o id "+ez.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        elemZamKolIlosc.setOnEditCommit(e->e.getTableView().getItems().get(e.getTablePosition().getRow()).setIlosc(Integer.parseInt(e.getNewValue())));
+
         elemZamKolId.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
         elemZamKolIdZamowienia.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getZamowienie().getId())));
         elemZamKolIdProduktu.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProdukt().getId())));
@@ -694,10 +1413,91 @@ public class MainController implements Initializable {
      * @return stan magazynowy produktu
      */
     public String obliczStan(double stosunek) {
-        //TODO: ustalić progi
         if (stosunek < 30) return "niski";
-        else if (stosunek < 60) return "umiarkowany";
+        else if (stosunek < 70) return "umiarkowany";
         else return "wysoki";
+    }
+
+    /**
+     * Załadowanie okna zapisu raportu.
+     *
+     * @param type typ raportu
+     * @return
+     */
+    public void loadModal(int type) {
+        RaportAbstract raport=null;
+        switch (type){
+            case 1:
+                raport = new UzytkownicyRaport(uzytkownicyTabela.getItems());
+                break;
+            case 2:
+                raport = new KlienciRaport(klienciTabela.getItems());
+                break;
+            case 3:
+                raport = new DostawcyRaport(dostawcyTabela.getItems());
+                break;
+            case 4:
+                raport = new ProduktyRaport(produktyTabela.getItems());
+                break;
+            case 5:
+                raport = new ZamowieniaRaport(zamowieniaTabela.getItems());
+                break;
+            case 6:
+                raport = new ElementyZamowieniaRaport(elemZamTabela.getItems());
+                break;
+            case 7:
+                raport = new DostawaRaport(produktyTabela.getItems());
+                break;
+        }
+
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            PDFController controller = fxmlLoader.getController();
+            controller.setRaport(raport);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Błąd załadowania modułu generowania raportu.");
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Załadowanie okna zapisu faktury.
+     *
+     * @param z zamówienie, z którego generowana jest faktura
+     */
+    public void loadModal(Zamowienie z) {
+        RaportAbstract raport=new FakturaRaport(z);
+
+        try {
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOpacity(1);
+            stage.setTitle("Generuj raport");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            Parent root = fxmlLoader.load();
+            PDFController controller = fxmlLoader.getController();
+            controller.setRaport(raport);
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setHeaderText("ERROR");
+            alert.setContentText("Błąd załadowania modułu generowania raportu.");
+            alert.showAndWait();
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -762,7 +1562,12 @@ public class MainController implements Initializable {
      */
     @FXML
     public void uzytkownicyBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            Uzytkownik u = uzytkownikMethods.saveUzytkownik(uzytkownicyPoleImie.getText(), uzytkownicyPoleNazwisko.getText(), uzytkownicyPoleNrTel.getText(), uzytkownicyPoleEmail.getText(), uzytkownicyPoleHaslo.getText(), uzytkownicyRaport.isSelected() ? 1 : 0, uzytkownicyRabat.isSelected() ? 1 : 0, uzytkownicyAdmin.isSelected() ? 1 : 0);
+            uzytkownicyInformacje.appendText("\nDodano nowego użytkownika");
+        } catch(Exception e) {
+            uzytkownicyInformacje.appendText("\nNie udało się dodać nowego użytkownika");
+        }
     }
 
     /**
@@ -782,20 +1587,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void uzytkownicyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(1);
     }
 
     //Tab klienci
@@ -818,7 +1610,12 @@ public class MainController implements Initializable {
      */
     @FXML
     public void klienciBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            Klient k = klientMethods.saveKlient(klienciPoleImie.getText(), klienciPoleNazwisko.getText(), klienciPolePesel.getText(), klienciPoleNrTel.getText(), klienciPoleEmail.getText(), klienciPoleMiejscowosc.getText(), klienciPoleUlica.getText(), Integer.valueOf(klienciPoleNrMieszkania.getText()), Integer.valueOf(klienciPoleNrBud.getText()));
+            klienciInformacje.appendText("\nDodano nowego klienta");
+        } catch(Exception e) {
+            klienciInformacje.appendText("\nNie udało się dodać nowego klienta");
+        }
     }
 
     /**
@@ -838,20 +1635,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void klienciBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(2);
     }
 
     //Tab dostawcy
@@ -874,7 +1658,12 @@ public class MainController implements Initializable {
      */
     @FXML
     public void dostawcyBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            Dostawca d = dostawcaMethods.saveDostawca(dostawcyPoleEmail.getText(), dostawcyPoleKraj.getText(), dostawcyPoleMiejscowosc.getText(), dostawcyPoleUlica.getText(), dostawcyPoleNazwa.getText(), dostawcyPoleNip.getText());
+            dostawcyInformacje.appendText("\nDodano nowego dostawcę");
+        } catch(Exception e) {
+            dostawcyInformacje.appendText("\nNie udało się dodać nowego dostawcy");
+        }
     }
 
     /**
@@ -894,20 +1683,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void dostawcyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(3);
     }
 
     //Tab produkty
@@ -930,7 +1706,12 @@ public class MainController implements Initializable {
      */
     @FXML
     public void produktyBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            Produkt p = produktMethods.saveProdukt(Integer.parseInt(produktyPoleIdDostawcy.getText()), produktyPoleNazwa.getText(), produktyPoleJM.getText(), Double.parseDouble(produktyPoleCena.getText()), produktyPoleKraj.getText(), produktyPoleKod.getText(), produktyPoleKolor.getText(), Integer.parseInt(produktyPoleIlosc.getText()), Integer.parseInt(produktyPoleMaxIlosc.getText()));
+            produktyInformacje.appendText("\nDodano nowy produkt");
+        } catch(Exception e) {
+            produktyInformacje.appendText("\nNie udało się dodać nowego produktu");
+        }
     }
 
     /**
@@ -949,22 +1730,7 @@ public class MainController implements Initializable {
      * @param event
      */
     @FXML
-    public void produktyBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
-    }
+    public void produktyBtnRaportClicked(MouseEvent event) {loadModal(4);}
 
     /**
      * Obsługuje przycisk generowania raportu dostaw.
@@ -973,20 +1739,8 @@ public class MainController implements Initializable {
      */
     @FXML
     public void produktyBtnRaportDostawClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu dostaw
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(7);
+
     }
 
     //Tab zamowienia
@@ -1009,7 +1763,25 @@ public class MainController implements Initializable {
      */
     @FXML
     public void zamowieniaBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            Double rabat;
+            String kodRabatowy = zamowieniaPoleRabat.getText();
+            switch(kodRabatowy) {
+                case "KOD1":
+                    rabat = 0.1;
+                    break;
+                case "KOD2":
+                    rabat = 0.2;
+                    break;
+                default:
+                    rabat = 0.0;
+            }
+
+            Zamowienie z = zamowienieMethods.saveZamowienie(Integer.parseInt(zamowieniaIdKlienta.getText()), zamowieniaPoleData.getText(), "w przygotowaniu", rabat);
+            zamowieniaInformacje.appendText("\nDodano nowe zamówienie");
+        } catch(Exception e) {
+            zamowieniaInformacje.appendText("\nNie udało się dodać nowego zamówienia");
+        }
     }
 
     /**
@@ -1029,20 +1801,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void zamowieniaBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(5);
     }
 
     //Tab elementy zamowienia
@@ -1065,7 +1824,12 @@ public class MainController implements Initializable {
      */
     @FXML
     public void elemZamBtnDodajClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk dodawania
+        try {
+            ElementZamowienia ez = elementZamowieniaMethods.saveElementZamowienia(Integer.parseInt(elemZamPoleIdProduktu.getText()), Integer.parseInt(elemZamPoleIdZamowienia.getText()), Integer.parseInt(elemZamPoleIlosc.getText()));
+            elemZamInformacje.appendText("\nDodano nowy element zamówienia");
+        } catch(Exception e) {
+            elemZamInformacje.appendText("\nNie udało się dodać nowego elementu zamówienia");
+        }
     }
 
     /**
@@ -1085,20 +1849,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void elemZamBtnRaportClicked(MouseEvent event) {
-        //TODO: obsłużyć generowanie raportu
-        try {
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOpacity(1);
-            stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException e) {
-            uzytkownicyInformacje.appendText("\nBłąd załadowania modułu generowania raportu");
-        }
+        loadModal(6);
     }
 
 }

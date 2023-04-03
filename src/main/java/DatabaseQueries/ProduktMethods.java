@@ -1,6 +1,9 @@
 package DatabaseQueries;
 
+import Entities.Dostawca;
+import Entities.Klient;
 import Entities.Produkt;
+import Entities.Zamowienie;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -42,6 +45,25 @@ public class ProduktMethods {
     }
 
     /**
+     * Zwraca produkt o podanym id.
+     *
+     * @param id
+     * @return
+     */
+    public Produkt getProdukt(String id) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + id + "\'").addEntity(Produkt.class).getSingleResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return p;
+    }
+
+    /**
      * Usuwa produkt z bazy danych.
      *
      * @param produkt
@@ -73,5 +95,68 @@ public class ProduktMethods {
         }
 
         return result;
+    }
+
+    /**
+     * Dodaje produkt.
+     *
+     * @param idDostawca
+     * @param nazwa
+     * @param jednostkaMiary
+     * @param cena
+     * @param kraj
+     * @param kod
+     * @param kolor
+     * @param ilosc
+     * @param maxIlosc
+     * @return
+     */
+    public Produkt saveProdukt(int idDostawca, String nazwa, String jednostkaMiary, Double cena, String kraj, String kod, String kolor, int ilosc, int maxIlosc) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + idDostawca + "\'").addEntity(Dostawca.class).getSingleResult();
+        Produkt p = new Produkt(d, nazwa, jednostkaMiary, cena, kraj, kod, kolor, ilosc, maxIlosc);
+
+        session.save(p);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return p;
+    }
+
+    /**
+     * Aktualizuje dostawcę produktu.
+     *
+     * @param p
+     * @param idDostawca
+     */
+    public void updateProduktDostawca(Produkt p, String idDostawca) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + idDostawca + "\'").addEntity(Dostawca.class).getSingleResult();
+        p.setDostawca(d);
+        session.update(p);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
+     * Aktualizuje produkt.
+     *
+     * @param p
+     */
+    public void updateProdukt(Produkt p) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+        session.update(p);
+        session.getTransaction().commit();
+        session.close();
     }
 }

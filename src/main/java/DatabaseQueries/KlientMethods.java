@@ -1,6 +1,8 @@
 package DatabaseQueries;
 
+import Entities.Dostawca;
 import Entities.Klient;
+import Entities.Uzytkownik;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -42,6 +44,25 @@ public class KlientMethods {
     }
 
     /**
+     * Zwraca klienta o podanym id.
+     *
+     * @param id
+     * @return
+     */
+    public Klient getKlient(String id) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Klient k = (Klient) session.createSQLQuery("select * from klient where id=\'" + id + "\'").addEntity(Klient.class).getSingleResult();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return k;
+    }
+
+    /**
      * Usuwa klienta z bazy danych.
      *
      * @param klient
@@ -73,5 +94,48 @@ public class KlientMethods {
         }
 
         return result;
+    }
+
+    /**
+     * Dodaje nowego klienta.
+     *
+     * @param imie
+     * @param nazwisko
+     * @param pesel
+     * @param numerTelefonu
+     * @param email
+     * @param miejscowosc
+     * @param ulica
+     * @param numerMieszkania
+     * @param numerBudynku
+     * @return
+     */
+    public Klient saveKlient(String imie, String nazwisko, String pesel, String numerTelefonu, String email, String miejscowosc, String ulica, int numerMieszkania, int numerBudynku) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Klient k = new Klient(imie,  nazwisko,  pesel,  numerTelefonu,  email,  miejscowosc,  ulica,  numerMieszkania,  numerBudynku);
+
+        session.save(k);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return k;
+    }
+
+    /**
+     * Aktualizuje klienta.
+     *
+     * @param k
+     */
+    public void updateKlient(Klient k) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+        session.update(k);
+        session.getTransaction().commit();
+        session.close();
     }
 }

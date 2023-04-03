@@ -42,6 +42,9 @@ public class Produkt implements Serializable {
     @Column(name = "maxIlosc")
     private int maxIlosc;
 
+    @Transient
+    private boolean dostawa = false;
+
     public Produkt() {
     }
 
@@ -135,6 +138,14 @@ public class Produkt implements Serializable {
 
     public void setMaxIlosc(int maxIlosc) {
         this.maxIlosc = maxIlosc;
+    }
+
+    public boolean isDostawa() {
+        return dostawa;
+    }
+
+    public void setDostawa(boolean dostawa) {
+        this.dostawa = dostawa;
     }
 
     @Override

@@ -26,12 +26,12 @@ public class Zamowienie implements Serializable {
     private String stanZamowienia;
 
     @Column(name = "rabat")
-    private String rabat;
+    private Double rabat;
 
     public Zamowienie() {
     }
 
-    public Zamowienie(Klient idKlient, String data, String stanZamowienia, String rabat) {
+    public Zamowienie(Klient idKlient, String data, String stanZamowienia, Double rabat) {
         this.idKlient = idKlient;
         this.data = data;
         this.stanZamowienia = stanZamowienia;
@@ -70,11 +70,11 @@ public class Zamowienie implements Serializable {
         this.stanZamowienia = stanZamowienia;
     }
 
-    public String getRabat() {
+    public Double getRabat() {
         return rabat;
     }
 
-    public void setRabat(String rabat) {
+    public void setRabat(Double rabat) {
         this.rabat = rabat;
     }
 

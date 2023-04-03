@@ -1,6 +1,6 @@
 package DatabaseQueries;
 
-import Entities.ElementZamowienia;
+import Entities.*;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -41,19 +41,17 @@ public class ElementZamowieniaMethods {
         return list;
     }
 
-
     /**
-     * Pobiera wszystkie elementy zamówienia o podanym identyfikatorze.
+     * Pobiera elementy zamówienia o podanym id.
      *
-     * @param id id zamówienia
-     * @return lista elementów zamówienia
+     * @return lista elementów zamówienia o podanym id
      */
-    public List<ElementZamowienia> getElementyZamowienia(int id) {
+    public List<ElementZamowienia> getElementZamowienia(int idZamowienie) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from elementzamowienia where idZamowienie =" + id).addEntity(ElementZamowienia.class).list();
+        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(ElementZamowienia.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -93,5 +91,85 @@ public class ElementZamowieniaMethods {
         }
 
         return result;
+    }
+
+    /**
+     * Dodaje nowy element zamówienia.
+     *
+     * @param idZamowienie
+     * @param idProdukt
+     * @param ilosc
+     * @return
+     */
+    public ElementZamowienia saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProdukt + "\'").addEntity(Produkt.class).getSingleResult();
+        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienie + "\'").addEntity(Zamowienie.class).getSingleResult();
+
+        ElementZamowienia ez = new ElementZamowienia(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
+
+        session.save(ez);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return ez;
+    }
+
+    /**
+     * Aktualizuje zamówienie elementu zamówienia.
+     *
+     * @param ez
+     * @param idZamowienia
+     */
+    public void updateElementZamowieniaZamowienie(ElementZamowienia ez, String idZamowienia) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienia + "\'").addEntity(Zamowienie.class).getSingleResult();
+        ez.setZamowienie(z);
+        session.update(ez);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
+     * Aktualizuje produkt elementu zamówienia.
+     *
+     * @param ez
+     * @param idProduktu
+     */
+    public void updateElementZamowieniaProdukt(ElementZamowienia ez, String idProduktu) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProduktu + "\'").addEntity(Produkt.class).getSingleResult();
+        ez.setProdukt(p);
+        ez.setCenaZaJednostke(p.getCena());
+        ez.setCenaElementu(ez.getCenaZaJednostke()*ez.getIlosc());
+        session.update(ez);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
+     * Aktualizuje element zamówienia.
+     *
+     * @param ez
+     */
+    public void updateElementZamowienia(ElementZamowienia ez) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+        session.update(ez);
+        session.getTransaction().commit();
+        session.close();
     }
 }

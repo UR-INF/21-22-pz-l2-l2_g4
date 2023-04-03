@@ -11,41 +11,46 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="3.0" vgap="3.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.PDFController">
-    <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" />
-        <ColumnConstraints hgrow="SOMETIMES" />
-    </columnConstraints>
-    <rowConstraints>
-      <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
-    </rowConstraints>
-    <children>
-      <Label text="Tytuł raportu" />
-      <TextField fx:id="titleTextField" GridPane.rowIndex="1" />
-        <Label text="Nazwa pliku" GridPane.rowIndex="2" />
-        <TextField fx:id="fileNameTextField" GridPane.rowIndex="3" />
-        <Label text="Rozszerzenie" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <ComboBox fx:id="fileExtensionComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <Label text="Lokalizacja" GridPane.rowIndex="4" />
-        <AnchorPane GridPane.columnSpan="2" GridPane.rowIndex="5">
-            <children>
-                <TextField fx:id="directoryTextField" editable="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="60.0" />
-                <Button onAction="#handleChangeDirectoryBtnClick" text="Wybierz" AnchorPane.rightAnchor="0.0" />
-            </children>
-        </AnchorPane>
-        <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="6">
-            <children>
-                <Button fx:id="saveBtn" onAction="#handleSaveBtnClick" text="Zapisz" />
-            </children>
-        </HBox>
-    </children>
-    <padding>
-        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-    </padding>
-</GridPane>
+
+<AnchorPane fx:id="ap" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.PDFController">
+   <children>
+      <GridPane hgap="3.0" vgap="3.0">
+          <columnConstraints>
+              <ColumnConstraints hgrow="SOMETIMES" />
+              <ColumnConstraints hgrow="SOMETIMES" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+              <RowConstraints vgrow="SOMETIMES" />
+              <RowConstraints vgrow="SOMETIMES" />
+              <RowConstraints vgrow="SOMETIMES" />
+              <RowConstraints vgrow="SOMETIMES" />
+              <RowConstraints vgrow="SOMETIMES" />
+          </rowConstraints>
+          <children>
+            <Label text="Tytuł raportu" />
+            <TextField fx:id="titleTextField" GridPane.rowIndex="1" />
+              <Label text="Nazwa pliku" GridPane.rowIndex="2" />
+              <TextField fx:id="fileNameTextField" GridPane.rowIndex="3" />
+              <Label text="Rozszerzenie" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+              <ComboBox fx:id="fileExtensionComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+              <Label text="Lokalizacja" GridPane.rowIndex="4" />
+              <AnchorPane GridPane.columnSpan="2" GridPane.rowIndex="5">
+                  <children>
+                      <TextField fx:id="directoryTextField" editable="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="60.0" />
+                      <Button onAction="#handleChangeDirectoryBtnClick" text="Wybierz" AnchorPane.rightAnchor="0.0" />
+                  </children>
+              </AnchorPane>
+              <HBox alignment="CENTER" GridPane.columnSpan="2" GridPane.rowIndex="6">
+                  <children>
+                      <Button fx:id="saveBtn" onAction="#handleSaveBtnClick" text="Zapisz" />
+                  </children>
+              </HBox>
+          </children>
+          <padding>
+              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+          </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

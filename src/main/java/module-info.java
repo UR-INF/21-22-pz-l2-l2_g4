@@ -8,6 +8,8 @@ module com.example.hurtownia {
     requires java.desktop;
     requires org.hibernate.commons.annotations;
     requires java.sql;
+    requires kernel;
+    requires layout;
 
     opens Controllers to javafx.fxml;
     opens Entities;
