@@ -154,3 +154,5 @@ Tabela 'element_zamowienia' zawiera pola 'cena' oraz 'cena za jednostke'. Wartos
 - Inne z opisem
 
 ## Pliki instalacyjne wraz z opisem instalacji i konfiguracji wraz pierwszego uruchomienia
+
+Branche, Lombok, Nazewnictwo, Pluginy
