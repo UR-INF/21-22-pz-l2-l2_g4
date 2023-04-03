@@ -1,6 +1,7 @@
-package DatabaseQueries;
+package OrderItems;
 
-import Entities.*;
+import Order.Zamowienie;
+import Product.Produkt;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -13,13 +14,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
  */
-public class ElementZamowieniaMethods {
+public class ElementZamowieniaService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public ElementZamowieniaMethods() {
+    public ElementZamowieniaService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 

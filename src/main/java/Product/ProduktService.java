@@ -1,9 +1,6 @@
-package DatabaseQueries;
+package Product;
 
-import Entities.Dostawca;
-import Entities.Klient;
-import Entities.Produkt;
-import Entities.Zamowienie;
+import Supplier.Dostawca;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -16,13 +13,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'produkt'.
  */
-public class ProduktMethods {
+public class ProduktService {
 
     private final SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public ProduktMethods() {
+    public ProduktService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 

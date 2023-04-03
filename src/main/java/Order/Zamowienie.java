@@ -1,4 +1,6 @@
-package Entities;
+package Order;
+
+import Customer.Klient;
 
 import javax.persistence.*;
 import java.io.Serializable;

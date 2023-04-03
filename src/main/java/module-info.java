@@ -21,4 +21,14 @@ module com.example.hurtownia {
     exports Entities;
     exports Singleton;
     exports PDFGeneration;
+    exports Customer;
+    opens Customer;
+    exports Supplier;
+    opens Supplier;
+    exports Product;
+    opens Product;
+    exports Order;
+    opens Order;
+    exports OrderItems;
+    opens OrderItems;
 }

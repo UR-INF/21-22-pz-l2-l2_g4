@@ -1,4 +1,7 @@
-package Entities;
+package OrderItems;
+
+import Order.Zamowienie;
+import Product.Produkt;
 
 import javax.persistence.*;
 import java.io.Serializable;

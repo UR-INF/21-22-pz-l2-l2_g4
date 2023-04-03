@@ -1,8 +1,5 @@
-package DatabaseQueries;
+package Customer;
 
-import Entities.Dostawca;
-import Entities.Klient;
-import Entities.Uzytkownik;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
