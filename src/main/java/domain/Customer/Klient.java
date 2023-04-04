@@ -1,4 +1,4 @@
-package Customer;
+package domain.Customer;
 
 import javax.persistence.*;
 import java.io.Serializable;

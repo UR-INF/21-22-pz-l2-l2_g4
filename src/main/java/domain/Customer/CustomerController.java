@@ -1,4 +1,4 @@
-package Customer;
+package domain.Customer;
 
 public class CustomerController {
 }

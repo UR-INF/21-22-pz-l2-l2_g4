@@ -12,23 +12,23 @@ module com.example.hurtownia {
     requires layout;
 
     opens Controllers to javafx.fxml;
-    opens Entities;
 
     exports Controllers;
     exports Main;
     exports DatabaseAccess;
     exports DatabaseQueries;
-    exports Entities;
     exports Singleton;
     exports PDFGeneration;
-    exports Customer;
-    opens Customer;
-    exports Supplier;
-    opens Supplier;
-    exports Product;
-    opens Product;
-    exports Order;
-    opens Order;
-    exports OrderItems;
-    opens OrderItems;
+    exports domain.Customer;
+    opens domain.Customer;
+    exports domain.Supplier;
+    opens domain.Supplier;
+    exports domain.Product;
+    opens domain.Product;
+    exports domain.Order;
+    opens domain.Order;
+    exports domain.OrderItem;
+    opens domain.OrderItem;
+    exports domain.User;
+    opens domain.User;
 }

@@ -1,4 +1,4 @@
-package Product;
+package domain.Product;
 
 public class ProductController {
 }

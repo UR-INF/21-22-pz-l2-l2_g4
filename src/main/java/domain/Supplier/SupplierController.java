@@ -1,4 +1,4 @@
-package Supplier;
+package domain.Supplier;
 
 public class SupplierController {
 }

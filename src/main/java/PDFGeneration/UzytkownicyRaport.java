@@ -3,7 +3,7 @@ package PDFGeneration;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import Entities.Uzytkownik;
+import domain.User.Uzytkownik;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;

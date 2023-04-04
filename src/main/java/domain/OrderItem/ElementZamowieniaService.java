@@ -1,7 +1,7 @@
-package OrderItems;
+package domain.OrderItem;
 
-import Order.Zamowienie;
-import Product.Produkt;
+import domain.Order.Zamowienie;
+import domain.Product.Produkt;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -29,12 +29,12 @@ public class ElementZamowieniaService {
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<ElementZamowienia> getElementyZamowienia() {
+    public List<OrderItem> getElementyZamowienia() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia").addEntity(ElementZamowienia.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -47,12 +47,12 @@ public class ElementZamowieniaService {
      *
      * @return lista elementów zamówienia o podanym id
      */
-    public List<ElementZamowienia> getElementZamowienia(int idZamowienie) {
+    public List<OrderItem> getElementZamowienia(int idZamowienie) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(ElementZamowienia.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -67,7 +67,7 @@ public class ElementZamowieniaService {
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteElementZamowienia(ElementZamowienia elementZamowienia) {
+    public boolean deleteElementZamowienia(OrderItem elementZamowienia) {
         session = sessionFactory.openSession();
         boolean result = false;
 
@@ -102,7 +102,7 @@ public class ElementZamowieniaService {
      * @param ilosc
      * @return
      */
-    public ElementZamowienia saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
+    public OrderItem saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -110,7 +110,7 @@ public class ElementZamowieniaService {
         Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProdukt + "\'").addEntity(Produkt.class).getSingleResult();
         Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienie + "\'").addEntity(Zamowienie.class).getSingleResult();
 
-        ElementZamowienia ez = new ElementZamowienia(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
+        OrderItem ez = new OrderItem(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
 
         session.save(ez);
 
@@ -126,7 +126,7 @@ public class ElementZamowieniaService {
      * @param ez
      * @param idZamowienia
      */
-    public void updateElementZamowieniaZamowienie(ElementZamowienia ez, String idZamowienia) {
+    public void updateElementZamowieniaZamowienie(OrderItem ez, String idZamowienia) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -145,7 +145,7 @@ public class ElementZamowieniaService {
      * @param ez
      * @param idProduktu
      */
-    public void updateElementZamowieniaProdukt(ElementZamowienia ez, String idProduktu) {
+    public void updateElementZamowieniaProdukt(OrderItem ez, String idProduktu) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -165,7 +165,7 @@ public class ElementZamowieniaService {
      *
      * @param ez
      */
-    public void updateElementZamowienia(ElementZamowienia ez) {
+    public void updateElementZamowienia(OrderItem ez) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();

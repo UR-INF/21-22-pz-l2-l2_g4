@@ -1,25 +1,26 @@
 package Controllers;
 
-import Customer.KlienciRaport;
-import Customer.Klient;
-import Customer.KlientMethods;
+import domain.Customer.KlienciRaport;
+import domain.Customer.Klient;
+import domain.Customer.KlientService;
 import DatabaseAccess.DbAccess;
 import DatabaseQueries.*;
-import Entities.*;
-import Order.ZamowieniaRaport;
-import Order.Zamowienie;
-import Order.ZamowienieMethods;
-import OrderItems.ElementZamowienia;
-import OrderItems.ElementZamowieniaService;
-import OrderItems.ElementyZamowieniaRaport;
+import domain.Order.ZamowieniaRaport;
+import domain.Order.Zamowienie;
+import domain.Order.ZamowienieService;
+import domain.OrderItem.OrderItem;
+import domain.OrderItem.ElementZamowieniaService;
+import domain.OrderItem.ElementyZamowieniaRaport;
 import PDFGeneration.*;
-import Product.Produkt;
-import Product.ProduktService;
-import Product.ProduktyRaport;
+import domain.Product.Produkt;
+import domain.Product.ProduktService;
+import domain.Product.ProduktyRaport;
 import Singleton.SingletonConnection;
-import Supplier.Dostawca;
-import Supplier.DostawcaService;
-import Supplier.DostawcyRaport;
+import domain.Supplier.Dostawca;
+import domain.Supplier.DostawcaService;
+import domain.Supplier.DostawcyRaport;
+import domain.User.Uzytkownik;
+import domain.User.UzytkownikService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -85,11 +86,11 @@ public class MainController implements Initializable {
     private TextField elemZamPoleIdProduktu, elemZamPoleIdZamowienia, elemZamPoleIlosc;
     //Tabela
     @FXML
-    private TableView<ElementZamowienia> elemZamTabela;
+    private TableView<OrderItem> elemZamTabela;
     @FXML
-    private TableColumn<ElementZamowienia, String> elemZamKolCenaEl, elemZamKolCenaJM, elemZamKolId, elemZamKolIdProduktu, elemZamKolIdZamowienia, elemZamKolIlosc;
+    private TableColumn<OrderItem, String> elemZamKolCenaEl, elemZamKolCenaJM, elemZamKolId, elemZamKolIdProduktu, elemZamKolIdZamowienia, elemZamKolIlosc;
     @FXML
-    private TableColumn<ElementZamowienia, Void> elemZamKolUsun;
+    private TableColumn<OrderItem, Void> elemZamKolUsun;
     //Filtry
     @FXML
     private TextField elemZamSzukajCenaEl, elemZamSzukajCenaJM, elemZamSzukajId, elemZamSzukajIdProduktu, elemZamSzukajIdZamowienia, elemZamSzukajIlosc;
@@ -174,11 +175,11 @@ public class MainController implements Initializable {
     private DbAccess dbAccess;
     private Login loginService;
     private DostawcaService dostawcaService;
-    private KlientMethods klientMethods;
-    private ZamowienieMethods zamowienieMethods;
+    private KlientService klientMethods;
+    private ZamowienieService zamowienieMethods;
     private ElementZamowieniaService elementZamowieniaService;
     private ProduktService produktService;
-    private UzytkownikMethods uzytkownikMethods;
+    private UzytkownikService uzytkownikService;
     private Scene scene;
     //Listy
     public static ObservableList<Dostawca> dostawcy = FXCollections.observableArrayList();
@@ -186,7 +187,7 @@ public class MainController implements Initializable {
     public static ObservableList<Produkt> produkty = FXCollections.observableArrayList();
     public static ObservableList<Klient> klienci = FXCollections.observableArrayList();
     public static ObservableList<Zamowienie> zamowienia = FXCollections.observableArrayList();
-    public static ObservableList<ElementZamowienia> elementyZamowienia = FXCollections.observableArrayList();
+    public static ObservableList<OrderItem> elementyZamowienia = FXCollections.observableArrayList();
     private final String[] stanyZamowienia = {"w przygotowaniu", "gotowe", "odebrane"};
 
     @Override
@@ -213,11 +214,11 @@ public class MainController implements Initializable {
 
         loginService = new Login();
         dostawcaService = new DostawcaService();
-        klientMethods = new KlientMethods();
-        zamowienieMethods = new ZamowienieMethods();
+        klientMethods = new KlientService();
+        zamowienieMethods = new ZamowienieService();
         elementZamowieniaService = new ElementZamowieniaService();
         produktService = new ProduktService();
-        uzytkownikMethods = new UzytkownikMethods();
+        uzytkownikService = new UzytkownikService();
 
         setTables();
         insertData();
@@ -283,7 +284,7 @@ public class MainController implements Initializable {
         session.save(new Zamowienie(k, "22-02-2022", "złożone", 0.2));
         Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id='" + 1 + "'").addEntity(Zamowienie.class).getSingleResult();
 
-        session.save(new ElementZamowienia(z, p, 10, p.getCena() * 10, p.getCena()));
+        session.save(new OrderItem(z, p, 10, p.getCena() * 10, p.getCena()));
 
         session.getTransaction().commit();
         session.close();
@@ -303,7 +304,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setImie(newValue);
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -320,7 +321,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setNazwisko(newValue);
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -337,7 +338,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setNumerTelefonu(newValue);
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -354,7 +355,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setEmail(newValue);
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -371,7 +372,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setHaslo(newValue);
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -388,7 +389,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setIsAdmin(Integer.parseInt(newValue));
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -405,7 +406,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setGenerowanieRaportow(Integer.parseInt(newValue));
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -422,7 +423,7 @@ public class MainController implements Initializable {
                     Uzytkownik u = uzytkownicyTabela.getSelectionModel().getSelectedItem();
                     try{
                         u.setUdzielanieRabatow(Integer.parseInt(newValue));
-                        uzytkownikMethods.updateUzytkownik(u);
+                        uzytkownikService.updateUzytkownik(u);
                         uzytkownicyInformacje.appendText("\nPomyślnie edytowano użytkownika o id "+u.getId());
                     } catch(Exception e) {
                         uzytkownicyInformacje.appendText("\nNie udało się edytować użytkownika o id "+u.getId());
@@ -452,7 +453,7 @@ public class MainController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Uzytkownik u = getTableView().getItems().get(getIndex());
-                            if (uzytkownikMethods.deleteUzytkownik(u)) {
+                            if (uzytkownikService.deleteUzytkownik(u)) {
                                 uzytkownicy.remove(u);
                                 uzytkownicyInformacje.appendText("\nPomyślnie usunięto użytkownika o id " + u.getId());
                             } else
@@ -1193,9 +1194,9 @@ public class MainController implements Initializable {
         zamowieniaKolIdKlienta.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getKlient().getId())));
         zamowieniaKolData.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getData()));
         zamowieniaKolWartosc.setCellValueFactory(cellData -> {
-            List<ElementZamowienia> list = elementZamowieniaService.getElementZamowienia(cellData.getValue().getId());
+            List<OrderItem> list = elementZamowieniaService.getElementZamowienia(cellData.getValue().getId());
             double cena = 0.0;
-            for (ElementZamowienia el : list) {
+            for (OrderItem el : list) {
                 cena+=el.getCenaElementu()*el.getIlosc();
             }
             return new SimpleStringProperty(String.valueOf(Math.round(cena*100.0)/100.0));
@@ -1312,7 +1313,7 @@ public class MainController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    OrderItem ez = elemZamTabela.getSelectionModel().getSelectedItem();
                     try{
                         elementZamowieniaService.updateElementZamowieniaZamowienie(ez, newValue);
                         elemZamInformacje.appendText("\nPomyślnie edytowano element zamówienia o id "+ez.getId());
@@ -1328,7 +1329,7 @@ public class MainController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    OrderItem ez = elemZamTabela.getSelectionModel().getSelectedItem();
                     try{
                         elementZamowieniaService.updateElementZamowieniaProdukt(ez, newValue);
                         elemZamInformacje.appendText("\nPomyślnie edytowano element zamówienia o id "+ez.getId());
@@ -1344,7 +1345,7 @@ public class MainController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    ElementZamowienia ez = elemZamTabela.getSelectionModel().getSelectedItem();
+                    OrderItem ez = elemZamTabela.getSelectionModel().getSelectedItem();
                     ez.setIlosc(Integer.parseInt(newValue));
                     ez.setCenaElementu(ez.getIlosc()*ez.getCenaZaJednostke());
                     try{
@@ -1367,14 +1368,14 @@ public class MainController implements Initializable {
         elemZamKolIlosc.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIlosc())));
         elemZamKolUsun.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<ElementZamowienia, Void> call(final TableColumn<ElementZamowienia, Void> param) {
-                final TableCell<ElementZamowienia, Void> cell = new TableCell<>() {
+            public TableCell<OrderItem, Void> call(final TableColumn<OrderItem, Void> param) {
+                final TableCell<OrderItem, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/delete.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            ElementZamowienia ez = getTableView().getItems().get(getIndex());
+                            OrderItem ez = getTableView().getItems().get(getIndex());
                             if (elementZamowieniaService.deleteElementZamowienia(ez)) {
                                 elementyZamowienia.remove(ez);
                                 elemZamInformacje.appendText("\nPomyślnie usunięto element zamowienia o id " + ez.getId());
@@ -1562,7 +1563,7 @@ public class MainController implements Initializable {
     @FXML
     public void uzytkownicyBtnPokazClicked(MouseEvent event) {
         uzytkownicyTabela.getItems().clear();
-        uzytkownicy.setAll(uzytkownikMethods.getUzytkownicy());
+        uzytkownicy.setAll(uzytkownikService.getUzytkownicy());
     }
 
     /**
@@ -1573,7 +1574,7 @@ public class MainController implements Initializable {
     @FXML
     public void uzytkownicyBtnDodajClicked(MouseEvent event) {
         try {
-            Uzytkownik u = uzytkownikMethods.saveUzytkownik(uzytkownicyPoleImie.getText(), uzytkownicyPoleNazwisko.getText(), uzytkownicyPoleNrTel.getText(), uzytkownicyPoleEmail.getText(), uzytkownicyPoleHaslo.getText(), uzytkownicyRaport.isSelected() ? 1 : 0, uzytkownicyRabat.isSelected() ? 1 : 0, uzytkownicyAdmin.isSelected() ? 1 : 0);
+            Uzytkownik u = uzytkownikService.saveUzytkownik(uzytkownicyPoleImie.getText(), uzytkownicyPoleNazwisko.getText(), uzytkownicyPoleNrTel.getText(), uzytkownicyPoleEmail.getText(), uzytkownicyPoleHaslo.getText(), uzytkownicyRaport.isSelected() ? 1 : 0, uzytkownicyRabat.isSelected() ? 1 : 0, uzytkownicyAdmin.isSelected() ? 1 : 0);
             uzytkownicyInformacje.appendText("\nDodano nowego użytkownika");
         } catch(Exception e) {
             uzytkownicyInformacje.appendText("\nNie udało się dodać nowego użytkownika");
@@ -1835,7 +1836,7 @@ public class MainController implements Initializable {
     @FXML
     public void elemZamBtnDodajClicked(MouseEvent event) {
         try {
-            ElementZamowienia ez = elementZamowieniaService.saveElementZamowienia(Integer.parseInt(elemZamPoleIdProduktu.getText()), Integer.parseInt(elemZamPoleIdZamowienia.getText()), Integer.parseInt(elemZamPoleIlosc.getText()));
+            OrderItem ez = elementZamowieniaService.saveElementZamowienia(Integer.parseInt(elemZamPoleIdProduktu.getText()), Integer.parseInt(elemZamPoleIdZamowienia.getText()), Integer.parseInt(elemZamPoleIlosc.getText()));
             elemZamInformacje.appendText("\nDodano nowy element zamówienia");
         } catch(Exception e) {
             elemZamInformacje.appendText("\nNie udało się dodać nowego elementu zamówienia");

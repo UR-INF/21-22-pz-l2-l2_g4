@@ -1,4 +1,4 @@
-package Entities;
+package domain.User;
 
 import javax.persistence.*;
 import java.io.Serializable;

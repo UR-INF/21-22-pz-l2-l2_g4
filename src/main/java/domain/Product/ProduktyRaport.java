@@ -1,4 +1,4 @@
-package Supplier;
+package domain.Product;
 
 import PDFGeneration.RaportAbstract;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -11,11 +11,11 @@ import com.itextpdf.layout.element.Table;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class DostawcyRaport extends RaportAbstract {
+public class ProduktyRaport extends RaportAbstract {
 
-    private List<Dostawca> data;
+    private List<Produkt> data;
 
-    public DostawcyRaport(List<Dostawca> data) {
+    public ProduktyRaport(List<Produkt> data) {
         this.data = data;
     }
 
@@ -29,9 +29,9 @@ public class DostawcyRaport extends RaportAbstract {
         Paragraph paragraph = new Paragraph(title);
         document.add(paragraph);
 
-        float columnWidth[] = {40, 40, 40, 40, 40, 40, 40};
+        float columnWidth[] = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id", "Nazwa", "NIP", "Email", "Miejscowosc", "Ulica", "Kraj"};
+        String[] tableHeader = {"Id", "Id dostawcy", "Kod", "Cena", "Ilosc", "Jednostka miary", "Kraj", "Kolor", "Max ilosc", "Stan"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
@@ -39,15 +39,26 @@ public class DostawcyRaport extends RaportAbstract {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[6])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[7])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[9])));
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getNazwa())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getNip())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getMiejscowosc())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getUlica())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDostawca().getId()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getKod())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCena()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getIlosc()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getJednostkaMiary())));
             table.addCell(new Cell().add(new Paragraph(data.get(i).getKraj())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getKolor())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxIlosc()))));
+            double stosunek = data.get(i).getIlosc()/data.get(i).getMaxIlosc();
+            String str;
+            if (stosunek < 30) str = "niski";
+            else if (stosunek < 70) str = "umiarkowany";
+            else str = "wysoki";
+            table.addCell(new Cell().add(new Paragraph(str)));
         }
 
         document.add(table);

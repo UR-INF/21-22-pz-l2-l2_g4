@@ -1,6 +1,6 @@
-package Order;
+package domain.Order;
 
-import Customer.Klient;
+import domain.Customer.Klient;
 
 import javax.persistence.*;
 import java.io.Serializable;

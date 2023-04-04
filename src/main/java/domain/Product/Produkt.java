@@ -1,6 +1,6 @@
-package Product;
+package domain.Product;
 
-import Supplier.Dostawca;
+import domain.Supplier.Dostawca;
 
 import javax.persistence.*;
 import java.io.Serializable;

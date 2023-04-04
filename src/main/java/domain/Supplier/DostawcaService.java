@@ -1,4 +1,4 @@
-package Supplier;
+package domain.Supplier;
 
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
