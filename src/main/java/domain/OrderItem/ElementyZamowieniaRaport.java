@@ -1,6 +1,7 @@
-package PDFGeneration;
+package domain.OrderItem;
 
-import Entities.ElementZamowienia;
+import domain.OrderItem.OrderItem;
+import PDFGeneration.RaportAbstract;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -13,9 +14,9 @@ import java.util.List;
 
 public class ElementyZamowieniaRaport extends RaportAbstract {
 
-    private List<ElementZamowienia> data;
+    private List<OrderItem> data;
 
-    public ElementyZamowieniaRaport(List<ElementZamowienia> data) {
+    public ElementyZamowieniaRaport(List<OrderItem> data) {
         this.data = data;
     }
 

@@ -1,4 +1,7 @@
-package Entities;
+package domain.OrderItem;
+
+import domain.Order.Zamowienie;
+import domain.Product.Produkt;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,7 +11,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "element_zamowienia")
-public class ElementZamowienia implements Serializable {
+public class OrderItem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +35,10 @@ public class ElementZamowienia implements Serializable {
     @Column(name = "cenaZaJednostke")
     private Double cenaZaJednostke;
 
-    public ElementZamowienia() {
+    public OrderItem() {
     }
 
-    public ElementZamowienia(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaElementu, Double cenaZaJednostke) {
+    public OrderItem(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaElementu, Double cenaZaJednostke) {
         this.idZamowienie = idZamowienie;
         this.idProdukt = idProdukt;
         this.ilosc = ilosc;

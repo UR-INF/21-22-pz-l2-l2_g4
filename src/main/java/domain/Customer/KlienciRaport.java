@@ -1,7 +1,6 @@
-package PDFGeneration;
+package domain.Customer;
 
-import Entities.Produkt;
-import Entities.Uzytkownik;
+import PDFGeneration.RaportAbstract;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -12,11 +11,11 @@ import com.itextpdf.layout.element.Table;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class ProduktyRaport extends RaportAbstract {
+public class KlienciRaport extends RaportAbstract {
 
-    private List<Produkt> data;
+    private List<Klient> data;
 
-    public ProduktyRaport(List<Produkt> data) {
+    public KlienciRaport(List<Klient> data) {
         this.data = data;
     }
 
@@ -32,7 +31,7 @@ public class ProduktyRaport extends RaportAbstract {
 
         float columnWidth[] = {40, 40, 40, 40, 40, 40, 40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id", "Id dostawcy", "Kod", "Cena", "Ilosc", "Jednostka miary", "Kraj", "Kolor", "Max ilosc", "Stan"};
+        String[] tableHeader = {"Id", "Imie", "Nazwisko", "Miejscowosc", "Ulica", "Nr budynku", "Nr mieszkania", "Email", "Nr telefonu", "PESEL"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
@@ -46,20 +45,15 @@ public class ProduktyRaport extends RaportAbstract {
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDostawca().getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKod())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCena()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getIlosc()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getJednostkaMiary())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKraj())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKolor())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxIlosc()))));
-            double stosunek = data.get(i).getIlosc()/data.get(i).getMaxIlosc();
-            String str;
-            if (stosunek < 30) str = "niski";
-            else if (stosunek < 70) str = "umiarkowany";
-            else str = "wysoki";
-            table.addCell(new Cell().add(new Paragraph(str)));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getImie())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getNazwisko())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getMiejscowosc())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getUlica())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getNumerBudynku()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getNumerMieszkania()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getNumerTelefonu())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getPesel())));
         }
 
         document.add(table);

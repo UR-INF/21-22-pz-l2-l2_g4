@@ -1,6 +1,6 @@
 package PDFGeneration;
 
-import Entities.Produkt;
+import domain.Product.Produkt;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;

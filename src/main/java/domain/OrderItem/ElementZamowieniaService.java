@@ -1,6 +1,7 @@
-package DatabaseQueries;
+package domain.OrderItem;
 
-import Entities.*;
+import domain.Order.Zamowienie;
+import domain.Product.Produkt;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -13,13 +14,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
  */
-public class ElementZamowieniaMethods {
+public class ElementZamowieniaService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public ElementZamowieniaMethods() {
+    public ElementZamowieniaService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
@@ -28,12 +29,12 @@ public class ElementZamowieniaMethods {
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<ElementZamowienia> getElementyZamowienia() {
+    public List<OrderItem> getElementyZamowienia() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia").addEntity(ElementZamowienia.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -46,12 +47,12 @@ public class ElementZamowieniaMethods {
      *
      * @return lista elementów zamówienia o podanym id
      */
-    public List<ElementZamowienia> getElementZamowienia(int idZamowienie) {
+    public List<OrderItem> getElementZamowienia(int idZamowienie) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<ElementZamowienia> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(ElementZamowienia.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -66,7 +67,7 @@ public class ElementZamowieniaMethods {
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteElementZamowienia(ElementZamowienia elementZamowienia) {
+    public boolean deleteElementZamowienia(OrderItem elementZamowienia) {
         session = sessionFactory.openSession();
         boolean result = false;
 
@@ -101,7 +102,7 @@ public class ElementZamowieniaMethods {
      * @param ilosc
      * @return
      */
-    public ElementZamowienia saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
+    public OrderItem saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -109,7 +110,7 @@ public class ElementZamowieniaMethods {
         Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProdukt + "\'").addEntity(Produkt.class).getSingleResult();
         Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienie + "\'").addEntity(Zamowienie.class).getSingleResult();
 
-        ElementZamowienia ez = new ElementZamowienia(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
+        OrderItem ez = new OrderItem(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
 
         session.save(ez);
 
@@ -125,7 +126,7 @@ public class ElementZamowieniaMethods {
      * @param ez
      * @param idZamowienia
      */
-    public void updateElementZamowieniaZamowienie(ElementZamowienia ez, String idZamowienia) {
+    public void updateElementZamowieniaZamowienie(OrderItem ez, String idZamowienia) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -144,7 +145,7 @@ public class ElementZamowieniaMethods {
      * @param ez
      * @param idProduktu
      */
-    public void updateElementZamowieniaProdukt(ElementZamowienia ez, String idProduktu) {
+    public void updateElementZamowieniaProdukt(OrderItem ez, String idProduktu) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -164,7 +165,7 @@ public class ElementZamowieniaMethods {
      *
      * @param ez
      */
-    public void updateElementZamowienia(ElementZamowienia ez) {
+    public void updateElementZamowienia(OrderItem ez) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();

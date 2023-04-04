@@ -1,8 +1,6 @@
-package DatabaseQueries;
+package domain.User;
 
-import Entities.Dostawca;
-import Entities.Klient;
-import Entities.Uzytkownik;
+import domain.User.Uzytkownik;
 import Singleton.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
@@ -13,29 +11,29 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Zawiera metody dla tabeli 'dostawca'.
+ * Zawiera metody dla tabeli 'uzytkownik'.
  */
-public class DostawcaMethods {
+public class UzytkownikService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public DostawcaMethods() {
+    public UzytkownikService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
     /**
-     * Pobiera wszystkich dostawców z bazy danych.
+     * Pobiera wszystkich użytkowników z bazy danych.
      *
-     * @return lista wszystkich dostawców
+     * @return lista wszystkich użytkowników
      */
-    public List<Dostawca> getDostawcy() {
+    public List<Uzytkownik> getUzytkownicy() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Dostawca> list = session.createSQLQuery("select * from dostawca").addEntity(Dostawca.class).list();
+        List<Uzytkownik> list = session.createSQLQuery("select * from uzytkownik").addEntity(Uzytkownik.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -44,39 +42,20 @@ public class DostawcaMethods {
     }
 
     /**
-     * Zwraca dostawcę o podanym id.
+     * Usuwa użytkownika z bazy danych.
      *
-     * @param id
-     * @return
-     */
-    public Dostawca getDostawca(String id) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + id + "\'").addEntity(Dostawca.class).getSingleResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return d;
-    }
-
-    /**
-     * Usuwa dostawcę z bazy danych.
-     *
-     * @param dostawca
+     * @param uzytkownik
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteDostawca(Dostawca dostawca) {
+    public boolean deleteUzytkownik(Uzytkownik uzytkownik) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(dostawca);
+            session.delete(uzytkownik);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -97,43 +76,44 @@ public class DostawcaMethods {
     }
 
     /**
-     * Dodaje nowego dostawcę.
+     * Dodaje nowego użytkownika.
      *
+     * @param imie
+     * @param nazwisko
      * @param email
-     * @param kraj
-     * @param miejscowosc
-     * @param ulica
-     * @param nazwa
-     * @param nip
+     * @param haslo
+     * @param numerTelefonu
+     * @param isAdmin
+     * @param generowanieRaportow
+     * @param udzielanieRabatow
      * @return
      */
-    public Dostawca saveDostawca(String email, String kraj, String miejscowosc, String ulica, String nazwa, String nip) {
+    public Uzytkownik saveUzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin, int generowanieRaportow, int udzielanieRabatow) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Dostawca d = new Dostawca(email, kraj, miejscowosc, ulica, nazwa, nip);
+        Uzytkownik u = new Uzytkownik(imie, nazwisko, email, haslo, numerTelefonu, isAdmin, generowanieRaportow, udzielanieRabatow);
 
-        session.save(d);
+        session.save(u);
 
         session.getTransaction().commit();
         session.close();
 
-        return d;
+        return u;
     }
 
     /**
-     * Aktualizuje dostawcę.
+     * Aktualizuje użytkownika.
      *
-     * @param d
+     * @param u
      */
-    public void updateDostawca(Dostawca d) {
+    public void updateUzytkownik(Uzytkownik u) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(d);
+        session.update(u);
         session.getTransaction().commit();
         session.close();
     }
-
 }

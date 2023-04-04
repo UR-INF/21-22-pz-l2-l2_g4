@@ -1,4 +1,6 @@
-package Entities;
+package domain.Product;
+
+import domain.Supplier.Dostawca;
 
 import javax.persistence.*;
 import java.io.Serializable;
