@@ -126,7 +126,7 @@ public class OrderService {
         session.flush();
 
         Customer customer = (Customer) session.createSQLQuery("select * from klient where id=\'" + idCustomer + "\'").addEntity(Customer.class).getSingleResult();
-        order.setKlient(customer);
+        order.setCustomer(customer);
         session.update(customer);
 
         session.getTransaction().commit();

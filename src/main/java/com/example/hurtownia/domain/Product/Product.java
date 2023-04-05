@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.domain.supplier.Supplier;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,6 +9,10 @@ import java.io.Serializable;
 /**
  * Reprezentuje tabelę 'Produkt' w bazie danych.
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "Produkt")
 public class Product implements Serializable {
@@ -16,142 +21,43 @@ public class Product implements Serializable {
     @Column(name = "id")
     private int id;
 
+    @NonNull
     @ManyToOne(targetEntity = Supplier.class)
     @JoinColumn(name = "idDostawca")
-    private Supplier idSupplier;
+    private Supplier supplier;
 
+    @NonNull
     @Column(name = "nazwa")
     private String name;
 
+    @NonNull
     @Column(name = "jednostkaMiary")
     private String unitOfMeasurement;
 
+    @NonNull
     @Column(name = "cena")
     private Double price;
 
+    @NonNull
     @Column(name = "kraj")
     private String country;
 
+    @NonNull
     @Column(name = "kod")
     private String code;
 
+    @NonNull
     @Column(name = "kolor")
     private String color;
 
+    @NonNull
     @Column(name = "ilosc")
     private int number;
 
+    @NonNull
     @Column(name = "maxIlosc")
     private int maxNumber;
 
     @Transient
     private boolean supply = false;
-
-    public Product() {
-    }
-
-    public Product(Supplier idSupplier, String name, String unitOfMeasurement, Double price, String country, String code, String color, int number, int maxNumber) {
-        this.idSupplier = idSupplier;
-        this.name = name;
-        this.unitOfMeasurement = unitOfMeasurement;
-        this.price = price;
-        this.country = country;
-        this.code = code;
-        this.color = color;
-        this.number = number;
-        this.maxNumber = maxNumber;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Supplier getSupplier() {
-        return idSupplier;
-    }
-
-    public void setSupplier(Supplier idSupplier) {
-        this.idSupplier = idSupplier;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUnitOfMeasurement() {
-        return unitOfMeasurement;
-    }
-
-    public void setUnitOfMeasurement(String unitOfMeasurement) {
-        this.unitOfMeasurement = unitOfMeasurement;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public int getMaxNumber() {
-        return maxNumber;
-    }
-
-    public void setMaxNumber(int maxNumber) {
-        this.maxNumber = maxNumber;
-    }
-
-    public boolean isSupply() {
-        return supply;
-    }
-
-    public void setSupply(boolean supply) {
-        this.supply = supply;
-    }
-
-    @Override
-    public String toString() {
-        return "Produkt{" + "id=" + id + ", idDostawca=" + idSupplier + ", nazwa='" + name + '\'' + ", jednostkaMiary='" + unitOfMeasurement + '\'' + ", cena=" + price + ", kraj='" + country + '\'' + ", kod='" + code + '\'' + ", kolor='" + color + '\'' + ", ilosc=" + number + ", maxIlosc=" + maxNumber + '}';
-    }
 }

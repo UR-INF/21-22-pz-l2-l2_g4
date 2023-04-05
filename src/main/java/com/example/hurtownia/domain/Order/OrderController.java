@@ -129,7 +129,7 @@ public class OrderController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
             Parent root = fxmlLoader.load();
             PDFController controller = fxmlLoader.getController();
-            controller.setRaport(report);
+            controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();
@@ -219,7 +219,7 @@ public class OrderController implements Initializable {
         });
 
         idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
-        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getKlient().getId())));
+        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomer().getId())));
         dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
         valueColumn.setCellValueFactory(cellData -> {
             List<OrderItem> list = orderItemService.getOrderItem(cellData.getValue().getId());
@@ -258,7 +258,7 @@ public class OrderController implements Initializable {
                                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
                                 Parent root = fxmlLoader.load();
                                 PDFController controller = fxmlLoader.getController();
-                                controller.setRaport(report);
+                                controller.setReport(report);
                                 Scene scene = new Scene(root);
                                 stage.setScene(scene);
                                 stage.showAndWait();

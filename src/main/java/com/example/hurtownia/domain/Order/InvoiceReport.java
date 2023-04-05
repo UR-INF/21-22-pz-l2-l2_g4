@@ -38,10 +38,10 @@ public class InvoiceReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
 
-        table.addCell(new Cell().add(new Paragraph(order.getKlient().getName())));
-        table.addCell(new Cell().add(new Paragraph(order.getKlient().getSurname())));
+        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
+        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getSurname())));
         table.addCell(new Cell().add(new Paragraph(order.getDate())));
-        table.addCell(new Cell().add(new Paragraph(order.getKlient().getName())));
+        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
         String discount;
         switch (String.valueOf(order.getDiscount())) {
             case "0.1":

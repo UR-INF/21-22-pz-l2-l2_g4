@@ -23,7 +23,7 @@
                 <TableColumn fx:id="deleteColumn" editable="false" prefWidth="159.2000732421875" text="Usuń" />
             </columns>
         </TableView>
-        <AnchorPane layoutX="-75.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
+        <AnchorPane layoutX="-75.0" layoutY="-2.0" prefHeight="714.0" prefWidth="400.0" style="-fx-background-color: #e3e3e3;">
             <children>
                 <Text layoutX="134.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj element zamówenia">
                     <font>

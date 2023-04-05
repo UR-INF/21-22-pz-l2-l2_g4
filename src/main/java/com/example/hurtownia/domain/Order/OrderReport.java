@@ -40,7 +40,7 @@ public class OrderReport extends AbstractReport {
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getKlient().getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCustomer().getId()))));
             table.addCell(new Cell().add(new Paragraph(data.get(i).getDate())));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDiscount()))));
             table.addCell(new Cell().add(new Paragraph(data.get(i).getState())));

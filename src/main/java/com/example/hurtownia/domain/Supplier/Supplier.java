@@ -1,11 +1,17 @@
 package com.example.hurtownia.domain.supplier;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * Reprezentuje tabelę 'dostawca' w bazie danych.
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "Dostawca")
 public class Supplier implements Serializable {
@@ -15,102 +21,27 @@ public class Supplier implements Serializable {
     @Column(name = "id")
     private int id;
 
+    @NonNull
     @Column(name = "email")
     private String email;
 
+    @NonNull
     @Column(name = "kraj")
     private String country;
 
+    @NonNull
     @Column(name = "miejscowosc")
     private String place;
 
+    @NonNull
     @Column(name = "ulica")
     private String street;
 
+    @NonNull
     @Column(name = "nazwa")
     private String name;
 
+    @NonNull
     @Column(name = "nip")
     private String nip;
-
-    public Supplier() {
-    }
-
-    public Supplier(String email, String country, String place, String street, String name, String nip) {
-        this.email = email;
-        this.country = country;
-        this.place = place;
-        this.street = street;
-        this.name = name;
-        this.nip = nip;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNip() {
-        return nip;
-    }
-
-    public void setNip(String nip) {
-        this.nip = nip;
-    }
-
-    @Override
-    public String toString() {
-        return "Dostawca{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", kraj='" + country + '\'' +
-                ", miejscowosc='" + place + '\'' +
-                ", ulica='" + street + '\'' +
-                ", nazwa='" + name + '\'' +
-                ", nip='" + nip + '\'' +
-                '}';
-    }
 }

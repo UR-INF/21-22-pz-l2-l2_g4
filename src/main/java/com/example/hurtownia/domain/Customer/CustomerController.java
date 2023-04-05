@@ -108,7 +108,7 @@ public class CustomerController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             PDFController controller = fxmlLoader.getController();
-            controller.setRaport(report);
+            controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();

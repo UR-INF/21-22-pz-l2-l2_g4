@@ -78,5 +78,5 @@ public class PDFController implements Initializable {
         }
     }
 
-    public void setRaport(AbstractReport report) {this.report = report;}
+    public void setReport(AbstractReport report) {this.report = report;}
 }
