@@ -1,7 +1,7 @@
-package com.example.hurtownia.domain.OrderItem;
+package com.example.hurtownia.domain.orderitem;
 
-import com.example.hurtownia.domain.Order.Zamowienie;
-import com.example.hurtownia.domain.Product.Produkt;
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.product.Product;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,32 +18,32 @@ public class OrderItem implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne(targetEntity = Zamowienie.class)
+    @ManyToOne(targetEntity = Order.class)
     @JoinColumn(name = "idZamowienie")
-    private Zamowienie idZamowienie;
+    private Order idOrder;
 
-    @ManyToOne(targetEntity = Produkt.class)
+    @ManyToOne(targetEntity = Product.class)
     @JoinColumn(name = "idProdukt")
-    private Produkt idProdukt;
+    private Product idProduct;
 
     @Column(name = "ilosc")
-    private int ilosc;
+    private int number;
 
     @Column(name = "cenaElementu")
-    private Double cenaElementu;
+    private Double itemPrice;
 
     @Column(name = "cenaZaJednostke")
-    private Double cenaZaJednostke;
+    private Double pricePerUnit;
 
     public OrderItem() {
     }
 
-    public OrderItem(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaElementu, Double cenaZaJednostke) {
-        this.idZamowienie = idZamowienie;
-        this.idProdukt = idProdukt;
-        this.ilosc = ilosc;
-        this.cenaElementu = cenaElementu;
-        this.cenaZaJednostke = cenaZaJednostke;
+    public OrderItem(Order idOrder, Product idProduct, int number, Double itemPrice, Double pricePerUnit) {
+        this.idOrder = idOrder;
+        this.idProduct = idProduct;
+        this.number = number;
+        this.itemPrice = itemPrice;
+        this.pricePerUnit = pricePerUnit;
     }
 
     public int getId() {
@@ -54,48 +54,48 @@ public class OrderItem implements Serializable {
         this.id = id;
     }
 
-    public Zamowienie getZamowienie() {
-        return idZamowienie;
+    public Order getOrder() {
+        return idOrder;
     }
 
-    public void setZamowienie(Zamowienie idZamowienie) {
-        this.idZamowienie = idZamowienie;
+    public void setOrder(Order idOrder) {
+        this.idOrder = idOrder;
     }
 
-    public Produkt getProdukt() {
-        return idProdukt;
+    public Product getProduct() {
+        return idProduct;
     }
 
-    public void setProdukt(Produkt idProdukt) {
-        this.idProdukt = idProdukt;
+    public void setProduct(Product idProduct) {
+        this.idProduct = idProduct;
     }
 
-    public int getIlosc() {
-        return ilosc;
+    public int getNumber() {
+        return number;
     }
 
-    public void setIlosc(int ilosc) {
-        this.ilosc = ilosc;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
-    public Double getCenaElementu() {
-        return cenaElementu;
+    public Double getItemPrice() {
+        return itemPrice;
     }
 
-    public void setCenaElementu(Double cenaElementu) {
-        this.cenaElementu = cenaElementu;
+    public void setItemPrice(Double itemPrice) {
+        this.itemPrice = itemPrice;
     }
 
-    public Double getCenaZaJednostke() {
-        return cenaZaJednostke;
+    public Double getPricePerUnit() {
+        return pricePerUnit;
     }
 
-    public void setCenaZaJednostke(Double cenaZaJednostke) {
-        this.cenaZaJednostke = cenaZaJednostke;
+    public void setPricePerUnit(Double pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
     }
 
     @Override
     public String toString() {
-        return "ElementZamowienia{" + "id=" + id + ", idZamowienie=" + idZamowienie + ", idProdukt=" + idProdukt + ", ilosc=" + ilosc + ", cenaElementu=" + cenaElementu + ", cenaZaJednostke=" + cenaZaJednostke + '}';
+        return "ElementZamowienia{" + "id=" + id + ", idZamowienie=" + idOrder + ", idProdukt=" + idProduct + ", ilosc=" + number + ", cenaElementu=" + itemPrice + ", cenaZaJednostke=" + pricePerUnit + '}';
     }
 }

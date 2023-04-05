@@ -1,6 +1,6 @@
-package com.example.hurtownia.domain.User;
+package com.example.hurtownia.domain.user;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,13 +12,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'uzytkownik'.
  */
-public class UzytkownikService {
+public class UserService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public UzytkownikService() {
+    public UserService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
@@ -27,12 +27,12 @@ public class UzytkownikService {
      *
      * @return lista wszystkich użytkowników
      */
-    public List<Uzytkownik> getUzytkownicy() {
+    public List<User> getUsers() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Uzytkownik> list = session.createSQLQuery("select * from uzytkownik").addEntity(Uzytkownik.class).list();
+        List<User> list = session.createSQLQuery("select * from uzytkownik").addEntity(User.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -43,18 +43,18 @@ public class UzytkownikService {
     /**
      * Usuwa użytkownika z bazy danych.
      *
-     * @param uzytkownik
+     * @param user
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteUzytkownik(Uzytkownik uzytkownik) {
+    public boolean deleteUser(User user) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(uzytkownik);
+            session.delete(user);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -77,41 +77,41 @@ public class UzytkownikService {
     /**
      * Dodaje nowego użytkownika.
      *
-     * @param imie
-     * @param nazwisko
+     * @param name
+     * @param surname
      * @param email
-     * @param haslo
-     * @param numerTelefonu
+     * @param password
+     * @param phoneNumber
      * @param isAdmin
-     * @param generowanieRaportow
-     * @param udzielanieRabatow
+     * @param generatingReports
+     * @param grantingDiscounts
      * @return
      */
-    public Uzytkownik saveUzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin, int generowanieRaportow, int udzielanieRabatow) {
+    public User saveUser(String name, String surname, String email, String password, String phoneNumber, int isAdmin, int generatingReports, int grantingDiscounts) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Uzytkownik u = new Uzytkownik(imie, nazwisko, email, haslo, numerTelefonu, isAdmin, generowanieRaportow, udzielanieRabatow);
+        User user = new User(name, surname, email, password, phoneNumber, isAdmin, generatingReports, grantingDiscounts);
 
-        session.save(u);
+        session.save(user);
 
         session.getTransaction().commit();
         session.close();
 
-        return u;
+        return user;
     }
 
     /**
      * Aktualizuje użytkownika.
      *
-     * @param u
+     * @param user
      */
-    public void updateUzytkownik(Uzytkownik u) {
+    public void updateUser(User user) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(u);
+        session.update(user);
         session.getTransaction().commit();
         session.close();
     }

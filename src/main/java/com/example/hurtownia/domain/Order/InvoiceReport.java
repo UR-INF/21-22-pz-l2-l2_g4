@@ -1,25 +1,25 @@
-package com.example.hurtownia.PDFGeneration;
+package com.example.hurtownia.domain.order;
 
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.example.hurtownia.domain.Order.Zamowienie;
 
 import java.io.FileNotFoundException;
 
-public class FakturaRaport extends RaportAbstract {
+public class InvoiceReport extends AbstractReport {
 
-    private Zamowienie zamowienie;
+    private Order order;
 
-    public FakturaRaport(Zamowienie zamowienie) {
-        this.zamowienie = zamowienie;
+    public InvoiceReport(Order order) {
+        this.order = order;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -38,23 +38,23 @@ public class FakturaRaport extends RaportAbstract {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
 
-        table.addCell(new Cell().add(new Paragraph(zamowienie.getKlient().getImie())));
-        table.addCell(new Cell().add(new Paragraph(zamowienie.getKlient().getNazwisko())));
-        table.addCell(new Cell().add(new Paragraph(zamowienie.getData())));
-        table.addCell(new Cell().add(new Paragraph(zamowienie.getKlient().getImie())));
-        String rabat;
-        switch (String.valueOf(zamowienie.getRabat())) {
+        table.addCell(new Cell().add(new Paragraph(order.getKlient().getName())));
+        table.addCell(new Cell().add(new Paragraph(order.getKlient().getSurname())));
+        table.addCell(new Cell().add(new Paragraph(order.getDate())));
+        table.addCell(new Cell().add(new Paragraph(order.getKlient().getName())));
+        String discount;
+        switch (String.valueOf(order.getDiscount())) {
             case "0.1":
-                rabat = "-10%";
+                discount = "-10%";
                 break;
             case "0.2":
-                rabat = "-20%";
+                discount = "-20%";
                 break;
             default:
-                rabat = "nie udzielono";
+                discount = "nie udzielono";
         }
-        table.addCell(new Cell().add(new Paragraph(rabat)));
-        table.addCell(new Cell().add(new Paragraph(zamowienie.getStanZamowienia())));
+        table.addCell(new Cell().add(new Paragraph(discount)));
+        table.addCell(new Cell().add(new Paragraph(order.getState())));
 
         document.add(table);
 

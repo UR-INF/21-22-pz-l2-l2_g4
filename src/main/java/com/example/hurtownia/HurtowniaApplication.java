@@ -7,8 +7,5 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class HurtowniaApplication {
 
-	public static void main(String[] args) {
-		Application.launch(Start.class, args);
-	}
-
+	public static void main(String[] args) {Application.launch(Start.class, args);}
 }

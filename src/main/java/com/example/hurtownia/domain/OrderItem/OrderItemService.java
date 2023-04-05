@@ -1,8 +1,8 @@
-package com.example.hurtownia.domain.OrderItem;
+package com.example.hurtownia.domain.orderitem;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
-import com.example.hurtownia.domain.Order.Zamowienie;
-import com.example.hurtownia.domain.Product.Produkt;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.product.Product;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
  */
-public class ElementZamowieniaService {
+public class OrderItemService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public ElementZamowieniaService() {
+    public OrderItemService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
@@ -29,7 +29,7 @@ public class ElementZamowieniaService {
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<OrderItem> getElementyZamowienia() {
+    public List<OrderItem> getOrderItems() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
@@ -47,12 +47,12 @@ public class ElementZamowieniaService {
      *
      * @return lista elementów zamówienia o podanym id
      */
-    public List<OrderItem> getElementZamowienia(int idZamowienie) {
+    public List<OrderItem> getOrderItem(int idOrder) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idZamowienie +"\'").addEntity(OrderItem.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idOrder +"\'").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -63,18 +63,18 @@ public class ElementZamowieniaService {
     /**
      * Usuwa element zamówienia z bazy danych.
      *
-     * @param elementZamowienia
+     * @param orderItem
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteElementZamowienia(OrderItem elementZamowienia) {
+    public boolean deleteOrderItem(OrderItem orderItem) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(elementZamowienia);
+            session.delete(orderItem);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -97,43 +97,43 @@ public class ElementZamowieniaService {
     /**
      * Dodaje nowy element zamówienia.
      *
-     * @param idZamowienie
-     * @param idProdukt
-     * @param ilosc
+     * @param idOrder
+     * @param idProduct
+     * @param number
      * @return
      */
-    public OrderItem saveElementZamowienia(int idProdukt, int idZamowienie, int ilosc) {
+    public OrderItem saveOrderItem(int idProduct, int idOrder, int number) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProdukt + "\'").addEntity(Produkt.class).getSingleResult();
-        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienie + "\'").addEntity(Zamowienie.class).getSingleResult();
+        Product product = (Product) session.createSQLQuery("select * from produkt where id=\'" + idProduct + "\'").addEntity(Product.class).getSingleResult();
+        Order order = (Order) session.createSQLQuery("select * from zamowienie where id=\'" + idOrder + "\'").addEntity(Order.class).getSingleResult();
 
-        OrderItem ez = new OrderItem(z, p, ilosc, Math.round(p.getCena()*ilosc*100.0)/100.0, p.getCena());
+        OrderItem orderItem = new OrderItem(order, product, number, Math.round(product.getPrice()*number*100.0)/100.0, product.getPrice());
 
-        session.save(ez);
+        session.save(orderItem);
 
         session.getTransaction().commit();
         session.close();
 
-        return ez;
+        return orderItem;
     }
 
     /**
      * Aktualizuje zamówienie elementu zamówienia.
      *
-     * @param ez
-     * @param idZamowienia
+     * @param orderItem
+     * @param idOrder
      */
-    public void updateElementZamowieniaZamowienie(OrderItem ez, String idZamowienia) {
+    public void updateOrderItemOrder(OrderItem orderItem, String idOrder) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Zamowienie z = (Zamowienie) session.createSQLQuery("select * from zamowienie where id=\'" + idZamowienia + "\'").addEntity(Zamowienie.class).getSingleResult();
-        ez.setZamowienie(z);
-        session.update(ez);
+        Order order = (Order) session.createSQLQuery("select * from zamowienie where id=\'" + idOrder + "\'").addEntity(Order.class).getSingleResult();
+        orderItem.setOrder(order);
+        session.update(orderItem);
 
         session.getTransaction().commit();
         session.close();
@@ -142,19 +142,19 @@ public class ElementZamowieniaService {
     /**
      * Aktualizuje produkt elementu zamówienia.
      *
-     * @param ez
-     * @param idProduktu
+     * @param orderItem
+     * @param idProduct
      */
-    public void updateElementZamowieniaProdukt(OrderItem ez, String idProduktu) {
+    public void updateOrderItemProduct(OrderItem orderItem, String idProduct) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + idProduktu + "\'").addEntity(Produkt.class).getSingleResult();
-        ez.setProdukt(p);
-        ez.setCenaZaJednostke(p.getCena());
-        ez.setCenaElementu(ez.getCenaZaJednostke()*ez.getIlosc());
-        session.update(ez);
+        Product product = (Product) session.createSQLQuery("select * from produkt where id=\'" + idProduct + "\'").addEntity(Product.class).getSingleResult();
+        orderItem.setProduct(product);
+        orderItem.setPricePerUnit(product.getPrice());
+        orderItem.setItemPrice(orderItem.getPricePerUnit()*orderItem.getNumber());
+        session.update(orderItem);
 
         session.getTransaction().commit();
         session.close();
@@ -163,14 +163,15 @@ public class ElementZamowieniaService {
     /**
      * Aktualizuje element zamówienia.
      *
-     * @param ez
+     * @param orderItem
      */
-    public void updateElementZamowienia(OrderItem ez) {
+    public void updateOrderItem(OrderItem orderItem) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(ez);
+        session.update(orderItem);
         session.getTransaction().commit();
         session.close();
     }
+
 }

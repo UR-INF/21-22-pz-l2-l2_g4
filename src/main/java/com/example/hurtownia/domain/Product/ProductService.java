@@ -1,7 +1,7 @@
-package com.example.hurtownia.domain.Product;
+package com.example.hurtownia.domain.product;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
-import com.example.hurtownia.domain.Supplier.Dostawca;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
+import com.example.hurtownia.domain.supplier.Supplier;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,13 +13,13 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'produkt'.
  */
-public class ProduktService {
+public class ProductService {
 
     private final SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public ProduktService() {
+    public ProductService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
@@ -28,12 +28,12 @@ public class ProduktService {
      *
      * @return lista wszystkich produktów
      */
-    public List<Produkt> getProdukty() {
+    public List<Product> getProducts() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Produkt> list = session.createSQLQuery("select * from produkt").addEntity(Produkt.class).list();
+        List<Product> list = session.createSQLQuery("select * from produkt").addEntity(Product.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -42,39 +42,20 @@ public class ProduktService {
     }
 
     /**
-     * Zwraca produkt o podanym id.
-     *
-     * @param id
-     * @return
-     */
-    public Produkt getProdukt(String id) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Produkt p = (Produkt) session.createSQLQuery("select * from produkt where id=\'" + id + "\'").addEntity(Produkt.class).getSingleResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return p;
-    }
-
-    /**
      * Usuwa produkt z bazy danych.
      *
-     * @param produkt
+     * @param product
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteProdukt(Produkt produkt) {
+    public boolean deleteProduct(Product product) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(produkt);
+            session.delete(product);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -97,47 +78,47 @@ public class ProduktService {
     /**
      * Dodaje produkt.
      *
-     * @param idDostawca
-     * @param nazwa
-     * @param jednostkaMiary
-     * @param cena
-     * @param kraj
-     * @param kod
-     * @param kolor
-     * @param ilosc
-     * @param maxIlosc
+     * @param idSupplier
+     * @param name
+     * @param unitOfMeasurement
+     * @param price
+     * @param country
+     * @param code
+     * @param color
+     * @param number
+     * @param maxNumber
      * @return
      */
-    public Produkt saveProdukt(int idDostawca, String nazwa, String jednostkaMiary, Double cena, String kraj, String kod, String kolor, int ilosc, int maxIlosc) {
+    public Product saveProduct(int idSupplier, String name, String unitOfMeasurement, Double price, String country, String code, String color, int number, int maxNumber) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + idDostawca + "\'").addEntity(Dostawca.class).getSingleResult();
-        Produkt p = new Produkt(d, nazwa, jednostkaMiary, cena, kraj, kod, kolor, ilosc, maxIlosc);
+        Supplier supplier = (Supplier) session.createSQLQuery("select * from dostawca where id=\'" + idSupplier + "\'").addEntity(Supplier.class).getSingleResult();
+        Product product = new Product(supplier, name, unitOfMeasurement, price, country, code, color, number, maxNumber);
 
-        session.save(p);
+        session.save(product);
 
         session.getTransaction().commit();
         session.close();
 
-        return p;
+        return product;
     }
 
     /**
      * Aktualizuje dostawcę produktu.
      *
-     * @param p
-     * @param idDostawca
+     * @param product
+     * @param idSupplier
      */
-    public void updateProduktDostawca(Produkt p, String idDostawca) {
+    public void updateProductSupplier(Product product, String idSupplier) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + idDostawca + "\'").addEntity(Dostawca.class).getSingleResult();
-        p.setDostawca(d);
-        session.update(p);
+        Supplier supplier = (Supplier) session.createSQLQuery("select * from dostawca where id=\'" + idSupplier + "\'").addEntity(Supplier.class).getSingleResult();
+        product.setSupplier(supplier);
+        session.update(product);
 
         session.getTransaction().commit();
         session.close();
@@ -146,13 +127,13 @@ public class ProduktService {
     /**
      * Aktualizuje produkt.
      *
-     * @param p
+     * @param product
      */
-    public void updateProdukt(Produkt p) {
+    public void updateProduct(Product product) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(p);
+        session.update(product);
         session.getTransaction().commit();
         session.close();
     }

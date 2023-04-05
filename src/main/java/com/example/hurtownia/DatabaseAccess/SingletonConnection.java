@@ -1,4 +1,4 @@
-package com.example.hurtownia.Singleton;
+package com.example.hurtownia.databaseaccess;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;

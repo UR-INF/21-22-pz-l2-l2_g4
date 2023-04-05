@@ -1,25 +1,25 @@
-package com.example.hurtownia.PDFGeneration;
+package com.example.hurtownia.domain.product;
 
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.example.hurtownia.domain.Product.Produkt;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class DostawaRaport extends RaportAbstract {
-    private List<Produkt> data;
+public class SupplyReport extends AbstractReport {
+    private List<Product> data;
 
-    public DostawaRaport(List<Produkt> data) {
+    public SupplyReport(List<Product> data) {
         this.data = data;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -37,11 +37,11 @@ public class DostawaRaport extends RaportAbstract {
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
 
         for (int i = 0; i < data.size(); i++) {
-            if(data.get(i).isDostawa()) {
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDostawca().getId()))));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getKod())));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getJednostkaMiary())));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxIlosc()-data.get(i).getIlosc()))));
+            if(data.get(i).isSupply()) {
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
+                table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
+                table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber()-data.get(i).getNumber()))));
             }
         }
 

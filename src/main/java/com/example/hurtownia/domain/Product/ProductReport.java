@@ -1,6 +1,6 @@
-package com.example.hurtownia.domain.Product;
+package com.example.hurtownia.domain.product;
 
-import com.example.hurtownia.PDFGeneration.RaportAbstract;
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -11,16 +11,16 @@ import com.itextpdf.layout.element.Table;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class ProduktyRaport extends RaportAbstract {
+public class ProductReport extends AbstractReport {
 
-    private List<Produkt> data;
+    private List<Product> data;
 
-    public ProduktyRaport(List<Produkt> data) {
+    public ProductReport(List<Product> data) {
         this.data = data;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -45,15 +45,15 @@ public class ProduktyRaport extends RaportAbstract {
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDostawca().getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKod())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCena()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getIlosc()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getJednostkaMiary())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKraj())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKolor())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxIlosc()))));
-            double stosunek = data.get(i).getIlosc()/data.get(i).getMaxIlosc();
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getPrice()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getNumber()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getCountry())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getColor())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber()))));
+            double stosunek = data.get(i).getNumber()/data.get(i).getMaxNumber();
             String str;
             if (stosunek < 30) str = "niski";
             else if (stosunek < 70) str = "umiarkowany";

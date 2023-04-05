@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.Supplier;
+package com.example.hurtownia.domain.supplier;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "Dostawca")
-public class Dostawca implements Serializable {
+public class Supplier implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,29 +19,29 @@ public class Dostawca implements Serializable {
     private String email;
 
     @Column(name = "kraj")
-    private String kraj;
+    private String country;
 
     @Column(name = "miejscowosc")
-    private String miejscowosc;
+    private String place;
 
     @Column(name = "ulica")
-    private String ulica;
+    private String street;
 
     @Column(name = "nazwa")
-    private String nazwa;
+    private String name;
 
     @Column(name = "nip")
     private String nip;
 
-    public Dostawca() {
+    public Supplier() {
     }
 
-    public Dostawca(String email, String kraj, String miejscowosc, String ulica, String nazwa, String nip) {
+    public Supplier(String email, String country, String place, String street, String name, String nip) {
         this.email = email;
-        this.kraj = kraj;
-        this.miejscowosc = miejscowosc;
-        this.ulica = ulica;
-        this.nazwa = nazwa;
+        this.country = country;
+        this.place = place;
+        this.street = street;
+        this.name = name;
         this.nip = nip;
     }
 
@@ -61,36 +61,36 @@ public class Dostawca implements Serializable {
         this.email = email;
     }
 
-    public String getKraj() {
-        return kraj;
+    public String getCountry() {
+        return country;
     }
 
-    public void setKraj(String kraj) {
-        this.kraj = kraj;
+    public void setCountry(String country) {
+        this.country = country;
     }
 
-    public String getMiejscowosc() {
-        return miejscowosc;
+    public String getPlace() {
+        return place;
     }
 
-    public void setMiejscowosc(String miejscowosc) {
-        this.miejscowosc = miejscowosc;
+    public void setPlace(String place) {
+        this.place = place;
     }
 
-    public String getUlica() {
-        return ulica;
+    public String getStreet() {
+        return street;
     }
 
-    public void setUlica(String ulica) {
-        this.ulica = ulica;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getNazwa() {
-        return nazwa;
+    public String getName() {
+        return name;
     }
 
-    public void setNazwa(String nazwa) {
-        this.nazwa = nazwa;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNip() {
@@ -106,10 +106,10 @@ public class Dostawca implements Serializable {
         return "Dostawca{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", kraj='" + kraj + '\'' +
-                ", miejscowosc='" + miejscowosc + '\'' +
-                ", ulica='" + ulica + '\'' +
-                ", nazwa='" + nazwa + '\'' +
+                ", kraj='" + country + '\'' +
+                ", miejscowosc='" + place + '\'' +
+                ", ulica='" + street + '\'' +
+                ", nazwa='" + name + '\'' +
                 ", nip='" + nip + '\'' +
                 '}';
     }

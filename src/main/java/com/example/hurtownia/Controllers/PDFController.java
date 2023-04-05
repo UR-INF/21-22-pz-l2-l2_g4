@@ -1,6 +1,6 @@
-package com.example.hurtownia.Controllers;
+package com.example.hurtownia.controllers;
 
-import com.example.hurtownia.PDFGeneration.RaportAbstract;
+import com.example.hurtownia.domain.AbstractReport;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -33,7 +33,7 @@ public class PDFController implements Initializable {
     @FXML
     private ComboBox<String> fileExtensionComboBox;
 
-    private RaportAbstract raport;
+    private AbstractReport report;
     private Stage stage;
 
     @Override
@@ -61,12 +61,12 @@ public class PDFController implements Initializable {
         Path file = Paths.get(directoryTextField.getText(), fileNameTextField.getText().trim() + fileExtensionComboBox.getSelectionModel().getSelectedItem());
         if (!Files.exists(file)) {
             try {
-                raport.generatePDF(file.toAbsolutePath().toString(), titleTextField.getText());
+                report.generateReport(file.toAbsolutePath().toString(), titleTextField.getText());
                 stage.close();
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("SUCCESS");
                 alert.setHeaderText("SUCCESS");
-                alert.setContentText("Pomyślnie zapisano plik o nazwie "+fileNameTextField.getText().trim()+" w lokalizacji "+file.toAbsolutePath());
+                alert.setContentText("Pomyślnie zapisano plik o nazwie " + fileNameTextField.getText().trim() + " w lokalizacji " + file.toAbsolutePath());
                 alert.showAndWait();
             } catch (IOException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -78,7 +78,5 @@ public class PDFController implements Initializable {
         }
     }
 
-    public void setRaport(RaportAbstract raport) {
-        this.raport = raport;
-    }
+    public void setRaport(AbstractReport report) {this.report = report;}
 }
