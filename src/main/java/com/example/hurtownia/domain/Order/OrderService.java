@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * Zawiera metody dla tabeli 'zamowienie'.
  */
+@Service
 public class OrderService {
 
     private SessionFactory sessionFactory;

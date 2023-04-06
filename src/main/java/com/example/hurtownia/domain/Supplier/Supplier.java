@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.supplier;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,8 +11,11 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @RequiredArgsConstructor
+@SuperBuilder(toBuilder = true)
+@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
 @Table(name = "Dostawca")
 public class Supplier implements Serializable {
