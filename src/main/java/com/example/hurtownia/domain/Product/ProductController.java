@@ -2,7 +2,6 @@ package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.controllers.PDFController;
 import com.example.hurtownia.domain.AbstractReport;
-import com.example.hurtownia.domain.supplier.SupplierService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -36,6 +35,7 @@ import java.util.ResourceBundle;
 @Controller
 public class ProductController implements Initializable {
 
+    public static ObservableList<Product> products = FXCollections.observableArrayList();
     @FXML
     private TextArea informationArea;
     @FXML
@@ -50,8 +50,6 @@ public class ProductController implements Initializable {
     private TableColumn<Product, Void> deleteColumn;
     @FXML
     private TextField idSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
-
-    public static ObservableList<Product> products = FXCollections.observableArrayList();
     private ProductService productService;
 
     @Override
@@ -68,7 +66,7 @@ public class ProductController implements Initializable {
      * @param ratio stosunek ilości produktu w magazynie i całkowitej pojemności magazynu na dany produkt
      * @return stan magazynowy produktu
      */
-    public String calculateState (double ratio) {
+    public String calculateState(double ratio) {
         if (ratio < 30) return "niski";
         else if (ratio < 70) return "umiarkowany";
         else return "wysoki";
@@ -319,6 +317,7 @@ public class ProductController implements Initializable {
                         check.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         check.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
+
                     @Override
                     public void updateItem(Boolean item, boolean empty) {
                         super.updateItem(item, empty);
@@ -349,6 +348,7 @@ public class ProductController implements Initializable {
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
+
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);

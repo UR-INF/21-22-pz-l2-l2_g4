@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.ResourceBundle;
 /**
  * Kontroler okna do zapisu raportu PDF.
  */
+@Controller
 public class PDFController implements Initializable {
 
     @FXML
@@ -78,5 +80,7 @@ public class PDFController implements Initializable {
         }
     }
 
-    public void setReport(AbstractReport report) {this.report = report;}
+    public void setReport(AbstractReport report) {
+        this.report = report;
+    }
 }

@@ -95,7 +95,7 @@ public class CustomerService {
         session.beginTransaction();
         session.flush();
 
-        Customer customer = new Customer(name,  surname,  pesel,  phoneNumber,  email,  place,  street,  apartmentNumber,  buildingNumber);
+        Customer customer = new Customer(name, surname, pesel, phoneNumber, email, place, street, apartmentNumber, buildingNumber);
 
         session.save(customer);
 

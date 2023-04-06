@@ -21,7 +21,7 @@ public class Start extends Application {
     private ConfigurableApplicationContext applicationContext;
 
     @Override
-    public void init(){
+    public void init() {
         applicationContext = new SpringApplicationBuilder(HurtowniaApplication.class).run();
     }
 
@@ -55,8 +55,8 @@ public class Start extends Application {
         Platform.exit();
     }
 
-    static class StageReadyEvent extends ApplicationEvent{
-        public StageReadyEvent(Stage stage){
+    static class StageReadyEvent extends ApplicationEvent {
+        public StageReadyEvent(Stage stage) {
             super(stage);
         }
     }

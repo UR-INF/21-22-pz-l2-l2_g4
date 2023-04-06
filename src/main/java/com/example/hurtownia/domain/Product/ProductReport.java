@@ -53,7 +53,7 @@ public class ProductReport extends AbstractReport {
             table.addCell(new Cell().add(new Paragraph(data.get(i).getCountry())));
             table.addCell(new Cell().add(new Paragraph(data.get(i).getColor())));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber()))));
-            double stosunek = data.get(i).getNumber()/data.get(i).getMaxNumber();
+            double stosunek = data.get(i).getNumber() / data.get(i).getMaxNumber();
             String str;
             if (stosunek < 30) str = "niski";
             else if (stosunek < 70) str = "umiarkowany";

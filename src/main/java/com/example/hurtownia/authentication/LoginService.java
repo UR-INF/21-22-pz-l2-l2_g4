@@ -1,8 +1,11 @@
 package com.example.hurtownia.authentication;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Zawiera metody do obsługi logowania.
  */
+@Service
 public class LoginService {
 
     private boolean isAdmin;

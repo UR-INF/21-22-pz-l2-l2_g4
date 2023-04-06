@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 @Controller
 public class SupplierController implements Initializable {
 
+    public static ObservableList<Supplier> suppliers = FXCollections.observableArrayList();
     @FXML
     private TextArea informationArea;
     @FXML
@@ -46,9 +47,7 @@ public class SupplierController implements Initializable {
     private TableColumn<Supplier, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
-
     private SupplierService supplierService;
-    public static ObservableList<Supplier> suppliers = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,7 +73,7 @@ public class SupplierController implements Initializable {
         try {
             Supplier supplier = supplierService.saveSupplier(emailTextField.getText(), countryTextField.getText(), placeTextField.getText(), streetTextField.getText(), nameTextField.getText(), nipTextField.getText());
             informationArea.appendText("\nDodano nowego dostawcę");
-        } catch(Exception e) {
+        } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego dostawcy");
         }
     }
@@ -128,12 +127,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setName(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -144,12 +143,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setNip(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -160,12 +159,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setEmail(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -176,12 +175,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setPlace(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -192,12 +191,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setStreet(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -208,12 +207,12 @@ public class SupplierController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
-                    try{
+                    try {
                         supplier.setCountry(newValue);
                         supplierService.updateSupplier(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id "+supplier.getId());
-                    } catch(Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id "+supplier.getId());
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
                     }
                 }
                 super.commitEdit(newValue);

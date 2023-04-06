@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 @Controller
 public class CustomerController implements Initializable {
 
+    public static ObservableList<Customer> customers = FXCollections.observableArrayList();
     @FXML
     private TextArea informationArea;
     @FXML
@@ -46,8 +47,6 @@ public class CustomerController implements Initializable {
     private TableColumn<Customer, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField;
-
-    public static ObservableList<Customer> customers = FXCollections.observableArrayList();
     private CustomerService customerService;
 
     @Override

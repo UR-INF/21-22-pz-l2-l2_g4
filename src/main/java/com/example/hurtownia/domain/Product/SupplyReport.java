@@ -37,11 +37,11 @@ public class SupplyReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
 
         for (int i = 0; i < data.size(); i++) {
-            if(data.get(i).isSupply()) {
+            if (data.get(i).isSupply()) {
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
                 table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
                 table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber()-data.get(i).getNumber()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber() - data.get(i).getNumber()))));
             }
         }
 

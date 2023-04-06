@@ -2,9 +2,8 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.controllers.PDFController;
 import com.example.hurtownia.domain.AbstractReport;
-import com.example.hurtownia.domain.customer.CustomerService;
-import com.example.hurtownia.domain.orderitem.OrderItemService;
 import com.example.hurtownia.domain.orderitem.OrderItem;
+import com.example.hurtownia.domain.orderitem.OrderItemService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -40,6 +39,8 @@ import java.util.ResourceBundle;
 @Controller
 public class OrderController implements Initializable {
 
+    public static ObservableList<Order> orders = FXCollections.observableArrayList();
+    private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     @FXML
     private TextField customerIdTextField, dateTextField, discountTextField;
     @FXML
@@ -52,9 +53,6 @@ public class OrderController implements Initializable {
     private TableColumn<Order, Void> invoiceColumn, deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
-
-    public static ObservableList<Order> orders = FXCollections.observableArrayList();
-    private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     private OrderService orderService;
     private OrderItemService orderItemService;
 
@@ -275,6 +273,7 @@ public class OrderController implements Initializable {
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
+
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -309,6 +308,7 @@ public class OrderController implements Initializable {
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
+
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);

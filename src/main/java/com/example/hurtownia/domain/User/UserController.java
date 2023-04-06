@@ -34,6 +34,7 @@ import java.util.ResourceBundle;
 @Controller
 public class UserController implements Initializable {
 
+    public static ObservableList<User> users = FXCollections.observableArrayList();
     @FXML
     private CheckBox isAdminCheckBox, grantingDiscountsCheckBox, generatingReportsCheckBox;
     @FXML
@@ -48,9 +49,7 @@ public class UserController implements Initializable {
     private TableColumn<User, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField, passwordSearchField, isAdminSearchField, generatingReportsSearchField, grantingDiscountsSearchField;
-
     private UserService userService;
-    public static ObservableList<User> users = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -287,6 +286,7 @@ public class UserController implements Initializable {
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
+
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);

@@ -54,7 +54,7 @@ public class OrderItemService {
         session.beginTransaction();
         session.flush();
 
-        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idOrder +"\'").addEntity(OrderItem.class).list();
+        List<OrderItem> list = session.createSQLQuery("select * from element_zamowienia where idZamowienie=\'" + idOrder + "\'").addEntity(OrderItem.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -112,7 +112,7 @@ public class OrderItemService {
         Product product = (Product) session.createSQLQuery("select * from produkt where id=\'" + idProduct + "\'").addEntity(Product.class).getSingleResult();
         Order order = (Order) session.createSQLQuery("select * from zamowienie where id=\'" + idOrder + "\'").addEntity(Order.class).getSingleResult();
 
-        OrderItem orderItem = new OrderItem(order, product, number, Math.round(product.getPrice()*number*100.0)/100.0, product.getPrice());
+        OrderItem orderItem = new OrderItem(order, product, number, Math.round(product.getPrice() * number * 100.0) / 100.0, product.getPrice());
 
         session.save(orderItem);
 
@@ -155,7 +155,7 @@ public class OrderItemService {
         Product product = (Product) session.createSQLQuery("select * from produkt where id=\'" + idProduct + "\'").addEntity(Product.class).getSingleResult();
         orderItem.setProduct(product);
         orderItem.setPricePerUnit(product.getPrice());
-        orderItem.setItemPrice(orderItem.getPricePerUnit()*orderItem.getNumber());
+        orderItem.setItemPrice(orderItem.getPricePerUnit() * orderItem.getNumber());
         session.update(orderItem);
 
         session.getTransaction().commit();

@@ -1,8 +1,6 @@
 package com.example.hurtownia.domain.orderitem;
 
 import com.example.hurtownia.controllers.PDFController;
-import com.example.hurtownia.domain.order.OrderService;
-import com.example.hurtownia.domain.product.ProductService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -36,6 +34,7 @@ import java.util.ResourceBundle;
 @Controller
 public class OrderItemController implements Initializable {
 
+    public static ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
     @FXML
     private TextArea informationArea;
     @FXML
@@ -48,8 +47,6 @@ public class OrderItemController implements Initializable {
     private TableColumn<OrderItem, Void> deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
-
-    public static ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
     private OrderItemService orderItemService;
 
     @Override
