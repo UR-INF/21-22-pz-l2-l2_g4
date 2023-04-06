@@ -1,6 +1,5 @@
 package com.example.hurtownia;
 
-import com.example.hurtownia.Controllers.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -11,9 +10,8 @@ import javafx.stage.Stage;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.boot.web.reactive.context.ConfigurableReactiveWebApplicationContext;
 
-import static com.example.hurtownia.DatabaseAccess.DbAccess.CONNECTION;
+import static com.example.hurtownia.databaseaccess.DbAccess.CONNECTION;
 
 /**
  * Klasa odpowiedzialna za uruchomienie aplikacji.
@@ -22,12 +20,8 @@ public class Start extends Application {
 
     private ConfigurableApplicationContext applicationContext;
 
-    public static void main(String[] args) {
-        launch();
-    }
-
     @Override
-    public void init(){
+    public void init() {
         applicationContext = new SpringApplicationBuilder(HurtowniaApplication.class).run();
     }
 
@@ -46,9 +40,6 @@ public class Start extends Application {
             System.exit(0);
         });
 
-        MainController mainController = fxmlLoader.getController();
-        mainController.setScene(scene);
-
         if (!CONNECTION) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("ERROR");
@@ -64,13 +55,9 @@ public class Start extends Application {
         Platform.exit();
     }
 
-    static class StageReadyEvent extends ApplicationEvent{
-        public StageReadyEvent(Stage stage){
+    static class StageReadyEvent extends ApplicationEvent {
+        public StageReadyEvent(Stage stage) {
             super(stage);
-        }
-
-        public Stage getStage(){
-            return ((Stage) getSource());
         }
     }
 }

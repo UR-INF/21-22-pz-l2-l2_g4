@@ -1,28 +1,29 @@
-package com.example.hurtownia.DatabaseQueries;
+package com.example.hurtownia.authentication;
+
+import org.springframework.stereotype.Service;
 
 /**
  * Zawiera metody do obsługi logowania.
  */
-public class Login {
+@Service
+public class LoginService {
 
     private boolean isAdmin;
-
     private String login;
 
-
-    public boolean zaloguj(String login, String haslo) {
+    public boolean logIn(String login, String password) {
         isAdmin = false;
-        if (login.equals("user") && haslo.equals("1234")) {
+        if (login.equals("user") && password.equals("1234")) {
             this.login = login;
             return true;
-        } else if (login.equals("admin") && haslo.equals("1234")) {
+        } else if (login.equals("admin") && password.equals("1234")) {
             this.login = login;
             isAdmin = true;
             return true;
         } else return false;
     }
 
-    public void wyloguj() {
+    public void logOut() {
         isAdmin = false;
     }
 

@@ -1,38 +1,40 @@
-package com.example.hurtownia.domain.User;
+package com.example.hurtownia.domain.customer;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Zawiera metody dla tabeli 'uzytkownik'.
+ * Zawiera metody dla tabeli 'klient'.
  */
-public class UzytkownikService {
+@Service
+public class CustomerService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public UzytkownikService() {
+    public CustomerService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
     /**
-     * Pobiera wszystkich użytkowników z bazy danych.
+     * Pobiera wszystkich klientów z bazy danych.
      *
-     * @return lista wszystkich użytkowników
+     * @return lista wszystkich klientów
      */
-    public List<Uzytkownik> getUzytkownicy() {
+    public List<Customer> getCustomers() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Uzytkownik> list = session.createSQLQuery("select * from uzytkownik").addEntity(Uzytkownik.class).list();
+        List<Customer> list = session.createSQLQuery("select * from klient").addEntity(Customer.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -41,20 +43,20 @@ public class UzytkownikService {
     }
 
     /**
-     * Usuwa użytkownika z bazy danych.
+     * Usuwa klienta z bazy danych.
      *
-     * @param uzytkownik
+     * @param customer
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteUzytkownik(Uzytkownik uzytkownik) {
+    public boolean deleteCustomer(Customer customer) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(uzytkownik);
+            session.delete(customer);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -75,43 +77,44 @@ public class UzytkownikService {
     }
 
     /**
-     * Dodaje nowego użytkownika.
+     * Dodaje nowego klienta.
      *
-     * @param imie
-     * @param nazwisko
+     * @param name
+     * @param surname
+     * @param pesel
+     * @param phoneNumber
      * @param email
-     * @param haslo
-     * @param numerTelefonu
-     * @param isAdmin
-     * @param generowanieRaportow
-     * @param udzielanieRabatow
+     * @param place
+     * @param street
+     * @param apartmentNumber
+     * @param buildingNumber
      * @return
      */
-    public Uzytkownik saveUzytkownik(String imie, String nazwisko, String email, String haslo, String numerTelefonu, int isAdmin, int generowanieRaportow, int udzielanieRabatow) {
+    public Customer saveCustomer(String name, String surname, String pesel, String phoneNumber, String email, String place, String street, int apartmentNumber, int buildingNumber) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Uzytkownik u = new Uzytkownik(imie, nazwisko, email, haslo, numerTelefonu, isAdmin, generowanieRaportow, udzielanieRabatow);
+        Customer customer = new Customer(name, surname, pesel, phoneNumber, email, place, street, apartmentNumber, buildingNumber);
 
-        session.save(u);
+        session.save(customer);
 
         session.getTransaction().commit();
         session.close();
 
-        return u;
+        return customer;
     }
 
     /**
-     * Aktualizuje użytkownika.
+     * Aktualizuje klienta.
      *
-     * @param u
+     * @param customer
      */
-    public void updateUzytkownik(Uzytkownik u) {
+    public void updateCustomer(Customer customer) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(u);
+        session.update(customer);
         session.getTransaction().commit();
         session.close();
     }
