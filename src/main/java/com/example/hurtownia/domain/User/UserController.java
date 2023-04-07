@@ -1,6 +1,6 @@
 package com.example.hurtownia.domain.user;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -49,13 +50,13 @@ public class UserController implements Initializable {
     private TableColumn<User, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField, passwordSearchField, isAdminSearchField, generatingReportsSearchField, grantingDiscountsSearchField;
+    @Autowired
     private UserService userService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         usersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        userService = new UserService();
         setTable();
     }
 
@@ -78,7 +79,7 @@ public class UserController implements Initializable {
     @FXML
     public void usersBtnAddClicked(MouseEvent event) {
         try {
-            User user = userService.saveUser(nameTextField.getText(), surnameTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), passwordTextField.getText(), generatingReportsCheckBox.isSelected() ? 1 : 0, grantingDiscountsCheckBox.isSelected() ? 1 : 0, isAdminCheckBox.isSelected() ? 1 : 0);
+            userService.saveUser(new User(nameTextField.getText(), surnameTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), passwordTextField.getText(), generatingReportsCheckBox.isSelected() ? 1 : 0, grantingDiscountsCheckBox.isSelected() ? 1 : 0, isAdminCheckBox.isSelected() ? 1 : 0));
             informationArea.appendText("\nDodano nowego użytkownika");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego użytkownika");
@@ -110,7 +111,7 @@ public class UserController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);

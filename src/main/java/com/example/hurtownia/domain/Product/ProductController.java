@@ -1,7 +1,9 @@
 package com.example.hurtownia.domain.product;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.supplier.Supplier;
+import com.example.hurtownia.domain.supplier.SupplierService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -25,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -50,13 +53,15 @@ public class ProductController implements Initializable {
     private TableColumn<Product, Void> deleteColumn;
     @FXML
     private TextField idSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
+    @Autowired
     private ProductService productService;
+    @Autowired
+    private SupplierService supplierService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        productService = new ProductService();
         setTable();
     }
 
@@ -91,7 +96,8 @@ public class ProductController implements Initializable {
     @FXML
     public void productsBtnAddClicked(MouseEvent event) {
         try {
-            Product product = productService.saveProduct(Integer.parseInt(supplierIdTextField.getText()), nameTextField.getText(), unitTextField.getText(), Double.parseDouble(priceTextField.getText()), countryTextField.getText(), codeTextField.getText(), colorTextField.getText(), Integer.parseInt(numberTextField.getText()), Integer.parseInt(maxNumberTextField.getText()));
+            Supplier supplier = supplierService.getSupplier(Long.valueOf(supplierIdTextField.getText()));
+            productService.saveProduct(new Product(supplier, nameTextField.getText(), unitTextField.getText(), Double.parseDouble(priceTextField.getText()), countryTextField.getText(), codeTextField.getText(), colorTextField.getText(), Integer.parseInt(numberTextField.getText()), Integer.parseInt(maxNumberTextField.getText())));
             informationArea.appendText("\nDodano nowy produkt");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego produktu");
@@ -123,7 +129,7 @@ public class ProductController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -152,7 +158,7 @@ public class ProductController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -174,7 +180,9 @@ public class ProductController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
-                        productService.updateProductSupplier(product, newValue);
+                        Supplier supplier = supplierService.getSupplier(Long.valueOf(newValue));
+                        product.setSupplier(supplier);
+                        productService.updateProduct(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());

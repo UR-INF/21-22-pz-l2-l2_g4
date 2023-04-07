@@ -25,12 +25,12 @@ public class OrderItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @NonNull
     @ManyToOne(targetEntity = Order.class)
     @JoinColumn(name = "idZamowienie")
-    private Order Order;
+    private Order order;
 
     @NonNull
     @ManyToOne(targetEntity = Product.class)
@@ -39,7 +39,7 @@ public class OrderItem implements Serializable {
 
     @NonNull
     @Column(name = "ilosc")
-    private int number;
+    private Integer number;
 
     @NonNull
     @Column(name = "cenaElementu")

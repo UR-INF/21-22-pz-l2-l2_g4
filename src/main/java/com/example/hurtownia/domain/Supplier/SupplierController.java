@@ -1,6 +1,6 @@
 package com.example.hurtownia.domain.supplier;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -47,13 +48,13 @@ public class SupplierController implements Initializable {
     private TableColumn<Supplier, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
+    @Autowired
     private SupplierService supplierService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         suppliersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        supplierService = new SupplierService();
         setTable();
     }
 
@@ -71,7 +72,7 @@ public class SupplierController implements Initializable {
     @FXML
     public void suppliersBtnAddClicked(MouseEvent event) {
         try {
-            Supplier supplier = supplierService.saveSupplier(emailTextField.getText(), countryTextField.getText(), placeTextField.getText(), streetTextField.getText(), nameTextField.getText(), nipTextField.getText());
+            supplierService.saveSupplier(new Supplier(emailTextField.getText(), countryTextField.getText(), placeTextField.getText(), streetTextField.getText(), nameTextField.getText(), nipTextField.getText()));
             informationArea.appendText("\nDodano nowego dostawcę");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego dostawcy");
@@ -103,7 +104,7 @@ public class SupplierController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);

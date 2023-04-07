@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * Kontroler okna do zapisu raportu PDF.
  */
 @Controller
-public class PDFController implements Initializable {
+public class ReportController implements Initializable {
 
     @FXML
     private AnchorPane ap;
@@ -34,7 +34,6 @@ public class PDFController implements Initializable {
     private TextField fileNameTextField, directoryTextField, titleTextField;
     @FXML
     private ComboBox<String> fileExtensionComboBox;
-
     private AbstractReport report;
     private Stage stage;
 

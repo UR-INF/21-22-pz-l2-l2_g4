@@ -1,6 +1,6 @@
 package com.example.hurtownia.domain.customer;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -35,6 +36,8 @@ import java.util.ResourceBundle;
 public class CustomerController implements Initializable {
 
     public static ObservableList<Customer> customers = FXCollections.observableArrayList();
+    @Autowired
+    public CustomerService customerService;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -47,13 +50,11 @@ public class CustomerController implements Initializable {
     private TableColumn<Customer, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField;
-    private CustomerService customerService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        customerService = new CustomerService();
         setTable();
     }
 
@@ -76,7 +77,7 @@ public class CustomerController implements Initializable {
     @FXML
     public void customersBtnAddClicked(MouseEvent event) {
         try {
-            Customer customer = customerService.saveCustomer(nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), placeTextField.getText(), streetTextField.getText(), Integer.valueOf(apartmentNumberTextField.getText()), Integer.valueOf(buildingNumberTextField.getText()));
+            customerService.saveCustomer(new Customer(nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), placeTextField.getText(), streetTextField.getText(), Integer.valueOf(apartmentNumberTextField.getText()), Integer.valueOf(buildingNumberTextField.getText())));
             informationArea.appendText("\nDodano nowego klienta");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego klienta");
@@ -108,7 +109,7 @@ public class CustomerController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
