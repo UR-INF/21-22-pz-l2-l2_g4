@@ -47,13 +47,13 @@ public class User implements Serializable {
 
     @NonNull
     @Column(name = "isAdmin")
-    private Integer isAdmin;
+    private Boolean isAdmin;
 
     @NonNull
     @Column(name = "generowanieRaportow")
-    private Integer generatingReports;
+    private Boolean generatingReports;
 
     @NonNull
     @Column(name = "udzielanieRabatow")
-    private Integer grantingDiscounts;
+    private Boolean grantingDiscounts;
 }

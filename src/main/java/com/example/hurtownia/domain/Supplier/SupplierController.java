@@ -61,7 +61,7 @@ public class SupplierController implements Initializable {
     @FXML
     public void suppliersBtnShowClicked(MouseEvent event) {
         suppliersTable.getItems().clear();
-        suppliers.setAll(supplierService.getSuppliers());
+        suppliers.setAll(supplierService.findAll());
     }
 
     /**
@@ -72,7 +72,15 @@ public class SupplierController implements Initializable {
     @FXML
     public void suppliersBtnAddClicked(MouseEvent event) {
         try {
-            supplierService.saveSupplier(new Supplier(emailTextField.getText(), countryTextField.getText(), placeTextField.getText(), streetTextField.getText(), nameTextField.getText(), nipTextField.getText()));
+            Supplier supplier = Supplier.builder()
+                    .name(nameTextField.getText())
+                    .email(emailTextField.getText())
+                    .country(countryTextField.getText())
+                    .place(placeTextField.getText())
+                    .street(streetTextField.getText())
+                    .nip(nipTextField.getText())
+                    .build();
+            supplierService.save(supplier);
             informationArea.appendText("\nDodano nowego dostawcę");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego dostawcy");
@@ -130,7 +138,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setName(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -146,7 +154,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setNip(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -162,7 +170,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setEmail(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -178,7 +186,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setPlace(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -194,7 +202,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setStreet(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -210,7 +218,7 @@ public class SupplierController implements Initializable {
                     Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
                     try {
                         supplier.setCountry(newValue);
-                        supplierService.updateSupplier(supplier);
+                        supplierService.update(supplier);
                         informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
@@ -237,7 +245,7 @@ public class SupplierController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Supplier supplier = getTableView().getItems().get(getIndex());
-                            if (supplierService.deleteSupplier(supplier)) {
+                            if (supplierService.delete(supplier)) {
                                 suppliers.remove(supplier);
                                 informationArea.appendText("\nPomyślnie usunięto dostawcę o id " + supplier.getId());
                             } else

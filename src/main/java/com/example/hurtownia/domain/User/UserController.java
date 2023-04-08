@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.user;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.order.Order;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -15,6 +16,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,7 +70,7 @@ public class UserController implements Initializable {
     @FXML
     public void usersBtnShowClicked(MouseEvent event) {
         usersTable.getItems().clear();
-        users.setAll(userService.getUsers());
+        users.setAll(userService.findAll());
     }
 
     /**
@@ -79,7 +81,17 @@ public class UserController implements Initializable {
     @FXML
     public void usersBtnAddClicked(MouseEvent event) {
         try {
-            userService.saveUser(new User(nameTextField.getText(), surnameTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), passwordTextField.getText(), generatingReportsCheckBox.isSelected() ? 1 : 0, grantingDiscountsCheckBox.isSelected() ? 1 : 0, isAdminCheckBox.isSelected() ? 1 : 0));
+            User user = User.builder()
+                    .name(nameTextField.getText())
+                    .surname(surnameTextField.getText())
+                    .email(emailTextField.getText())
+                    .password(passwordTextField.getText())
+                    .phoneNumber(phoneNumberTextField.getText())
+                    .isAdmin(isAdminCheckBox.isSelected())
+                    .generatingReports(generatingReportsCheckBox.isSelected())
+                    .grantingDiscounts(grantingDiscountsCheckBox.isSelected())
+                    .build();
+            userService.save(user);
             informationArea.appendText("\nDodano nowego użytkownika");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego użytkownika");
@@ -137,7 +149,7 @@ public class UserController implements Initializable {
                     User user = usersTable.getSelectionModel().getSelectedItem();
                     try {
                         user.setName(newValue);
-                        userService.updateUser(user);
+                        userService.update(user);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
@@ -153,7 +165,7 @@ public class UserController implements Initializable {
                     User user = usersTable.getSelectionModel().getSelectedItem();
                     try {
                         user.setSurname(newValue);
-                        userService.updateUser(user);
+                        userService.update(user);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
@@ -169,7 +181,7 @@ public class UserController implements Initializable {
                     User user = usersTable.getSelectionModel().getSelectedItem();
                     try {
                         user.setPhoneNumber(newValue);
-                        userService.updateUser(user);
+                        userService.update(user);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
@@ -185,7 +197,7 @@ public class UserController implements Initializable {
                     User user = usersTable.getSelectionModel().getSelectedItem();
                     try {
                         user.setEmail(newValue);
-                        userService.updateUser(user);
+                        userService.update(user);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
@@ -201,7 +213,7 @@ public class UserController implements Initializable {
                     User user = usersTable.getSelectionModel().getSelectedItem();
                     try {
                         user.setPassword(newValue);
-                        userService.updateUser(user);
+                        userService.update(user);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
@@ -210,52 +222,43 @@ public class UserController implements Initializable {
                 super.commitEdit(newValue);
             }
         });
-        isAdminColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    User user = usersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        user.setIsAdmin(Integer.parseInt(newValue));
-                        userService.updateUser(user);
-                        informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
-                    }
+        isAdminColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        isAdminColumn.setOnEditCommit(t -> {
+            User user = usersTable.getSelectionModel().getSelectedItem();
+            if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                try {
+                    user.setIsAdmin(t.getNewValue().equals("Tak") ? true : false);
+                    userService.update(user);
+                    informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
+                } catch (Exception e) {
+                    informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
                 }
-                super.commitEdit(newValue);
             }
         });
-        generatingReportsColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    User user = usersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        user.setGeneratingReports(Integer.parseInt(newValue));
-                        userService.updateUser(user);
-                        informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
-                    }
+        generatingReportsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        generatingReportsColumn.setOnEditCommit(t -> {
+            User user = usersTable.getSelectionModel().getSelectedItem();
+            if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                try {
+                    user.setGeneratingReports(t.getNewValue().equals("Tak") ? true : false);
+                    userService.update(user);
+                    informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
+                } catch (Exception e) {
+                    informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
                 }
-                super.commitEdit(newValue);
             }
         });
-        grantingDiscountsColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    User user = usersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        user.setGrantingDiscounts(Integer.parseInt(newValue));
-                        userService.updateUser(user);
-                        informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
-                    }
+        grantingDiscountsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        grantingDiscountsColumn.setOnEditCommit(t -> {
+            User user = usersTable.getSelectionModel().getSelectedItem();
+            if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                try {
+                    user.setGrantingDiscounts(t.getNewValue().equals("Tak") ? true : false);
+                    userService.update(user);
+                    informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
+                } catch (Exception e) {
+                    informationArea.appendText("\nNie udało się edytować użytkownika o id " + user.getId());
                 }
-                super.commitEdit(newValue);
             }
         });
 
@@ -265,9 +268,9 @@ public class UserController implements Initializable {
         phoneNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
-        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIsAdmin())));
-        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getGeneratingReports())));
-        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getGrantingDiscounts())));
+        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsAdmin() ? "Tak" : "Nie"));
+        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGeneratingReports() ? "Tak" : "Nie"));
+        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGrantingDiscounts() ? "Tak" : "Nie"));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<User, Void> call(final TableColumn<User, Void> param) {
@@ -278,7 +281,7 @@ public class UserController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             User user = getTableView().getItems().get(getIndex());
-                            if (userService.deleteUser(user)) {
+                            if (userService.delete(user)) {
                                 users.remove(user);
                                 informationArea.appendText("\nPomyślnie usunięto użytkownika o id " + user.getId());
                             } else

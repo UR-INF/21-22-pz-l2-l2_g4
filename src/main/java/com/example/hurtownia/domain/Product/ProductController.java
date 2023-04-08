@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -85,7 +86,7 @@ public class ProductController implements Initializable {
     @FXML
     public void productsBtnShowClicked(MouseEvent event) {
         productsTable.getItems().clear();
-        products.setAll(productService.getProducts());
+        products.setAll(productService.findAll());
     }
 
     /**
@@ -96,8 +97,19 @@ public class ProductController implements Initializable {
     @FXML
     public void productsBtnAddClicked(MouseEvent event) {
         try {
-            Supplier supplier = supplierService.getSupplier(Long.valueOf(supplierIdTextField.getText()));
-            productService.saveProduct(new Product(supplier, nameTextField.getText(), unitTextField.getText(), Double.parseDouble(priceTextField.getText()), countryTextField.getText(), codeTextField.getText(), colorTextField.getText(), Integer.parseInt(numberTextField.getText()), Integer.parseInt(maxNumberTextField.getText())));
+            Supplier supplier = supplierService.findById(Long.valueOf(supplierIdTextField.getText()));
+            Product product = Product.builder()
+                    .supplier(supplier)
+                    .name(nameTextField.getText())
+                    .unitOfMeasurement(unitTextField.getText())
+                    .price(Double.parseDouble(priceTextField.getText()))
+                    .country(countryTextField.getText())
+                    .code(codeTextField.getText())
+                    .color(colorTextField.getText())
+                    .number(Integer.parseInt(numberTextField.getText()))
+                    .maxNumber(Integer.parseInt(maxNumberTextField.getText()))
+                    .build();
+            productService.save(product);
             informationArea.appendText("\nDodano nowy produkt");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego produktu");
@@ -180,10 +192,12 @@ public class ProductController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
-                        Supplier supplier = supplierService.getSupplier(Long.valueOf(newValue));
+                        Supplier supplier = supplierService.findById(Long.valueOf(newValue));
                         product.setSupplier(supplier);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
                     }
@@ -198,7 +212,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setCode(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -214,7 +228,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setPrice(Double.parseDouble(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -230,7 +244,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setNumber(Integer.parseInt(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -246,7 +260,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setUnitOfMeasurement(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -262,7 +276,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setCountry(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -278,7 +292,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setColor(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -294,7 +308,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setMaxNumber(Integer.parseInt(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -347,7 +361,7 @@ public class ProductController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Product product = getTableView().getItems().get(getIndex());
-                            if (productService.deleteProduct(product)) {
+                            if (productService.delete(product)) {
                                 products.remove(product);
                                 informationArea.appendText("\nPomyślnie usunięto produktu o id " + product.getId());
                             } else

@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -66,7 +67,7 @@ public class CustomerController implements Initializable {
     @FXML
     public void customersBtnShowClicked(MouseEvent event) {
         customersTable.getItems().clear();
-        customers.setAll(customerService.getCustomers());
+        customers.setAll(customerService.findAll());
     }
 
     /**
@@ -77,7 +78,18 @@ public class CustomerController implements Initializable {
     @FXML
     public void customersBtnAddClicked(MouseEvent event) {
         try {
-            customerService.saveCustomer(new Customer(nameTextField.getText(), surnameTextField.getText(), peselTextField.getText(), phoneNumberTextField.getText(), emailTextField.getText(), placeTextField.getText(), streetTextField.getText(), Integer.valueOf(apartmentNumberTextField.getText()), Integer.valueOf(buildingNumberTextField.getText())));
+            Customer customer = Customer.builder()
+                    .name(nameTextField.getText())
+                    .surname(surnameTextField.getText())
+                    .pesel(peselTextField.getText())
+                    .phoneNumber(phoneNumberTextField.getText())
+                    .email(emailTextField.getText())
+                    .place(placeTextField.getText())
+                    .street(streetTextField.getText())
+                    .buildingNumber(Integer.valueOf(buildingNumberTextField.getText()))
+                    .apartmentNumber(Integer.valueOf(apartmentNumberTextField.getText()))
+                    .build();
+            customerService.save(customer);
             informationArea.appendText("\nDodano nowego klienta");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego klienta");
@@ -135,7 +147,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setName(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -151,7 +163,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setSurname(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -167,7 +179,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setPlace(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -183,7 +195,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setStreet(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -199,7 +211,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setBuildingNumber(Integer.parseInt(newValue));
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -215,7 +227,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setApartmentNumber(Integer.parseInt(newValue));
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -231,7 +243,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setEmail(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -247,7 +259,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setPhoneNumber(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -263,7 +275,7 @@ public class CustomerController implements Initializable {
                     Customer customer = customersTable.getSelectionModel().getSelectedItem();
                     try {
                         customer.setPesel(newValue);
-                        customerService.updateCustomer(customer);
+                        customerService.update(customer);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
@@ -293,7 +305,7 @@ public class CustomerController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Customer customer = getTableView().getItems().get(getIndex());
-                            if (customerService.deleteCustomer(customer)) {
+                            if (customerService.delete(customer)) {
                                 customers.remove(customer);
                                 informationArea.appendText("\nPomyślnie usunięto klienta o id " + customer.getId());
                             } else

@@ -1,5 +1,7 @@
 package com.example.hurtownia.domain.product;
 
+import com.example.hurtownia.domain.order.Order;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class ProductService {
      *
      * @return lista wszystkich produktów
      */
-    public List<Product> getProducts() {
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 
@@ -29,9 +31,7 @@ public class ProductService {
      * @param id identyfikator produktu
      * @return produkt
      */
-    public Product getProduct(Long id) {
-        return productRepository.findById(id).get();
-    }
+    public Product findById(Long id) {return productRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono produktu"));}
 
     /**
      * Usuwa produkt.
@@ -40,7 +40,7 @@ public class ProductService {
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteProduct(Product product) {
+    public boolean delete(Product product) {
         try {
             productRepository.delete(product);
             return true;
@@ -55,16 +55,27 @@ public class ProductService {
      * @param product nowy produkt
      * @return dodany produkt
      */
-    public Product saveProduct(Product product) {
+    public Product save(Product product) {
         return productRepository.save(product);
     }
 
     /**
      * Aktualizuje produkt.
      *
-     * @param product aktualizowany produkt
+     * @param newProduct aktualizowany produkt
      */
-    public void updateProduct(Product product) {
+    public void update(Product newProduct) {
+        Product product = findById(newProduct.getId());
+        product.setSupplier(newProduct.getSupplier());
+        product.setName(newProduct.getName());
+        product.setUnitOfMeasurement(newProduct.getUnitOfMeasurement());
+        product.setPrice(newProduct.getPrice());
+        product.setCountry(newProduct.getCountry());
+        product.setCode(newProduct.getCode());
+        product.setColor(newProduct.getColor());
+        product.setNumber(newProduct.getNumber());
+        product.setMaxNumber(newProduct.getMaxNumber());
+
         productRepository.save(product);
     }
 }

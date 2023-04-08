@@ -1,5 +1,7 @@
 package com.example.hurtownia.domain.supplier;
 
+import com.example.hurtownia.domain.order.Order;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class SupplierService {
      *
      * @return lista wszystkich dostawców
      */
-    public List<Supplier> getSuppliers() {return supplierRepository.findAll();}
+    public List<Supplier> findAll() {return supplierRepository.findAll();}
 
     /**
      * Pobiera dostawcę o podanym id.
@@ -27,9 +29,7 @@ public class SupplierService {
      * @param id identyfikator dostawcy
      * @return dostawca
      */
-    public Supplier getSupplier(Long id) {
-        return supplierRepository.findById(id).get();
-    }
+    public Supplier findById(Long id) {return supplierRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono dostawcy"));}
 
     /**
      * Usuwa dostawcę.
@@ -38,7 +38,7 @@ public class SupplierService {
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteSupplier(Supplier supplier) {
+    public boolean delete(Supplier supplier) {
         try {
             supplierRepository.delete(supplier);
             return true;
@@ -53,13 +53,22 @@ public class SupplierService {
      * @param supplier nowy dostawca
      * @return dodany dostawca
      */
-    public Supplier saveSupplier(Supplier supplier) {return supplierRepository.save(supplier);}
+    public Supplier save(Supplier supplier) {return supplierRepository.save(supplier);}
 
     /**
      * Aktualizuje dostawcę.
      *
-     * @param supplier aktualizowany dostawca
+     * @param newSupplier aktualizowany dostawca
      */
-    public void updateSupplier(Supplier supplier) {supplierRepository.save(supplier);}
+    public void update(Supplier newSupplier) {
+        Supplier supplier = findById(newSupplier.getId());
+        supplier.setId(newSupplier.getId());
+        supplier.setEmail(newSupplier.getEmail());
+        supplier.setCountry(newSupplier.getCountry());
+        supplier.setPlace(newSupplier.getPlace());
+        supplier.setStreet(newSupplier.getStreet());
+        supplier.setNip(newSupplier.getNip());
+
+        supplierRepository.save(supplier);}
 
 }

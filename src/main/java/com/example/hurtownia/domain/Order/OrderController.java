@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -78,7 +79,7 @@ public class OrderController implements Initializable {
     @FXML
     public void ordersBtnShowClicked(MouseEvent event) {
         ordersTable.getItems().clear();
-        orders.setAll(orderService.getOrders());
+        orders.setAll(orderService.findAll());
     }
 
     /**
@@ -101,7 +102,13 @@ public class OrderController implements Initializable {
                     discount = 0.0;
             }
 
-            orderService.saveOrder(new Order(customerService.getCustomer(Long.parseLong(customerIdTextField.getText()))/*Integer.parseInt(customerIdTextField.getText())*/, dateTextField.getText(), "w przygotowaniu", discount));
+            Order order = Order.builder()
+                    .customer(customerService.findById(Long.parseLong(customerIdTextField.getText())))
+                    .date(dateTextField.getText())
+                    .state(orderStates[0])
+                    .discount(discount)
+                    .build();
+            orderService.save(order);
             informationArea.appendText("\nDodano nowe zamówienie");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego zamówienia");
@@ -158,10 +165,12 @@ public class OrderController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     Order order = ordersTable.getSelectionModel().getSelectedItem();
                     try {
-                        Customer customer = customerService.getCustomer(Long.valueOf(newValue));
+                        Customer customer = customerService.findById(Long.valueOf(newValue));
                         order.setCustomer(customer);
-                        orderService.updateOrder(order);
+                        orderService.update(order);
                         informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
                     }
@@ -176,7 +185,7 @@ public class OrderController implements Initializable {
                     Order order = ordersTable.getSelectionModel().getSelectedItem();
                     try {
                         order.setDate(newValue);
-                        orderService.updateOrder(order);
+                        orderService.update(order);
                         informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
@@ -207,7 +216,7 @@ public class OrderController implements Initializable {
 
                     try {
                         order.setDiscount(discount);
-                        orderService.updateOrder(order);
+                        orderService.update(order);
                         informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
@@ -222,7 +231,7 @@ public class OrderController implements Initializable {
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
                     order.setState(t.getNewValue());
-                    orderService.updateOrder(order);
+                    orderService.update(order);
                     informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
                 } catch (Exception e) {
                     informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
@@ -234,7 +243,7 @@ public class OrderController implements Initializable {
         customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomer().getId())));
         dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
         valueColumn.setCellValueFactory(cellData -> {
-            List<OrderItem> list = orderItemService.getOrderItems(cellData.getValue().getId());
+            List<OrderItem> list = orderItemService.findByOrderId(cellData.getValue().getId());
             double price = 0.0;
             for (OrderItem el : list) price += el.getItemPrice() * el.getNumber();
             return new SimpleStringProperty(String.valueOf(Math.round(price * 100.0) / 100.0));
@@ -311,7 +320,7 @@ public class OrderController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Order z = getTableView().getItems().get(getIndex());
-                            if (orderService.deleteOrder(z)) {
+                            if (orderService.delete(z)) {
                                 orders.remove(z);
                                 informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + z.getId());
                             } else

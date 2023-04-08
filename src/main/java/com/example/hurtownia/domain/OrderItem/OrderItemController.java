@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -74,7 +75,7 @@ public class OrderItemController implements Initializable {
     @FXML
     public void orderItemsBtnShowClicked(MouseEvent event) {
         orderItemTable.getItems().clear();
-        orderItems.setAll(orderItemService.getOrderItems());
+        orderItems.setAll(orderItemService.findAll());
     }
 
     /**
@@ -85,9 +86,16 @@ public class OrderItemController implements Initializable {
     @FXML
     public void orderItemsBtnAddClicked(MouseEvent event) {
         try {
-            Order order = orderService.getOrder(Long.valueOf(orderIdTextField.getText()));
-            Product product = productService.getProduct(Long.valueOf(productIdTextField.getText()));
-            orderItemService.saveOrderItem(new OrderItem(order, product, Integer.parseInt(numberTextField.getText()), Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0, product.getPrice()));
+            Order order = orderService.findById(Long.valueOf(orderIdTextField.getText()));
+            Product product = productService.findById(Long.valueOf(productIdTextField.getText()));
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .product(product)
+                    .number(Integer.parseInt(numberTextField.getText()))
+                    .itemPrice(Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0)
+                    .pricePerUnit(product.getPrice())
+                    .build();
+            orderItemService.save(orderItem);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
@@ -144,10 +152,12 @@ public class OrderItemController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
                     try {
-                        Order order = orderService.getOrder(Long.valueOf(newValue));
+                        Order order = orderService.findById(Long.valueOf(newValue));
                         orderItem.setOrder(order);
-                        orderItemService.updateOrderItem(orderItem);
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
                     }
@@ -161,10 +171,12 @@ public class OrderItemController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
                     try {
-                        Product product = productService.getProduct(Long.valueOf(newValue));
+                        Product product = productService.findById(Long.valueOf(newValue));
                         orderItem.setProduct(product);
-                        orderItemService.updateOrderItem(orderItem);
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
                     }
@@ -177,10 +189,10 @@ public class OrderItemController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
-                    orderItem.setNumber(Integer.parseInt(newValue));
-                    orderItem.setItemPrice(orderItem.getNumber() * orderItem.getPricePerUnit());
                     try {
-                        orderItemService.updateOrderItem(orderItem);
+                        orderItem.setNumber(Integer.parseInt(newValue));
+                        orderItem.setItemPrice(orderItem.getNumber() * orderItem.getPricePerUnit());
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
@@ -206,7 +218,7 @@ public class OrderItemController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             OrderItem orderItem = getTableView().getItems().get(getIndex());
-                            if (orderItemService.deleteOrderItem(orderItem)) {
+                            if (orderItemService.delete(orderItem)) {
                                 orderItems.remove(orderItem);
                                 informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + orderItem.getId());
                             } else

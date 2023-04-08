@@ -1,5 +1,6 @@
 package com.example.hurtownia.domain.orderitem;
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,28 @@ public class OrderItemService {
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<OrderItem> getOrderItems() {
+    public List<OrderItem> findAll() {
         return orderItemRepository.findAll();
     }
 
     /**
-     * Pobiera elementy zamówienia o podanym id zamówienia.
+     * Pobiera element zamówienia o podanym id.
+     *
+     * @param id identyfikator elementu zamówienia
+     * @return element zamówienia
+     */
+    public OrderItem findById(Long id) {
+        return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));
+    }
+
+
+    /**
+     * Pobiera wszystkie elementy konkretnego zamówienia. Używana przy obliczaniu wartości całego zamówienia.
      *
      * @param id identyfikator zamówienia
-     * @return lista elementów zamówienia o podanym id zamówienia
+     * @return lista elementów zamówienia o podanym id
      */
-    public List<OrderItem> getOrderItems(Long id) {
+    public List<OrderItem> findByOrderId(Long id) {
         return orderItemRepository.findById(id).stream().toList();
     }
 
@@ -40,7 +52,7 @@ public class OrderItemService {
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteOrderItem(OrderItem orderItem) {
+    public boolean delete(OrderItem orderItem) {
         try {
             orderItemRepository.delete(orderItem);
             return true;
@@ -55,16 +67,23 @@ public class OrderItemService {
      * @param orderItem nowy element zamówienia
      * @return dodany element zamówienia
      */
-    public OrderItem saveOrderItem(OrderItem orderItem) {
+    public OrderItem save(OrderItem orderItem) {
         return orderItemRepository.save(orderItem);
     }
 
     /**
      * Aktualizuje element zamówienia.
      *
-     * @param orderItem aktualizowany element zamówienia
+     * @param newOrderItem aktualizowany element zamówienia
      */
-    public void updateOrderItem(OrderItem orderItem) {
+    public void update(OrderItem newOrderItem) {
+        OrderItem orderItem = findById(newOrderItem.getId());
+        orderItem.setOrder(newOrderItem.getOrder());
+        orderItem.setProduct(newOrderItem.getProduct());
+        orderItem.setNumber(newOrderItem.getNumber());
+        orderItem.setItemPrice(newOrderItem.getItemPrice());
+        orderItem.setPricePerUnit(newOrderItem.getPricePerUnit());
+
         orderItemRepository.save(orderItem);
     }
 
