@@ -30,9 +30,7 @@ public class OrderService {
      * @param id identyfikator zamówienia
      * @return zamówienie
      */
-    public Order findById(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));
-    }
+    public Order findById(Long id) {return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));}
 
     /**
      * Usuwa zamówienie.

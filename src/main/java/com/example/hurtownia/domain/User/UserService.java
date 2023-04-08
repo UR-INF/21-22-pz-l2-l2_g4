@@ -1,6 +1,5 @@
 package com.example.hurtownia.domain.user;
 
-import com.example.hurtownia.domain.order.Order;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,9 +68,9 @@ public class UserService {
         user.setEmail(newUser.getEmail());
         user.setPassword(newUser.getPassword());
         user.setPhoneNumber(newUser.getPhoneNumber());
-        user.setIsAdmin(newUser.getIsAdmin());
-        user.setGeneratingReports(newUser.getGeneratingReports());
-        user.setGrantingDiscounts(newUser.getGrantingDiscounts());
+        user.setAdmin(newUser.isAdmin());
+        user.setGeneratingReports(newUser.isGeneratingReports());
+        user.setGrantingDiscounts(newUser.isGrantingDiscounts());
 
         userRepository.save(user);
     }

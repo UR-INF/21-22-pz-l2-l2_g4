@@ -2,7 +2,6 @@ package com.example.hurtownia.domain.customer;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;

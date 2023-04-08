@@ -102,10 +102,13 @@ public class OrderController implements Initializable {
                     discount = 0.0;
             }
 
+            Customer customer = customerService.findById(Long.parseLong(customerIdTextField.getText()));
+            String date = dateTextField.getText();
+            String state = orderStates[0];
             Order order = Order.builder()
-                    .customer(customerService.findById(Long.parseLong(customerIdTextField.getText())))
-                    .date(dateTextField.getText())
-                    .state(orderStates[0])
+                    .customer(customer)
+                    .date(date)
+                    .state(state)
                     .discount(discount)
                     .build();
             orderService.save(order);
@@ -243,9 +246,10 @@ public class OrderController implements Initializable {
         customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomer().getId())));
         dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
         valueColumn.setCellValueFactory(cellData -> {
-            List<OrderItem> list = orderItemService.findByOrderId(cellData.getValue().getId());
+            List<OrderItem> list = orderItemService.findAllByOrderId(cellData.getValue().getId());
+            System.out.println(list.size());
             double price = 0.0;
-            for (OrderItem el : list) price += el.getItemPrice() * el.getNumber();
+            for (OrderItem el : list) price += el.getItemPrice();
             return new SimpleStringProperty(String.valueOf(Math.round(price * 100.0) / 100.0));
         });
         discountColumn.setCellValueFactory(cellData -> {

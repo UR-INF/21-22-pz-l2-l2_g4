@@ -30,10 +30,7 @@ public class OrderItemService {
      * @param id identyfikator elementu zamówienia
      * @return element zamówienia
      */
-    public OrderItem findById(Long id) {
-        return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));
-    }
-
+    public OrderItem findById(Long id) {return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));}
 
     /**
      * Pobiera wszystkie elementy konkretnego zamówienia. Używana przy obliczaniu wartości całego zamówienia.
@@ -41,9 +38,7 @@ public class OrderItemService {
      * @param id identyfikator zamówienia
      * @return lista elementów zamówienia o podanym id
      */
-    public List<OrderItem> findByOrderId(Long id) {
-        return orderItemRepository.findById(id).stream().toList();
-    }
+    public List<OrderItem> findAllByOrderId(Long id) {return orderItemRepository.findAllByOrderId(id);}
 
     /**
      * Usuwa element zamówienia.
@@ -80,11 +75,10 @@ public class OrderItemService {
         OrderItem orderItem = findById(newOrderItem.getId());
         orderItem.setOrder(newOrderItem.getOrder());
         orderItem.setProduct(newOrderItem.getProduct());
-        orderItem.setNumber(newOrderItem.getNumber());
+        orderItem.setAmount(newOrderItem.getAmount());
         orderItem.setItemPrice(newOrderItem.getItemPrice());
         orderItem.setPricePerUnit(newOrderItem.getPricePerUnit());
 
         orderItemRepository.save(orderItem);
     }
-
 }

@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -78,16 +77,25 @@ public class CustomerController implements Initializable {
     @FXML
     public void customersBtnAddClicked(MouseEvent event) {
         try {
+            String name = nameTextField.getText();
+            String surname = surnameTextField.getText();
+            String pesel = peselTextField.getText();
+            String phoneNumber = phoneNumberTextField.getText();
+            String email = emailTextField.getText();
+            String place = placeTextField.getText();
+            String street = streetTextField.getText();
+            Integer buildingNumber = Integer.valueOf(buildingNumberTextField.getText());
+            Integer apartmentNumber = Integer.valueOf(apartmentNumberTextField.getText());
             Customer customer = Customer.builder()
-                    .name(nameTextField.getText())
-                    .surname(surnameTextField.getText())
-                    .pesel(peselTextField.getText())
-                    .phoneNumber(phoneNumberTextField.getText())
-                    .email(emailTextField.getText())
-                    .place(placeTextField.getText())
-                    .street(streetTextField.getText())
-                    .buildingNumber(Integer.valueOf(buildingNumberTextField.getText()))
-                    .apartmentNumber(Integer.valueOf(apartmentNumberTextField.getText()))
+                    .name(name)
+                    .surname(surname)
+                    .pesel(pesel)
+                    .phoneNumber(phoneNumber)
+                    .email(email)
+                    .place(place)
+                    .street(street)
+                    .buildingNumber(buildingNumber)
+                    .apartmentNumber(apartmentNumber)
                     .build();
             customerService.save(customer);
             informationArea.appendText("\nDodano nowego klienta");

@@ -1,7 +1,6 @@
 package com.example.hurtownia.domain.user;
 
 import com.example.hurtownia.controllers.ReportController;
-import com.example.hurtownia.domain.order.Order;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -81,15 +80,23 @@ public class UserController implements Initializable {
     @FXML
     public void usersBtnAddClicked(MouseEvent event) {
         try {
+            String name = nameTextField.getText();
+            String surname = surnameTextField.getText();
+            String email = emailTextField.getText();
+            String password = passwordTextField.getText();
+            String phoneNumber = phoneNumberTextField.getText();
+            boolean isAdmin = isAdminCheckBox.isSelected();
+            boolean generatingReports = generatingReportsCheckBox.isSelected();
+            boolean grantingDiscounts = grantingDiscountsCheckBox.isSelected();
             User user = User.builder()
-                    .name(nameTextField.getText())
-                    .surname(surnameTextField.getText())
-                    .email(emailTextField.getText())
-                    .password(passwordTextField.getText())
-                    .phoneNumber(phoneNumberTextField.getText())
-                    .isAdmin(isAdminCheckBox.isSelected())
-                    .generatingReports(generatingReportsCheckBox.isSelected())
-                    .grantingDiscounts(grantingDiscountsCheckBox.isSelected())
+                    .name(name)
+                    .surname(surname)
+                    .email(email)
+                    .password(password)
+                    .phoneNumber(phoneNumber)
+                    .isAdmin(isAdmin)
+                    .generatingReports(generatingReports)
+                    .grantingDiscounts(grantingDiscounts)
                     .build();
             userService.save(user);
             informationArea.appendText("\nDodano nowego użytkownika");
@@ -222,12 +229,12 @@ public class UserController implements Initializable {
                 super.commitEdit(newValue);
             }
         });
-        isAdminColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        isAdminColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[]{"Tak", "Nie"}));
         isAdminColumn.setOnEditCommit(t -> {
             User user = usersTable.getSelectionModel().getSelectedItem();
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
-                    user.setIsAdmin(t.getNewValue().equals("Tak") ? true : false);
+                    user.setAdmin(t.getNewValue().equals("Tak"));
                     userService.update(user);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                 } catch (Exception e) {
@@ -235,12 +242,12 @@ public class UserController implements Initializable {
                 }
             }
         });
-        generatingReportsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        generatingReportsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[]{"Tak", "Nie"}));
         generatingReportsColumn.setOnEditCommit(t -> {
             User user = usersTable.getSelectionModel().getSelectedItem();
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
-                    user.setGeneratingReports(t.getNewValue().equals("Tak") ? true : false);
+                    user.setGeneratingReports(t.getNewValue().equals("Tak"));
                     userService.update(user);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                 } catch (Exception e) {
@@ -248,12 +255,12 @@ public class UserController implements Initializable {
                 }
             }
         });
-        grantingDiscountsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[] {"Tak","Nie"}));
+        grantingDiscountsColumn.setCellFactory(ComboBoxTableCell.forTableColumn(new String[]{"Tak", "Nie"}));
         grantingDiscountsColumn.setOnEditCommit(t -> {
             User user = usersTable.getSelectionModel().getSelectedItem();
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
-                    user.setGrantingDiscounts(t.getNewValue().equals("Tak") ? true : false);
+                    user.setGrantingDiscounts(t.getNewValue().equals("Tak"));
                     userService.update(user);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + user.getId());
                 } catch (Exception e) {
@@ -268,9 +275,9 @@ public class UserController implements Initializable {
         phoneNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
-        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getIsAdmin() ? "Tak" : "Nie"));
-        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGeneratingReports() ? "Tak" : "Nie"));
-        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGrantingDiscounts() ? "Tak" : "Nie"));
+        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isAdmin() ? "Tak" : "Nie"));
+        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isGeneratingReports() ? "Tak" : "Nie"));
+        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().isGeneratingReports() ? "Tak" : "Nie"));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<User, Void> call(final TableColumn<User, Void> param) {

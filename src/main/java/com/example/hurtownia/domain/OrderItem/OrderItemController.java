@@ -88,12 +88,15 @@ public class OrderItemController implements Initializable {
         try {
             Order order = orderService.findById(Long.valueOf(orderIdTextField.getText()));
             Product product = productService.findById(Long.valueOf(productIdTextField.getText()));
+            Integer amount = Integer.parseInt(numberTextField.getText());
+            Double itemPrice = Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0;
+            Double pricePerUnit = product.getPrice();
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(product)
-                    .number(Integer.parseInt(numberTextField.getText()))
-                    .itemPrice(Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0)
-                    .pricePerUnit(product.getPrice())
+                    .amount(amount)
+                    .itemPrice(itemPrice)
+                    .pricePerUnit(pricePerUnit)
                     .build();
             orderItemService.save(orderItem);
             informationArea.appendText("\nDodano nowy element zamówienia");
@@ -190,8 +193,8 @@ public class OrderItemController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
                     try {
-                        orderItem.setNumber(Integer.parseInt(newValue));
-                        orderItem.setItemPrice(orderItem.getNumber() * orderItem.getPricePerUnit());
+                        orderItem.setAmount(Integer.parseInt(newValue));
+                        orderItem.setItemPrice(orderItem.getAmount() * orderItem.getPricePerUnit());
                         orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
                     } catch (Exception e) {
@@ -207,7 +210,7 @@ public class OrderItemController implements Initializable {
         productIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProduct().getId())));
         itemPriceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getItemPrice())));
         pricePerUnitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPricePerUnit())));
-        numberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getNumber())));
+        numberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAmount())));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<OrderItem, Void> call(final TableColumn<OrderItem, Void> param) {

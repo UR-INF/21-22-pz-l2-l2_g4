@@ -72,13 +72,19 @@ public class SupplierController implements Initializable {
     @FXML
     public void suppliersBtnAddClicked(MouseEvent event) {
         try {
+            String name = nameTextField.getText();
+            String email = emailTextField.getText();
+            String country = countryTextField.getText();
+            String place = placeTextField.getText();
+            String street = streetTextField.getText();
+            String nip = nipTextField.getText();
             Supplier supplier = Supplier.builder()
-                    .name(nameTextField.getText())
-                    .email(emailTextField.getText())
-                    .country(countryTextField.getText())
-                    .place(placeTextField.getText())
-                    .street(streetTextField.getText())
-                    .nip(nipTextField.getText())
+                    .name(name)
+                    .email(email)
+                    .country(country)
+                    .place(place)
+                    .street(street)
+                    .nip(nip)
                     .build();
             supplierService.save(supplier);
             informationArea.appendText("\nDodano nowego dostawcę");

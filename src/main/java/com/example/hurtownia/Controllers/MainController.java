@@ -141,7 +141,7 @@ public class MainController implements Initializable {
         OrderItem orderItem = OrderItem.builder()
                 .order(order)
                 .product(product)
-                .number(10)
+                .amount(10)
                 .itemPrice(product.getPrice() * 10)
                 .pricePerUnit(product.getPrice())
                 .build();

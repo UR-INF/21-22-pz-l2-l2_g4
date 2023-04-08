@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'Zamowienie' w bazie danych.
+ * Reprezentuje tabelę 'zamowienie' w bazie danych.
  */
 @Getter
 @Setter

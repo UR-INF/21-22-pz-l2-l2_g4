@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.supplier;
 
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.order.Order;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -40,14 +41,14 @@ public class SupplierReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[6])));
 
-        for (int i = 0; i < data.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getName())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getNip())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPlace())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getStreet())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getCountry())));
+        for (Supplier datum : data) {
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getName())));
+            table.addCell(new Cell().add(new Paragraph(datum.getNip())));
+            table.addCell(new Cell().add(new Paragraph(datum.getEmail())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPlace())));
+            table.addCell(new Cell().add(new Paragraph(datum.getStreet())));
+            table.addCell(new Cell().add(new Paragraph(datum.getCountry())));
         }
 
         document.add(table);

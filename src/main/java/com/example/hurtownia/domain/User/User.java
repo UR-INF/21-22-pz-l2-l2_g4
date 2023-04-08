@@ -45,15 +45,12 @@ public class User implements Serializable {
     @Column(name = "numerTelefonu")
     private String phoneNumber;
 
-    @NonNull
     @Column(name = "isAdmin")
-    private Boolean isAdmin;
+    private boolean isAdmin;
 
-    @NonNull
     @Column(name = "generowanieRaportow")
-    private Boolean generatingReports;
+    private boolean generatingReports;
 
-    @NonNull
     @Column(name = "udzielanieRabatow")
-    private Boolean grantingDiscounts;
+    private boolean grantingDiscounts;
 }

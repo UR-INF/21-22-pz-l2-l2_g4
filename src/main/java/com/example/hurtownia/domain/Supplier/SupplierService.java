@@ -1,6 +1,5 @@
 package com.example.hurtownia.domain.supplier;
 
-import com.example.hurtownia.domain.order.Order;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +68,6 @@ public class SupplierService {
         supplier.setStreet(newSupplier.getStreet());
         supplier.setNip(newSupplier.getNip());
 
-        supplierRepository.save(supplier);}
-
+        supplierRepository.save(supplier);
+    }
 }

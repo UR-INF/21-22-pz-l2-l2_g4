@@ -98,16 +98,24 @@ public class ProductController implements Initializable {
     public void productsBtnAddClicked(MouseEvent event) {
         try {
             Supplier supplier = supplierService.findById(Long.valueOf(supplierIdTextField.getText()));
+            String name = nameTextField.getText();
+            String unitOfMeasurement = unitTextField.getText();
+            Double price = Double.parseDouble(priceTextField.getText());
+            String country = countryTextField.getText();
+            String code = codeTextField.getText();
+            String color = colorTextField.getText();
+            Integer number = Integer.parseInt(numberTextField.getText());
+            Integer maxNumber = Integer.parseInt(maxNumberTextField.getText());
             Product product = Product.builder()
                     .supplier(supplier)
-                    .name(nameTextField.getText())
-                    .unitOfMeasurement(unitTextField.getText())
-                    .price(Double.parseDouble(priceTextField.getText()))
-                    .country(countryTextField.getText())
-                    .code(codeTextField.getText())
-                    .color(colorTextField.getText())
-                    .number(Integer.parseInt(numberTextField.getText()))
-                    .maxNumber(Integer.parseInt(maxNumberTextField.getText()))
+                    .name(name)
+                    .unitOfMeasurement(unitOfMeasurement)
+                    .price(price)
+                    .country(country)
+                    .code(code)
+                    .color(color)
+                    .number(number)
+                    .maxNumber(maxNumber)
                     .build();
             productService.save(product);
             informationArea.appendText("\nDodano nowy produkt");

@@ -39,7 +39,7 @@ public class OrderItem implements Serializable {
 
     @NonNull
     @Column(name = "ilosc")
-    private Integer number;
+    private Integer amount;
 
     @NonNull
     @Column(name = "cenaElementu")
