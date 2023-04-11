@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'zamowienie'.
@@ -15,13 +16,18 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private OrderMapper mapper;
+
     /**
      * Pobiera wszystkie zamówienia.
      *
      * @return lista wszystkich zamówień
      */
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public List<OrderTableViewDTO> findAll() {
+        return orderRepository.findAll().stream()
+                .map(order -> mapper.toDTO(order))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -30,18 +36,21 @@ public class OrderService {
      * @param id identyfikator zamówienia
      * @return zamówienie
      */
-    public Order findById(Long id) {return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));}
+    public Order findById(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));
+        return order;
+    }
 
     /**
      * Usuwa zamówienie.
      *
-     * @param order usuwane zamówienie
+     * @param orderTableViewDTO usuwane zamówienie
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Order order) {
+    public boolean delete(OrderTableViewDTO orderTableViewDTO) {
         try {
-            orderRepository.delete(order);
+            orderRepository.delete(mapper.toEntity(orderTableViewDTO));
             return true;
         } catch (Exception e) {
             return false;
@@ -51,25 +60,28 @@ public class OrderService {
     /**
      * Dodaje nowe zamowienie.
      *
-     * @param order nowe zzamówienie
-     * @return dodane zamówienie
+     * @param orderCreateDTO nowe zamówienie
      */
-    public Order save(Order order) {
-        return orderRepository.save(order);
+    public void save(OrderCreateDTO orderCreateDTO) {
+        orderRepository.save(mapper.toEntity(orderCreateDTO));
     }
 
     /**
      * Aktualizuje zamówienie.
      *
-     * @param newOrder aktualizowane zamówienie
+     * @param orderTableViewDTO aktualizowane zamówienie
      */
-    public void update(Order newOrder) {
-        Order order = findById(newOrder.getId());
-        order.setCustomer(newOrder.getCustomer());
-        order.setDate(newOrder.getDate());
-        order.setState(newOrder.getState());
-        order.setDiscount(newOrder.getDiscount());
+    public void update(OrderTableViewDTO orderTableViewDTO) {
+        orderRepository.save(mapper.toEntity(orderTableViewDTO));
+    }
 
-        orderRepository.save(order);
+    /**
+     * Zwraca obiekt OrderInvoiceDTO z danymi do wygenerowania faktury.
+     *
+     * @param orderTableViewDTO
+     * @return obiekt OrderInvoiceDTO
+     */
+    public OrderInvoiceDTO getInvoiceData(OrderTableViewDTO orderTableViewDTO) {
+        return mapper.toDTO(orderTableViewDTO);
     }
 }

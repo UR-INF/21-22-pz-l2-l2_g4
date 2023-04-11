@@ -24,7 +24,7 @@
                 <TableColumn fx:id="colorColumn" prefWidth="102.4000244140625" text="Kolor" />
                 <TableColumn fx:id="maxNumberColumn" prefWidth="96.800048828125" text="Max. ilość" />
                 <TableColumn fx:id="stateColumn" editable="false" prefWidth="82.4000244140625" text="Stan" />
-                <TableColumn fx:id="deliveryReportColumn" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
+                <TableColumn fx:id="supplyReportColumn" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
                 <TableColumn fx:id="deleteColumn" editable="false" prefWidth="60.7999267578125" text="Usuń" />
             </columns>
         </TableView>

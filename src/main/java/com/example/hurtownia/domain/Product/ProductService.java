@@ -1,10 +1,14 @@
 package com.example.hurtownia.domain.product;
 
+import com.example.hurtownia.domain.customer.CustomerMapper;
+import com.example.hurtownia.domain.order.OrderInvoiceDTO;
+import com.example.hurtownia.domain.order.OrderTableViewDTO;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'produkt'.
@@ -15,13 +19,18 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductMapper mapper;
+
     /**
      * Pobiera wszystkie produkty.
      *
      * @return lista wszystkich produktów
      */
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductTableViewDTO> findAll() {
+        return productRepository.findAll().stream()
+                .map(product -> mapper.toDTO(product))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -35,13 +44,13 @@ public class ProductService {
     /**
      * Usuwa produkt.
      *
-     * @param product usuwany produkt
+     * @param productTableViewDTO usuwany produkt
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Product product) {
+    public boolean delete(ProductTableViewDTO productTableViewDTO) {
         try {
-            productRepository.delete(product);
+            productRepository.delete(mapper.toEntity(productTableViewDTO));
             return true;
         } catch (Exception e) {
             return false;
@@ -51,30 +60,25 @@ public class ProductService {
     /**
      * Dodaje produkt.
      *
-     * @param product nowy produkt
-     * @return dodany produkt
+     * @param productCreateDTO nowy produkt
      */
-    public Product save(Product product) {
-        return productRepository.save(product);
+    public void save(ProductCreateDTO productCreateDTO) {
+        productRepository.save(mapper.toEntity(productCreateDTO));
     }
 
     /**
      * Aktualizuje produkt.
      *
-     * @param newProduct aktualizowany produkt
+     * @param productTableViewDTO aktualizowany produkt
      */
-    public void update(Product newProduct) {
-        Product product = findById(newProduct.getId());
-        product.setSupplier(newProduct.getSupplier());
-        product.setName(newProduct.getName());
-        product.setUnitOfMeasurement(newProduct.getUnitOfMeasurement());
-        product.setPrice(newProduct.getPrice());
-        product.setCountry(newProduct.getCountry());
-        product.setCode(newProduct.getCode());
-        product.setColor(newProduct.getColor());
-        product.setNumber(newProduct.getNumber());
-        product.setMaxNumber(newProduct.getMaxNumber());
+    public void update(ProductTableViewDTO productTableViewDTO) {
+        productRepository.save(mapper.toEntity(productTableViewDTO));
+    }
 
-        productRepository.save(product);
+    public List<ProductSupplyDTO> getSupplyData(List<ProductTableViewDTO> productTableViewDTOs){
+        return productTableViewDTOs.stream()
+                .filter(productTableViewDTO -> productTableViewDTO.getSupply() == Boolean.TRUE)
+                .map(productTableViewDTO -> mapper.toDTO(productTableViewDTO))
+                .collect(Collectors.toList());
     }
 }

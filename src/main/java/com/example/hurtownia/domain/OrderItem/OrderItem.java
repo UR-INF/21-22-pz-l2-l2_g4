@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'ElementZamowienia' w bazie danych.
+ * Reprezentuje tabelę 'wlement_zamowienia' w bazie danych.
  */
 @Getter
 @Setter
@@ -17,7 +17,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder(toBuilder = true)
-@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
 @Table(name = "element_zamowienia")
 public class OrderItem implements Serializable {

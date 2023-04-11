@@ -2,10 +2,10 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.AbstractReport;
-import com.example.hurtownia.domain.customer.Customer;
 import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.orderitem.OrderItem;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -43,24 +43,22 @@ import java.util.ResourceBundle;
 @Controller
 public class OrderController implements Initializable {
 
-    public static ObservableList<Order> orders = FXCollections.observableArrayList();
+    public static ObservableList<OrderTableViewDTO> orders = FXCollections.observableArrayList();
     private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     @Autowired
     public OrderService orderService;
-    @Autowired
-    public OrderItemService orderItemService;
-    @Autowired
-    public CustomerService customerService;
     @FXML
     private TextField customerIdTextField, dateTextField, discountTextField;
     @FXML
     private TextArea informationArea;
     @FXML
-    private TableView<Order> ordersTable;
+    private TableView<OrderTableViewDTO> ordersTable;
     @FXML
-    private TableColumn<Order, String> dateColumn, idColumn, customerIdColumn, discountColumn, stateColumn, valueColumn;
+    private TableColumn<OrderTableViewDTO, Number> valueColumn;
     @FXML
-    private TableColumn<Order, Void> invoiceColumn, deleteColumn;
+    private TableColumn<OrderTableViewDTO, String> dateColumn, idColumn, customerIdColumn, discountColumn, stateColumn;
+    @FXML
+    private TableColumn<OrderTableViewDTO, Void> invoiceColumn, deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
 
@@ -90,28 +88,17 @@ public class OrderController implements Initializable {
     @FXML
     public void ordersBtnAddClicked(MouseEvent event) {
         try {
-            Double discount;
-            switch (discountTextField.getText()) {
-                case "KOD1":
-                    discount = 0.1;
-                    break;
-                case "KOD2":
-                    discount = 0.2;
-                    break;
-                default:
-                    discount = 0.0;
-            }
-
-            Customer customer = customerService.findById(Long.parseLong(customerIdTextField.getText()));
+            Double discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
+            Long customerId = Long.parseLong(customerIdTextField.getText());
             String date = dateTextField.getText();
             String state = orderStates[0];
-            Order order = Order.builder()
-                    .customer(customer)
+            OrderCreateDTO orderCreateDTO = OrderCreateDTO.builder()
+                    .customerId(customerId)
                     .date(date)
                     .state(state)
                     .discount(discount)
                     .build();
-            orderService.save(order);
+            orderService.save(orderCreateDTO);
             informationArea.appendText("\nDodano nowe zamówienie");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego zamówienia");
@@ -141,10 +128,10 @@ public class OrderController implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setOpacity(1);
             stage.setTitle("Generuj raport");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/PDF-save-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+           controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();
@@ -161,21 +148,27 @@ public class OrderController implements Initializable {
      * Inicjalizuje tabelę.
      */
     private void setTable() {
+        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
+        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomerId())));
+        dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
+        valueColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getValue()));
+        discountColumn.setCellValueFactory(cellData -> new SimpleStringProperty(DiscountConverter.fromNumericToPercentage(cellData.getValue().getDiscount())));
+        stateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
+
         StringConverter<String> converter = new DefaultStringConverter();
         customerIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
+                    OrderTableViewDTO orderTableViewDTO = ordersTable.getSelectionModel().getSelectedItem();
                     try {
-                        Customer customer = customerService.findById(Long.valueOf(newValue));
-                        order.setCustomer(customer);
-                        orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        orderTableViewDTO.setCustomerId(Long.valueOf(newValue));
+                        orderService.update(orderTableViewDTO);
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderTableViewDTO.getId());
                     } catch (ObjectNotFoundException e) {
                         informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderTableViewDTO.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -185,13 +178,13 @@ public class OrderController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
+                    OrderTableViewDTO orderTableViewDTO = ordersTable.getSelectionModel().getSelectedItem();
                     try {
-                        order.setDate(newValue);
-                        orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        orderTableViewDTO.setDate(newValue);
+                        orderService.update(orderTableViewDTO);
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderTableViewDTO.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderTableViewDTO.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -201,80 +194,42 @@ public class OrderController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
-                    double discount;
-                    switch (newValue) {
-                        case "KOD1":
-                            discount = 0.1;
-                            newValue = "-10%";
-                            break;
-                        case "KOD2":
-                            discount = 0.2;
-                            newValue = "-20%";
-                            break;
-                        default:
-                            discount = 0.0;
-                            newValue = "nie udzielono";
-                    }
-
+                    OrderTableViewDTO orderTableViewDTO = ordersTable.getSelectionModel().getSelectedItem();
                     try {
-                        order.setDiscount(discount);
-                        orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        orderTableViewDTO.setDiscount(DiscountConverter.fromCodeToNumeric(newValue));
+                        orderService.update(orderTableViewDTO);
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderTableViewDTO.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderTableViewDTO.getId());
                     }
                 }
-                super.commitEdit(newValue);
+                super.commitEdit(DiscountConverter.fromCodeToPercentage(newValue));
             }
         });
         stateColumn.setCellFactory(ComboBoxTableCell.forTableColumn(orderStates));
         stateColumn.setOnEditCommit(t -> {
-            Order order = ordersTable.getSelectionModel().getSelectedItem();
+            OrderTableViewDTO orderTableViewDTO = ordersTable.getSelectionModel().getSelectedItem();
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
-                    order.setState(t.getNewValue());
-                    orderService.update(order);
-                    informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                    orderTableViewDTO.setState(t.getNewValue());
+                    orderService.update(orderTableViewDTO);
+                    informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderTableViewDTO.getId());
                 } catch (Exception e) {
-                    informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                    informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderTableViewDTO.getId());
                 }
             }
         });
-
-        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
-        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomer().getId())));
-        dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
-        valueColumn.setCellValueFactory(cellData -> {
-            List<OrderItem> list = orderItemService.findAllByOrderId(cellData.getValue().getId());
-            System.out.println(list.size());
-            double price = 0.0;
-            for (OrderItem el : list) price += el.getItemPrice();
-            return new SimpleStringProperty(String.valueOf(Math.round(price * 100.0) / 100.0));
-        });
-        discountColumn.setCellValueFactory(cellData -> {
-            String value = String.valueOf(cellData.getValue().getDiscount());
-            switch (value) {
-                case "0.1":
-                    return new SimpleStringProperty("-10%");
-                case "0.2":
-                    return new SimpleStringProperty("-20%");
-                default:
-                    return new SimpleStringProperty("nie udzielono");
-            }
-        });
-        stateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
         invoiceColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Order, Void> call(final TableColumn<Order, Void> param) {
-                final TableCell<Order, Void> cell = new TableCell<>() {
+            public TableCell<OrderTableViewDTO, Void> call(final TableColumn<OrderTableViewDTO, Void> param) {
+                final TableCell<OrderTableViewDTO, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/invoiceBtn.png"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Order order = getTableView().getItems().get(getIndex());
-                            AbstractReport report = new InvoiceReport(order);
+                            OrderTableViewDTO orderTableViewDTO = getTableView().getItems().get(getIndex());
+                            AbstractReport report = new InvoiceReport(orderService.getInvoiceData(orderTableViewDTO));
                             try {
                                 Stage stage = new Stage();
                                 stage.initModality(Modality.APPLICATION_MODAL);
@@ -316,19 +271,20 @@ public class OrderController implements Initializable {
         });
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Order, Void> call(final TableColumn<Order, Void> param) {
-                final TableCell<Order, Void> cell = new TableCell<>() {
+            public TableCell<OrderTableViewDTO, Void> call(final TableColumn<OrderTableViewDTO, Void> param) {
+                final TableCell<OrderTableViewDTO, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/deleteBtn.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Order z = getTableView().getItems().get(getIndex());
-                            if (orderService.delete(z)) {
-                                orders.remove(z);
-                                informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + z.getId());
+                            OrderTableViewDTO orderTableViewDTO = getTableView().getItems().get(getIndex());
+
+                            if (orderService.delete(orderTableViewDTO)) {
+                                orders.remove(orderTableViewDTO);
+                                informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + orderTableViewDTO.getId());
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + z.getId());
+                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + orderTableViewDTO.getId());
                         });
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
