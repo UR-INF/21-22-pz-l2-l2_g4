@@ -16,8 +16,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder(toBuilder = true)
+@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
-@Table(name = "zamowienie")
+@Table(name = "Zamowienie")
 public class Order implements Serializable {
 
     @Id

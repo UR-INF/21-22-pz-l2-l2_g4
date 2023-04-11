@@ -13,9 +13,9 @@ import java.util.List;
 
 public class CustomerReport extends AbstractReport {
 
-    private List<CustomerTableViewDTO> data;
+    private List<Customer> data;
 
-    public CustomerReport(List<CustomerTableViewDTO> data) {
+    public CustomerReport(List<Customer> data) {
         this.data = data;
     }
 
@@ -43,7 +43,7 @@ public class CustomerReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[9])));
 
-        for (CustomerTableViewDTO datum : data) {
+        for (Customer datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
             table.addCell(new Cell().add(new Paragraph(datum.getName())));
             table.addCell(new Cell().add(new Paragraph(datum.getSurname())));

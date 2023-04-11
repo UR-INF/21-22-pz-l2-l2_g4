@@ -1,12 +1,10 @@
 package com.example.hurtownia.domain.customer;
 
-import com.example.hurtownia.domain.order.OrderMapper;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'klient'.
@@ -17,18 +15,13 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Autowired
-    private CustomerMapper mapper;
-
     /**
      * Pobiera wszystkich klientów.
      *
      * @return lista wszystkich klientów
      */
-    public List<CustomerTableViewDTO> findAll() {
-        return customerRepository.findAll().stream()
-                .map(customer -> mapper.toDTO(customer))
-                .collect(Collectors.toList());
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
     }
 
     /**
@@ -42,13 +35,13 @@ public class CustomerService {
     /**
      * Usuwa klienta.
      *
-     * @param customerTableViewDTO usuwany klient
+     * @param customer usuwany klient
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(CustomerTableViewDTO customerTableViewDTO) {
+    public boolean delete(Customer customer) {
         try {
-            customerRepository.delete(mapper.toEntity(customerTableViewDTO));
+            customerRepository.delete(customer);
             return true;
         } catch (Exception e) {
             return false;
@@ -58,18 +51,30 @@ public class CustomerService {
     /**
      * Dodaje nowego klienta.
      *
-     * @param customerCreateDTO nowy klient
+     * @param customer nowy klient
+     * @return dodany klient
      */
-    public void save(CustomerCreateDTO customerCreateDTO) {
-        customerRepository.save(mapper.toEntity(customerCreateDTO));
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
     }
 
     /**
      * Aktualizuje klienta.
      *
-     * @param customerTableViewDTO aktualizowany klient
+     * @param newCustomer aktualizowany klient
      */
-    public void update(CustomerTableViewDTO customerTableViewDTO) {
-        customerRepository.save(mapper.toEntity(customerTableViewDTO));
+    public void update(Customer newCustomer) {
+        Customer customer = findById(newCustomer.getId());
+        customer.setName(newCustomer.getName());
+        customer.setSurname(newCustomer.getSurname());
+        customer.setPesel(newCustomer.getPesel());
+        customer.setPhoneNumber(newCustomer.getPhoneNumber());
+        customer.setEmail(newCustomer.getEmail());
+        customer.setPlace(newCustomer.getPlace());
+        customer.setStreet(newCustomer.getStreet());
+        customer.setBuildingNumber(newCustomer.getBuildingNumber());
+        customer.setApartmentNumber(newCustomer.getApartmentNumber());
+
+        customerRepository.save(customer);
     }
 }

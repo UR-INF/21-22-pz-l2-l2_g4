@@ -12,9 +12,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 public class SupplyReport extends AbstractReport {
-    private List<ProductSupplyDTO> data;
+    private List<Product> data;
 
-    public SupplyReport(List<ProductSupplyDTO> data) {
+    public SupplyReport(List<Product> data) {
         this.data = data;
     }
 
@@ -30,17 +30,19 @@ public class SupplyReport extends AbstractReport {
 
         float columnWidth[] = {40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Nazwa dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
+        String[] tableHeader = {"Id dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
 
-        for (ProductSupplyDTO datum : data) {
-            table.addCell(new Cell().add(new Paragraph(datum.getSupplierName())));
-            table.addCell(new Cell().add(new Paragraph(datum.getCode())));
-            table.addCell(new Cell().add(new Paragraph(datum.getUnitOfMeasurement())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getAmount()))));
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).isSupply()) {
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
+                table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
+                table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber() - data.get(i).getNumber()))));
+            }
         }
 
         document.add(table);

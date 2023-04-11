@@ -1,19 +1,18 @@
 package com.example.hurtownia.controllers;
 
 import com.example.hurtownia.authentication.LoginService;
-import com.example.hurtownia.domain.customer.CustomerCreateDTO;
+import com.example.hurtownia.domain.customer.Customer;
 import com.example.hurtownia.domain.customer.CustomerService;
-import com.example.hurtownia.domain.order.OrderCreateDTO;
+import com.example.hurtownia.domain.order.Order;
 import com.example.hurtownia.domain.order.OrderService;
-import com.example.hurtownia.domain.orderitem.OrderItemCreateDTO;
+import com.example.hurtownia.domain.orderitem.OrderItem;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
-import com.example.hurtownia.domain.product.ProductCreateDTO;
+import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductService;
-import com.example.hurtownia.domain.supplier.SupplierCreateDTO;
+import com.example.hurtownia.domain.supplier.Supplier;
 import com.example.hurtownia.domain.supplier.SupplierService;
-import com.example.hurtownia.domain.user.UserCreateDTO;
+import com.example.hurtownia.domain.user.User;
 import com.example.hurtownia.domain.user.UserService;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
@@ -70,8 +69,7 @@ public class MainController implements Initializable {
 
         while (true) {
             date = outputformat.format(Calendar.getInstance().getTime());
-            String finalDate = date;
-            Platform.runLater(() -> clockLabel.setText(finalDate));
+            clockLabel.setText(date);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -84,19 +82,19 @@ public class MainController implements Initializable {
      * Testowy insert danych.
      */
     private void insertData() {
-        UserCreateDTO user = UserCreateDTO.builder()
+        User user = User.builder()
                 .name("imie")
                 .surname("nazwisko")
                 .email("email")
                 .password("haslo")
                 .phoneNumber("123456789")
-                .isAdmin(Boolean.TRUE)
-                .generatingReports(Boolean.TRUE)
-                .grantingDiscounts(Boolean.TRUE)
+                .isAdmin(true)
+                .generatingReports(true)
+                .grantingDiscounts(true)
                 .build();
         userService.save(user);
 
-        SupplierCreateDTO supplier = SupplierCreateDTO.builder()
+        Supplier supplier = Supplier.builder()
                 .name("nazwa")
                 .email("email")
                 .country("kraj")
@@ -106,7 +104,7 @@ public class MainController implements Initializable {
                 .build();
         supplierService.save(supplier);
 
-        CustomerCreateDTO customer = CustomerCreateDTO.builder()
+        Customer customer = Customer.builder()
                 .name("imie")
                 .surname("nazwisko")
                 .pesel("12345678911")
@@ -119,8 +117,8 @@ public class MainController implements Initializable {
                 .build();
         customerService.save(customer);
 
-        ProductCreateDTO product = ProductCreateDTO.builder()
-                .supplierId(1L)
+        Product product = Product.builder()
+                .supplier(supplier)
                 .name("nazwa")
                 .unitOfMeasurement("sztuka")
                 .price(12.5)
@@ -132,18 +130,20 @@ public class MainController implements Initializable {
                 .build();
         productService.save(product);
 
-        OrderCreateDTO order = OrderCreateDTO.builder()
-                .customerId(1L)
+        Order order = Order.builder()
+                .customer(customer)
                 .date("22-02-2022")
                 .state("w przygotowaniu")
                 .discount(0.2)
                 .build();
         orderService.save(order);
 
-        OrderItemCreateDTO orderItem = OrderItemCreateDTO.builder()
-                .orderid(1L)
-                .productId(1L)
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .product(product)
                 .amount(10)
+                .itemPrice(product.getPrice() * 10)
+                .pricePerUnit(product.getPrice())
                 .build();
         orderItemService.save(orderItem);
     }

@@ -13,9 +13,9 @@ import java.util.List;
 
 public class OrderReport extends AbstractReport {
 
-    private List<OrderTableViewDTO> data;
+    private List<Order> data;
 
-    public OrderReport(List<OrderTableViewDTO> data) {
+    public OrderReport(List<Order> data) {
         this.data = data;
     }
 
@@ -38,9 +38,9 @@ public class OrderReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
 
-        for (OrderTableViewDTO datum : data) {
+        for (Order datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getCustomerId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getCustomer().getId()))));
             table.addCell(new Cell().add(new Paragraph(datum.getDate())));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getDiscount()))));
             table.addCell(new Cell().add(new Paragraph(datum.getState())));

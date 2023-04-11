@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'produkt' w bazie danych.
+ * Reprezentuje tabelę 'Produkt' w bazie danych.
  */
 @Getter
 @Setter
@@ -16,8 +16,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder(toBuilder = true)
+@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
-@Table(name = "produkt")
+@Table(name = "Produkt")
 public class Product implements Serializable {
 
     @Id
@@ -61,4 +62,7 @@ public class Product implements Serializable {
     @NonNull
     @Column(name = "maxIlosc")
     private Integer maxNumber;
+
+    @Transient
+    private boolean supply = false;
 }

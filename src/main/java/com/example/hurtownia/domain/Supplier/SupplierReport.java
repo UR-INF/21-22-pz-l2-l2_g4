@@ -14,9 +14,9 @@ import java.util.List;
 
 public class SupplierReport extends AbstractReport {
 
-    private List<SupplierTableViewDTO> data;
+    private List<Supplier> data;
 
-    public SupplierReport(List<SupplierTableViewDTO> data) {
+    public SupplierReport(List<Supplier> data) {
         this.data = data;
     }
 
@@ -41,7 +41,7 @@ public class SupplierReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[6])));
 
-        for (SupplierTableViewDTO datum : data) {
+        for (Supplier datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
             table.addCell(new Cell().add(new Paragraph(datum.getName())));
             table.addCell(new Cell().add(new Paragraph(datum.getNip())));

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
@@ -16,19 +15,22 @@ public class OrderItemService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-    @Autowired
-    private OrderItemMapper mapper;
-
     /**
      * Pobiera elementy zamówień.
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<OrderItemTableViewDTO> findAll() {
-        return orderItemRepository.findAll().stream()
-                .map(orderItem -> mapper.toDTO(orderItem))
-                .collect(Collectors.toList());
+    public List<OrderItem> findAll() {
+        return orderItemRepository.findAll();
     }
+
+    /**
+     * Pobiera element zamówienia o podanym id.
+     *
+     * @param id identyfikator elementu zamówienia
+     * @return element zamówienia
+     */
+    public OrderItem findById(Long id) {return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));}
 
     /**
      * Pobiera wszystkie elementy konkretnego zamówienia. Używana przy obliczaniu wartości całego zamówienia.
@@ -36,20 +38,18 @@ public class OrderItemService {
      * @param id identyfikator zamówienia
      * @return lista elementów zamówienia o podanym id
      */
-    public List<OrderItem> findAllByOrderId(Long id) {
-        return orderItemRepository.findAllByOrderId(id);
-    }
+    public List<OrderItem> findAllByOrderId(Long id) {return orderItemRepository.findAllByOrderId(id);}
 
     /**
      * Usuwa element zamówienia.
      *
-     * @param orderItemTableViewDTO usuwany element zamówienia
+     * @param orderItem usuwany element zamówienia
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(OrderItemTableViewDTO orderItemTableViewDTO) {
+    public boolean delete(OrderItem orderItem) {
         try {
-            orderItemRepository.delete(mapper.toEntity(orderItemTableViewDTO));
+            orderItemRepository.delete(orderItem);
             return true;
         } catch (Exception e) {
             return false;
@@ -59,18 +59,26 @@ public class OrderItemService {
     /**
      * Dodaje nowy element zamówienia.
      *
-     * @param orderItemCreateDTO nowy element zamówienia
+     * @param orderItem nowy element zamówienia
+     * @return dodany element zamówienia
      */
-    public void save(OrderItemCreateDTO orderItemCreateDTO) {
-        orderItemRepository.save(mapper.toEntity(orderItemCreateDTO));
+    public OrderItem save(OrderItem orderItem) {
+        return orderItemRepository.save(orderItem);
     }
 
     /**
      * Aktualizuje element zamówienia.
      *
-     * @param orderItemTableViewDTO aktualizowany element zamówienia
+     * @param newOrderItem aktualizowany element zamówienia
      */
-    public void update(OrderItemTableViewDTO orderItemTableViewDTO) {
-        orderItemRepository.save(mapper.toEntity(orderItemTableViewDTO));
+    public void update(OrderItem newOrderItem) {
+        OrderItem orderItem = findById(newOrderItem.getId());
+        orderItem.setOrder(newOrderItem.getOrder());
+        orderItem.setProduct(newOrderItem.getProduct());
+        orderItem.setAmount(newOrderItem.getAmount());
+        orderItem.setItemPrice(newOrderItem.getItemPrice());
+        orderItem.setPricePerUnit(newOrderItem.getPricePerUnit());
+
+        orderItemRepository.save(orderItem);
     }
 }

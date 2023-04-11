@@ -3,12 +3,8 @@ package com.example.hurtownia.domain.orderitem;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.order.Order;
 import com.example.hurtownia.domain.order.OrderService;
-import com.example.hurtownia.domain.order.OrderTableViewDTO;
 import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductService;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -32,8 +28,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
-import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.NumberStringConverter;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,7 +40,11 @@ import java.util.ResourceBundle;
 @Controller
 public class OrderItemController implements Initializable {
 
-    public static ObservableList<OrderItemTableViewDTO> orderItems = FXCollections.observableArrayList();
+    public static ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
+    @Autowired
+    public OrderService orderService;
+    @Autowired
+    public ProductService productService;
     @Autowired
     private OrderItemService orderItemService;
     @FXML
@@ -54,11 +52,11 @@ public class OrderItemController implements Initializable {
     @FXML
     private TextField productIdTextField, orderIdTextField, numberTextField;
     @FXML
-    private TableView<OrderItemTableViewDTO> orderItemTable;
+    private TableView<OrderItem> orderItemTable;
     @FXML
-    private TableColumn<OrderItemTableViewDTO, Number> itemPriceColumn, pricePerUnitColumn, idColumn, productIdColumn, orderIdColumn, amountColumn;
+    private TableColumn<OrderItem, String> itemPriceColumn, pricePerUnitColumn, idColumn, productIdColumn, orderIdColumn, numberColumn;
     @FXML
-    private TableColumn<OrderItemTableViewDTO, Void> deleteColumn;
+    private TableColumn<OrderItem, Void> deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
 
@@ -88,15 +86,19 @@ public class OrderItemController implements Initializable {
     @FXML
     public void orderItemsBtnAddClicked(MouseEvent event) {
         try {
-            Long orderId = Long.valueOf(orderIdTextField.getText());
-            Long productId = Long.valueOf(productIdTextField.getText());
-            Integer amount = Integer.valueOf(numberTextField.getText());
-            OrderItemCreateDTO orderItemCreateDTO = OrderItemCreateDTO.builder()
-                    .orderid(orderId)
-                    .productId(productId)
+            Order order = orderService.findById(Long.valueOf(orderIdTextField.getText()));
+            Product product = productService.findById(Long.valueOf(productIdTextField.getText()));
+            Integer amount = Integer.parseInt(numberTextField.getText());
+            Double itemPrice = Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0;
+            Double pricePerUnit = product.getPrice();
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .product(product)
                     .amount(amount)
+                    .itemPrice(itemPrice)
+                    .pricePerUnit(pricePerUnit)
                     .build();
-            orderItemService.save(orderItemCreateDTO);
+            orderItemService.save(orderItem);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
@@ -146,83 +148,84 @@ public class OrderItemController implements Initializable {
      * Inicjalizuje tabelę.
      */
     private void setTable() {
-        idColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getId()));
-        orderIdColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getOrderid()));
-        productIdColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getProductId()));
-        itemPriceColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getItemPrice()));
-        pricePerUnitColumn.setCellValueFactory(cellData -> new SimpleDoubleProperty(cellData.getValue().getPricePerUnit()));
-        amountColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getAmount()));
+        StringConverter<String> converter = new DefaultStringConverter();
+        orderIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
+                    try {
+                        Order order = orderService.findById(Long.valueOf(newValue));
+                        orderItem.setOrder(order);
+                        orderItemService.update(orderItem);
+                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        productIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
+                    try {
+                        Product product = productService.findById(Long.valueOf(newValue));
+                        orderItem.setProduct(product);
+                        orderItemService.update(orderItem);
+                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        numberColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
+                    try {
+                        orderItem.setAmount(Integer.parseInt(newValue));
+                        orderItem.setItemPrice(orderItem.getAmount() * orderItem.getPricePerUnit());
+                        orderItemService.update(orderItem);
+                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
 
-        NumberStringConverter numberConverter = new NumberStringConverter();
-        orderIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
-            @Override
-            public void commitEdit(Number newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    OrderItemTableViewDTO orderItemTableViewDTO = orderItemTable.getSelectionModel().getSelectedItem();
-                    try {
-                        orderItemTableViewDTO.setOrderid(newValue.longValue());
-                        orderItemService.update(orderItemTableViewDTO);
-                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItemTableViewDTO.getId());
-                    } catch (ObjectNotFoundException e) {
-                        informationArea.appendText("\n" + e.getMessage());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItemTableViewDTO.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        productIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
-            @Override
-            public void commitEdit(Number newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    OrderItemTableViewDTO orderItemTableViewDTO = orderItemTable.getSelectionModel().getSelectedItem();
-                    try {
-                        orderItemTableViewDTO.setProductId(newValue.longValue());
-                        orderItemService.update(orderItemTableViewDTO);
-                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItemTableViewDTO.getId());
-                    } catch (ObjectNotFoundException e) {
-                        informationArea.appendText("\n" + e.getMessage());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItemTableViewDTO.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        amountColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
-            @Override
-            public void commitEdit(Number newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    OrderItemTableViewDTO orderItemTableViewDTO = orderItemTable.getSelectionModel().getSelectedItem();
-                    try {
-                        orderItemTableViewDTO.setAmount(newValue.intValue());
-                        orderItemService.update(orderItemTableViewDTO);
-                        orderItemTable.getItems().clear();
-                        orderItems.setAll(orderItemService.findAll());
-                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItemTableViewDTO.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItemTableViewDTO.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
+        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
+        orderIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getOrder().getId())));
+        productIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProduct().getId())));
+        itemPriceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getItemPrice())));
+        pricePerUnitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPricePerUnit())));
+        numberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAmount())));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<OrderItemTableViewDTO, Void> call(final TableColumn<OrderItemTableViewDTO, Void> param) {
-                final TableCell<OrderItemTableViewDTO, Void> cell = new TableCell<>() {
+            public TableCell<OrderItem, Void> call(final TableColumn<OrderItem, Void> param) {
+                final TableCell<OrderItem, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/deleteBtn.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            OrderItemTableViewDTO orderItemTableViewDTO = getTableView().getItems().get(getIndex());
-                            if (orderItemService.delete(orderItemTableViewDTO)) {
-                                orderItems.remove(orderItemTableViewDTO);
-                                informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + orderItemTableViewDTO.getId());
+                            OrderItem orderItem = getTableView().getItems().get(getIndex());
+                            if (orderItemService.delete(orderItem)) {
+                                orderItems.remove(orderItem);
+                                informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + orderItem.getId());
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + orderItemTableViewDTO.getId());
+                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + orderItem.getId());
                         });
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
