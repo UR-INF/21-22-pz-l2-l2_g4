@@ -13,9 +13,9 @@ import java.util.List;
 
 public class ProductReport extends AbstractReport {
 
-    private List<Product> data;
+    private List<ProductTableViewDTO> data;
 
-    public ProductReport(List<Product> data) {
+    public ProductReport(List<ProductTableViewDTO> data) {
         this.data = data;
     }
 
@@ -43,9 +43,9 @@ public class ProductReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[9])));
 
-        for (Product datum : data) {
+        for (ProductTableViewDTO datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getSupplier().getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getSupplierId()))));
             table.addCell(new Cell().add(new Paragraph(datum.getCode())));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getPrice()))));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getNumber()))));
@@ -53,12 +53,7 @@ public class ProductReport extends AbstractReport {
             table.addCell(new Cell().add(new Paragraph(datum.getCountry())));
             table.addCell(new Cell().add(new Paragraph(datum.getColor())));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getMaxNumber()))));
-            double stosunek = datum.getNumber() / datum.getMaxNumber();
-            String str;
-            if (stosunek < 30) str = "niski";
-            else if (stosunek < 70) str = "umiarkowany";
-            else str = "wysoki";
-            table.addCell(new Cell().add(new Paragraph(str)));
+            table.addCell(new Cell().add(new Paragraph(ProductState.calculateState(datum.getNumber(), datum.getMaxNumber()))));
         }
 
         document.add(table);

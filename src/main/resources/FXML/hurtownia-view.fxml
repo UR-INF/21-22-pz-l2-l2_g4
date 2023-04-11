@@ -86,6 +86,9 @@
                </content>
             </Tab>
         </tabs>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
       </TabPane>
    </center>
 </BorderPane>

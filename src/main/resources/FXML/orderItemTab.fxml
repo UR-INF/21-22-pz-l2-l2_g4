@@ -19,7 +19,7 @@
                 <TableColumn fx:id="productIdColumn" prefWidth="157.60003662109375" text="Id produktu" />
                 <TableColumn fx:id="itemPriceColumn" editable="false" prefWidth="172.800048828125" text="Cena elementu" />
                 <TableColumn fx:id="pricePerUnitColumn" editable="false" prefWidth="182.39990234375" text="Cena za jednostkę" />
-                <TableColumn fx:id="numberColumn" prefWidth="170.4000244140625" text="Ilość" />
+                <TableColumn fx:id="amountColumn" prefWidth="170.4000244140625" text="Ilość" />
                 <TableColumn fx:id="deleteColumn" editable="false" prefWidth="159.2000732421875" text="Usuń" />
             </columns>
         </TableView>

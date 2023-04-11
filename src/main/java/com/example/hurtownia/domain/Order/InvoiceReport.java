@@ -12,10 +12,10 @@ import java.io.FileNotFoundException;
 
 public class InvoiceReport extends AbstractReport {
 
-    private Order order;
+    private OrderInvoiceDTO orderInvoiceDTO;
 
-    public InvoiceReport(Order order) {
-        this.order = order;
+    public InvoiceReport(OrderInvoiceDTO orderInvoiceDTO) {
+        this.orderInvoiceDTO = orderInvoiceDTO;
     }
 
     @Override
@@ -38,12 +38,12 @@ public class InvoiceReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
 
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getSurname())));
-        table.addCell(new Cell().add(new Paragraph(order.getDate())));
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
+        table.addCell(new Cell().add(new Paragraph(orderInvoiceDTO.getName())));
+        table.addCell(new Cell().add(new Paragraph(orderInvoiceDTO.getSurname())));
+        table.addCell(new Cell().add(new Paragraph(orderInvoiceDTO.getDate())));
+        table.addCell(new Cell().add(new Paragraph(orderInvoiceDTO.getPrice())));
         String discount;
-        switch (String.valueOf(order.getDiscount())) {
+        switch (String.valueOf(orderInvoiceDTO.getDiscount())) {
             case "0.1":
                 discount = "-10%";
                 break;
@@ -54,7 +54,7 @@ public class InvoiceReport extends AbstractReport {
                 discount = "nie udzielono";
         }
         table.addCell(new Cell().add(new Paragraph(discount)));
-        table.addCell(new Cell().add(new Paragraph(order.getState())));
+        table.addCell(new Cell().add(new Paragraph(orderInvoiceDTO.getPriceAfterDiscount())));
 
         document.add(table);
 
