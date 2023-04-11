@@ -39,13 +39,13 @@ public class OrderItemReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
 
-        for (int i = 0; i < data.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getOrder().getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getProduct().getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getItemPrice()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getPricePerUnit()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getNumber()))));
+        for (OrderItem datum : data) {
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getOrder().getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getProduct().getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getItemPrice()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getPricePerUnit()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getAmount()))));
         }
 
         document.add(table);

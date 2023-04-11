@@ -23,7 +23,7 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @NonNull
     @Column(name = "imie")
@@ -55,9 +55,9 @@ public class Customer implements Serializable {
 
     @NonNull
     @Column(name = "numerMieszkania")
-    private int apartmentNumber;
+    private Integer apartmentNumber;
 
     @NonNull
     @Column(name = "numerBudynku")
-    private int buildingNumber;
+    private Integer buildingNumber;
 }
