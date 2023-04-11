@@ -2,6 +2,9 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.Customer.CustomerMapper;
+import com.example.hurtownia.domain.Order.OrderDTO;
+import com.example.hurtownia.domain.Order.OrderMapper;
 import com.example.hurtownia.domain.customer.Customer;
 import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.orderitem.OrderItem;
@@ -43,10 +46,16 @@ import java.util.ResourceBundle;
 @Controller
 public class OrderController implements Initializable {
 
-    public static ObservableList<Order> orders = FXCollections.observableArrayList();
+    public static ObservableList<OrderDTO> orders = FXCollections.observableArrayList();
     private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     @Autowired
     public OrderService orderService;
+
+    @Autowired
+    public OrderMapper orderMapper;
+
+    @Autowired
+    public CustomerMapper customerMapper;
     @Autowired
     public OrderItemService orderItemService;
     @Autowired
@@ -56,11 +65,11 @@ public class OrderController implements Initializable {
     @FXML
     private TextArea informationArea;
     @FXML
-    private TableView<Order> ordersTable;
+    private TableView<OrderDTO> ordersTable;
     @FXML
-    private TableColumn<Order, String> dateColumn, idColumn, customerIdColumn, discountColumn, stateColumn, valueColumn;
+    private TableColumn<OrderDTO, String> dateColumn, idColumn, customerIdColumn, discountColumn, stateColumn, valueColumn;
     @FXML
-    private TableColumn<Order, Void> invoiceColumn, deleteColumn;
+    private TableColumn<OrderDTO, Void> invoiceColumn, deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
 
@@ -79,7 +88,8 @@ public class OrderController implements Initializable {
     @FXML
     public void ordersBtnShowClicked(MouseEvent event) {
         ordersTable.getItems().clear();
-        orders.setAll(orderService.findAll());
+        orders.setAll(orderMapper.mapToDto(orderService.findAll()));
+
     }
 
     /**
@@ -135,7 +145,7 @@ public class OrderController implements Initializable {
      */
     @FXML
     public void ordersBtnReportClicked(MouseEvent event) {
-        OrderReport report = new OrderReport(ordersTable.getItems());
+        OrderReport report = new OrderReport(orderService.findAll());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -166,16 +176,17 @@ public class OrderController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
+                    Long orderId = ordersTable.getSelectionModel().getSelectedItem().getId();
                     try {
                         Customer customer = customerService.findById(Long.valueOf(newValue));
+                        Order order = orderService.findById(orderId);
                         order.setCustomer(customer);
                         orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderId);
                     } catch (ObjectNotFoundException e) {
                         informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderId);
                     }
                 }
                 super.commitEdit(newValue);
@@ -185,13 +196,14 @@ public class OrderController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
+                    Long orderId = ordersTable.getSelectionModel().getSelectedItem().getId();
                     try {
+                        Order order = orderService.findById(orderId);
                         order.setDate(newValue);
                         orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderId);
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderId);
                     }
                 }
                 super.commitEdit(newValue);
@@ -201,7 +213,7 @@ public class OrderController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Order order = ordersTable.getSelectionModel().getSelectedItem();
+                    Long orderId = ordersTable.getSelectionModel().getSelectedItem().getId();
                     double discount;
                     switch (newValue) {
                         case "KOD1":
@@ -218,11 +230,12 @@ public class OrderController implements Initializable {
                     }
 
                     try {
+                        Order order = orderService.findById(orderId);
                         order.setDiscount(discount);
                         orderService.update(order);
-                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                        informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderId);
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                        informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderId);
                     }
                 }
                 super.commitEdit(newValue);
@@ -230,24 +243,24 @@ public class OrderController implements Initializable {
         });
         stateColumn.setCellFactory(ComboBoxTableCell.forTableColumn(orderStates));
         stateColumn.setOnEditCommit(t -> {
-            Order order = ordersTable.getSelectionModel().getSelectedItem();
+            Long orderId = ordersTable.getSelectionModel().getSelectedItem().getId();
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
+                    Order order = orderService.findById(orderId);
                     order.setState(t.getNewValue());
                     orderService.update(order);
-                    informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + order.getId());
+                    informationArea.appendText("\nPomyślnie edytowano zamowienie o id " + orderId);
                 } catch (Exception e) {
-                    informationArea.appendText("\nNie udało się edytować zamowienia o id " + order.getId());
+                    informationArea.appendText("\nNie udało się edytować zamowienia o id " + orderId);
                 }
             }
         });
 
         idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
-        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomer().getId())));
+        customerIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCustomerDTO().getId())));
         dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate()));
         valueColumn.setCellValueFactory(cellData -> {
             List<OrderItem> list = orderItemService.findAllByOrderId(cellData.getValue().getId());
-            System.out.println(list.size());
             double price = 0.0;
             for (OrderItem el : list) price += el.getItemPrice();
             return new SimpleStringProperty(String.valueOf(Math.round(price * 100.0) / 100.0));
@@ -266,14 +279,15 @@ public class OrderController implements Initializable {
         stateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getState()));
         invoiceColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Order, Void> call(final TableColumn<Order, Void> param) {
-                final TableCell<Order, Void> cell = new TableCell<>() {
+            public TableCell<OrderDTO, Void> call(final TableColumn<OrderDTO, Void> param) {
+                final TableCell<OrderDTO, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/invoiceBtn.png"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Order order = getTableView().getItems().get(getIndex());
+                            Long orderId = getTableView().getItems().get(getIndex()).getId();
+                            Order order = orderService.findById(orderId);
                             AbstractReport report = new InvoiceReport(order);
                             try {
                                 Stage stage = new Stage();
@@ -316,19 +330,22 @@ public class OrderController implements Initializable {
         });
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Order, Void> call(final TableColumn<Order, Void> param) {
-                final TableCell<Order, Void> cell = new TableCell<>() {
+            public TableCell<OrderDTO, Void> call(final TableColumn<OrderDTO, Void> param) {
+                final TableCell<OrderDTO, Void> cell = new TableCell<>() {
                     final Image image = new Image(getClass().getResourceAsStream("/Images/deleteBtn.jpg"), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Order z = getTableView().getItems().get(getIndex());
-                            if (orderService.delete(z)) {
-                                orders.remove(z);
-                                informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + z.getId());
+                            Long orderId = getTableView().getItems().get(getIndex()).getId();
+                            Order order = orderService.findById(orderId);
+                            if (orderService.delete(order)) {
+//                                orders.remove(orderMapper.mapToDto(order));
+                                ordersTable.getItems().clear();
+                                orders.setAll(orderMapper.mapToDto(orderService.findAll()));
+                                informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + orderId);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + z.getId());
+                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + orderId);
                         });
                         btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
