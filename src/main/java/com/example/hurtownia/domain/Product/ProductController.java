@@ -1,7 +1,9 @@
 package com.example.hurtownia.domain.product;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.supplier.Supplier;
+import com.example.hurtownia.domain.supplier.SupplierService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -25,6 +27,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -50,13 +54,15 @@ public class ProductController implements Initializable {
     private TableColumn<Product, Void> deleteColumn;
     @FXML
     private TextField idSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
+    @Autowired
     private ProductService productService;
+    @Autowired
+    private SupplierService supplierService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        productService = new ProductService();
         setTable();
     }
 
@@ -80,7 +86,7 @@ public class ProductController implements Initializable {
     @FXML
     public void productsBtnShowClicked(MouseEvent event) {
         productsTable.getItems().clear();
-        products.setAll(productService.getProducts());
+        products.setAll(productService.findAll());
     }
 
     /**
@@ -91,7 +97,27 @@ public class ProductController implements Initializable {
     @FXML
     public void productsBtnAddClicked(MouseEvent event) {
         try {
-            Product product = productService.saveProduct(Integer.parseInt(supplierIdTextField.getText()), nameTextField.getText(), unitTextField.getText(), Double.parseDouble(priceTextField.getText()), countryTextField.getText(), codeTextField.getText(), colorTextField.getText(), Integer.parseInt(numberTextField.getText()), Integer.parseInt(maxNumberTextField.getText()));
+            Supplier supplier = supplierService.findById(Long.valueOf(supplierIdTextField.getText()));
+            String name = nameTextField.getText();
+            String unitOfMeasurement = unitTextField.getText();
+            Double price = Double.parseDouble(priceTextField.getText());
+            String country = countryTextField.getText();
+            String code = codeTextField.getText();
+            String color = colorTextField.getText();
+            Integer number = Integer.parseInt(numberTextField.getText());
+            Integer maxNumber = Integer.parseInt(maxNumberTextField.getText());
+            Product product = Product.builder()
+                    .supplier(supplier)
+                    .name(name)
+                    .unitOfMeasurement(unitOfMeasurement)
+                    .price(price)
+                    .country(country)
+                    .code(code)
+                    .color(color)
+                    .number(number)
+                    .maxNumber(maxNumber)
+                    .build();
+            productService.save(product);
             informationArea.appendText("\nDodano nowy produkt");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego produktu");
@@ -123,7 +149,7 @@ public class ProductController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -152,7 +178,7 @@ public class ProductController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -174,8 +200,12 @@ public class ProductController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
-                        productService.updateProductSupplier(product, newValue);
+                        Supplier supplier = supplierService.findById(Long.valueOf(newValue));
+                        product.setSupplier(supplier);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
                     }
@@ -190,7 +220,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setCode(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -206,7 +236,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setPrice(Double.parseDouble(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -222,7 +252,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setNumber(Integer.parseInt(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -238,7 +268,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setUnitOfMeasurement(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -254,7 +284,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setCountry(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -270,7 +300,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setColor(newValue);
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -286,7 +316,7 @@ public class ProductController implements Initializable {
                     Product product = productsTable.getSelectionModel().getSelectedItem();
                     try {
                         product.setMaxNumber(Integer.parseInt(newValue));
-                        productService.updateProduct(product);
+                        productService.update(product);
                         informationArea.appendText("\nPomyślnie edytowano produkt o id " + product.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować produktu o id " + product.getId());
@@ -339,7 +369,7 @@ public class ProductController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Product product = getTableView().getItems().get(getIndex());
-                            if (productService.deleteProduct(product)) {
+                            if (productService.delete(product)) {
                                 products.remove(product);
                                 informationArea.appendText("\nPomyślnie usunięto produktu o id " + product.getId());
                             } else

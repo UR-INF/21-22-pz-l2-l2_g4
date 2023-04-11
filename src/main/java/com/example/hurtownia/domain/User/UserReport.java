@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.user;
 
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.supplier.Supplier;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -42,16 +43,16 @@ public class UserReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[7])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
 
-        for (int i = 0; i < data.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getName())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getSurname())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPhoneNumber())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPassword())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getIsAdmin() != 0 ? "Tak" : "Nie")));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getGeneratingReports() != 0 ? "Tak" : "Nie")));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getIsAdmin() != 0 ? "Tak" : "Nie")));
+        for (User datum : data) {
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getName())));
+            table.addCell(new Cell().add(new Paragraph(datum.getSurname())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPhoneNumber())));
+            table.addCell(new Cell().add(new Paragraph(datum.getEmail())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPassword())));
+            table.addCell(new Cell().add(new Paragraph(datum.isAdmin() ? "Tak" : "Nie")));
+            table.addCell(new Cell().add(new Paragraph(datum.isGeneratingReports() ? "Tak" : "Nie")));
+            table.addCell(new Cell().add(new Paragraph(datum.isGrantingDiscounts() ? "Tak" : "Nie")));
         }
 
         document.add(table);

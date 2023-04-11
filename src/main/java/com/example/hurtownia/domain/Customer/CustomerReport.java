@@ -43,17 +43,17 @@ public class CustomerReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[9])));
 
-        for (int i = 0; i < data.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getName())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getSurname())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPlace())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getStreet())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getBuildingNumber()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getApartmentNumber()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPhoneNumber())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getPesel())));
+        for (Customer datum : data) {
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getName())));
+            table.addCell(new Cell().add(new Paragraph(datum.getSurname())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPlace())));
+            table.addCell(new Cell().add(new Paragraph(datum.getStreet())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getBuildingNumber()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getApartmentNumber()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getEmail())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPhoneNumber())));
+            table.addCell(new Cell().add(new Paragraph(datum.getPesel())));
         }
 
         document.add(table);

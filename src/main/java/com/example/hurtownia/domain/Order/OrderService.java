@@ -1,14 +1,9 @@
 package com.example.hurtownia.domain.order;
 
-import com.example.hurtownia.databaseaccess.SingletonConnection;
-import com.example.hurtownia.domain.customer.Customer;
-import javafx.scene.control.Alert;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -17,122 +12,64 @@ import java.util.List;
 @Service
 public class OrderService {
 
-    private SessionFactory sessionFactory;
-    private Session session;
-    private Transaction transaction;
-
-    public OrderService() {
-        this.sessionFactory = SingletonConnection.getSessionFactory();
-    }
+    @Autowired
+    private OrderRepository orderRepository;
 
     /**
-     * Pobiera wszystkie zamówienia z bazy danych.
+     * Pobiera wszystkie zamówienia.
      *
      * @return lista wszystkich zamówień
      */
-    public List<Order> getOrder() {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        List<Order> list = session.createSQLQuery("select * from zamowienie").addEntity(Order.class).list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return list;
+    public List<Order> findAll() {
+        return orderRepository.findAll();
     }
 
     /**
-     * Usuwa zamówienie z bazy danych.
+     * Pobiera zamówienie o podanym id.
      *
-     * @param order
+     * @param id identyfikator zamówienia
+     * @return zamówienie
+     */
+    public Order findById(Long id) {return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));}
+
+    /**
+     * Usuwa zamówienie.
+     *
+     * @param order usuwane zamówienie
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteOrder(Order order) {
-        session = sessionFactory.openSession();
-        boolean result = false;
-
+    public boolean delete(Order order) {
         try {
-            transaction = session.beginTransaction();
-            session.flush();
-            session.delete(order);
-            transaction.commit();
-            result = true;
-        } catch (PersistenceException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Rekord jest używany przez inne tabele");
-            alert.show();
+            orderRepository.delete(order);
+            return true;
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(e.getMessage());
-            alert.show();
-        } finally {
-            session.close();
+            return false;
         }
-
-        return result;
     }
 
     /**
-     * Dodaje zamowienie.
+     * Dodaje nowe zamowienie.
      *
-     * @param idCustomer
-     * @param date
-     * @param status
-     * @param discount
-     * @return
+     * @param order nowe zzamówienie
+     * @return dodane zamówienie
      */
-    public Order saveOrder(int idCustomer, String date, String status, Double discount) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Customer customer = (Customer) session.createSQLQuery("select * from klient where id=\'" + idCustomer + "\'").addEntity(Customer.class).getSingleResult();
-        Order order = new Order(customer, date, status, discount);
-
-        session.save(order);
-
-        session.getTransaction().commit();
-        session.close();
-
-        return order;
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
     /**
      * Aktualizuje zamówienie.
      *
-     * @param order
+     * @param newOrder aktualizowane zamówienie
      */
-    public void updateOrder(Order order) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-        session.update(order);
-        session.getTransaction().commit();
-        session.close();
+    public void update(Order newOrder) {
+        Order order = findById(newOrder.getId());
+        order.setCustomer(newOrder.getCustomer());
+        order.setDate(newOrder.getDate());
+        order.setState(newOrder.getState());
+        order.setDiscount(newOrder.getDiscount());
+
+        orderRepository.save(order);
     }
-
-    /**
-     * Aktualizuje klienta zamówienia.
-     *
-     * @param order
-     * @param idCustomer
-     */
-    public void updateOrderCustomer(Order order, String idCustomer) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Customer customer = (Customer) session.createSQLQuery("select * from klient where id=\'" + idCustomer + "\'").addEntity(Customer.class).getSingleResult();
-        order.setCustomer(customer);
-        session.update(customer);
-
-        session.getTransaction().commit();
-        session.close();
-    }
-
 }

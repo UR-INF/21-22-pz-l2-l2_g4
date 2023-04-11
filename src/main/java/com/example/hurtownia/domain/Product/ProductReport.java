@@ -43,17 +43,17 @@ public class ProductReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[9])));
 
-        for (int i = 0; i < data.size(); i++) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getPrice()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getNumber()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getCountry())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getColor())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber()))));
-            double stosunek = data.get(i).getNumber() / data.get(i).getMaxNumber();
+        for (Product datum : data) {
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getSupplier().getId()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getCode())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getPrice()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getNumber()))));
+            table.addCell(new Cell().add(new Paragraph(datum.getUnitOfMeasurement())));
+            table.addCell(new Cell().add(new Paragraph(datum.getCountry())));
+            table.addCell(new Cell().add(new Paragraph(datum.getColor())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getMaxNumber()))));
+            double stosunek = datum.getNumber() / datum.getMaxNumber();
             String str;
             if (stosunek < 30) str = "niski";
             else if (stosunek < 70) str = "umiarkowany";

@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'Zamowienie' w bazie danych.
+ * Reprezentuje tabelę 'zamowienie' w bazie danych.
  */
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @NonNull
     @ManyToOne(targetEntity = Customer.class)

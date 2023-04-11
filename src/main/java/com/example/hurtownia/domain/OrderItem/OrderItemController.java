@@ -1,6 +1,10 @@
 package com.example.hurtownia.domain.orderitem;
 
-import com.example.hurtownia.controllers.PDFController;
+import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.order.OrderService;
+import com.example.hurtownia.domain.product.Product;
+import com.example.hurtownia.domain.product.ProductService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -24,6 +28,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -35,6 +41,12 @@ import java.util.ResourceBundle;
 public class OrderItemController implements Initializable {
 
     public static ObservableList<OrderItem> orderItems = FXCollections.observableArrayList();
+    @Autowired
+    public OrderService orderService;
+    @Autowired
+    public ProductService productService;
+    @Autowired
+    private OrderItemService orderItemService;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -47,13 +59,11 @@ public class OrderItemController implements Initializable {
     private TableColumn<OrderItem, Void> deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
-    private OrderItemService orderItemService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
         productIdTextField.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
-        orderItemService = new OrderItemService();
         setTable();
     }
 
@@ -65,7 +75,7 @@ public class OrderItemController implements Initializable {
     @FXML
     public void orderItemsBtnShowClicked(MouseEvent event) {
         orderItemTable.getItems().clear();
-        orderItems.setAll(orderItemService.getOrderItems());
+        orderItems.setAll(orderItemService.findAll());
     }
 
     /**
@@ -76,7 +86,19 @@ public class OrderItemController implements Initializable {
     @FXML
     public void orderItemsBtnAddClicked(MouseEvent event) {
         try {
-            OrderItem orderItem = orderItemService.saveOrderItem(Integer.parseInt(productIdTextField.getText()), Integer.parseInt(orderIdTextField.getText()), Integer.parseInt(numberTextField.getText()));
+            Order order = orderService.findById(Long.valueOf(orderIdTextField.getText()));
+            Product product = productService.findById(Long.valueOf(productIdTextField.getText()));
+            Integer amount = Integer.parseInt(numberTextField.getText());
+            Double itemPrice = Math.round(product.getPrice() * Integer.parseInt(numberTextField.getText()) * 100.0) / 100.0;
+            Double pricePerUnit = product.getPrice();
+            OrderItem orderItem = OrderItem.builder()
+                    .order(order)
+                    .product(product)
+                    .amount(amount)
+                    .itemPrice(itemPrice)
+                    .pricePerUnit(pricePerUnit)
+                    .build();
+            orderItemService.save(orderItem);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
@@ -108,7 +130,7 @@ public class OrderItemController implements Initializable {
             stage.setTitle("Generuj raport");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
-            PDFController controller = fxmlLoader.getController();
+            ReportController controller = fxmlLoader.getController();
             controller.setReport(report);
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -133,8 +155,12 @@ public class OrderItemController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
                     try {
-                        orderItemService.updateOrderItemOrder(orderItem, newValue);
+                        Order order = orderService.findById(Long.valueOf(newValue));
+                        orderItem.setOrder(order);
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
                     }
@@ -148,8 +174,12 @@ public class OrderItemController implements Initializable {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
                     try {
-                        orderItemService.updateOrderItemProduct(orderItem, newValue);
+                        Product product = productService.findById(Long.valueOf(newValue));
+                        orderItem.setProduct(product);
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
+                    } catch (ObjectNotFoundException e) {
+                        informationArea.appendText("\n" + e.getMessage());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
                     }
@@ -162,10 +192,10 @@ public class OrderItemController implements Initializable {
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItem orderItem = orderItemTable.getSelectionModel().getSelectedItem();
-                    orderItem.setNumber(Integer.parseInt(newValue));
-                    orderItem.setItemPrice(orderItem.getNumber() * orderItem.getPricePerUnit());
                     try {
-                        orderItemService.updateOrderItem(orderItem);
+                        orderItem.setAmount(Integer.parseInt(newValue));
+                        orderItem.setItemPrice(orderItem.getAmount() * orderItem.getPricePerUnit());
+                        orderItemService.update(orderItem);
                         informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItem.getId());
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItem.getId());
@@ -180,7 +210,7 @@ public class OrderItemController implements Initializable {
         productIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getProduct().getId())));
         itemPriceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getItemPrice())));
         pricePerUnitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPricePerUnit())));
-        numberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getNumber())));
+        numberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAmount())));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
             public TableCell<OrderItem, Void> call(final TableColumn<OrderItem, Void> param) {
@@ -191,7 +221,7 @@ public class OrderItemController implements Initializable {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             OrderItem orderItem = getTableView().getItems().get(getIndex());
-                            if (orderItemService.deleteOrderItem(orderItem)) {
+                            if (orderItemService.delete(orderItem)) {
                                 orderItems.remove(orderItem);
                                 informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + orderItem.getId());
                             } else

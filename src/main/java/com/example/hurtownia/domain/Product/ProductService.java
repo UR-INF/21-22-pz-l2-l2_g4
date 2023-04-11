@@ -1,14 +1,9 @@
 package com.example.hurtownia.domain.product;
 
-import com.example.hurtownia.databaseaccess.SingletonConnection;
-import com.example.hurtownia.domain.supplier.Supplier;
-import javafx.scene.control.Alert;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -17,126 +12,69 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    private final SessionFactory sessionFactory;
-    private Session session;
-    private Transaction transaction;
-
-    public ProductService() {
-        this.sessionFactory = SingletonConnection.getSessionFactory();
-    }
+    @Autowired
+    private ProductRepository productRepository;
 
     /**
-     * Pobiera wszystkie produkty z bazy danych.
+     * Pobiera wszystkie produkty.
      *
      * @return lista wszystkich produktów
      */
-    public List<Product> getProducts() {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        List<Product> list = session.createSQLQuery("select * from produkt").addEntity(Product.class).list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return list;
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 
     /**
-     * Usuwa produkt z bazy danych.
+     * Pobiera produkt o podanym id.
      *
-     * @param product
+     * @param id identyfikator produktu
+     * @return produkt
+     */
+    public Product findById(Long id) {return productRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono produktu"));}
+
+    /**
+     * Usuwa produkt.
+     *
+     * @param product usuwany produkt
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteProduct(Product product) {
-        session = sessionFactory.openSession();
-        boolean result = false;
-
+    public boolean delete(Product product) {
         try {
-            transaction = session.beginTransaction();
-            session.flush();
-            session.delete(product);
-            transaction.commit();
-            result = true;
-        } catch (PersistenceException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Rekord jest używany przez inne tabele");
-            alert.show();
+            productRepository.delete(product);
+            return true;
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(e.getMessage());
-            alert.show();
-        } finally {
-            session.close();
+            return false;
         }
-
-        return result;
     }
 
     /**
      * Dodaje produkt.
      *
-     * @param idSupplier
-     * @param name
-     * @param unitOfMeasurement
-     * @param price
-     * @param country
-     * @param code
-     * @param color
-     * @param number
-     * @param maxNumber
-     * @return
+     * @param product nowy produkt
+     * @return dodany produkt
      */
-    public Product saveProduct(int idSupplier, String name, String unitOfMeasurement, Double price, String country, String code, String color, int number, int maxNumber) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Supplier supplier = (Supplier) session.createSQLQuery("select * from dostawca where id=\'" + idSupplier + "\'").addEntity(Supplier.class).getSingleResult();
-        Product product = new Product(supplier, name, unitOfMeasurement, price, country, code, color, number, maxNumber);
-
-        session.save(product);
-
-        session.getTransaction().commit();
-        session.close();
-
-        return product;
-    }
-
-    /**
-     * Aktualizuje dostawcę produktu.
-     *
-     * @param product
-     * @param idSupplier
-     */
-    public void updateProductSupplier(Product product, String idSupplier) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Supplier supplier = (Supplier) session.createSQLQuery("select * from dostawca where id=\'" + idSupplier + "\'").addEntity(Supplier.class).getSingleResult();
-        product.setSupplier(supplier);
-        session.update(product);
-
-        session.getTransaction().commit();
-        session.close();
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 
     /**
      * Aktualizuje produkt.
      *
-     * @param product
+     * @param newProduct aktualizowany produkt
      */
-    public void updateProduct(Product product) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-        session.update(product);
-        session.getTransaction().commit();
-        session.close();
+    public void update(Product newProduct) {
+        Product product = findById(newProduct.getId());
+        product.setSupplier(newProduct.getSupplier());
+        product.setName(newProduct.getName());
+        product.setUnitOfMeasurement(newProduct.getUnitOfMeasurement());
+        product.setPrice(newProduct.getPrice());
+        product.setCountry(newProduct.getCountry());
+        product.setCode(newProduct.getCode());
+        product.setColor(newProduct.getColor());
+        product.setNumber(newProduct.getNumber());
+        product.setMaxNumber(newProduct.getMaxNumber());
+
+        productRepository.save(product);
     }
 }
