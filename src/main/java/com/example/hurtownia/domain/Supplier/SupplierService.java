@@ -1,13 +1,9 @@
 package com.example.hurtownia.domain.supplier;
 
-import com.example.hurtownia.databaseaccess.SingletonConnection;
-import javafx.scene.control.Alert;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -16,104 +12,62 @@ import java.util.List;
 @Service
 public class SupplierService {
 
-    private SessionFactory sessionFactory;
-    private Session session;
-    private Transaction transaction;
-
-    public SupplierService() {
-        this.sessionFactory = SingletonConnection.getSessionFactory();
-    }
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     /**
-     * Pobiera wszystkich dostawców z bazy danych.
+     * Pobiera wszystkich dostawców.
      *
      * @return lista wszystkich dostawców
      */
-    public List<Supplier> getSuppliers() {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        List<Supplier> list = session.createSQLQuery("select * from dostawca").addEntity(Supplier.class).list();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return list;
-    }
+    public List<Supplier> findAll() {return supplierRepository.findAll();}
 
     /**
-     * Usuwa dostawcę z bazy danych.
+     * Pobiera dostawcę o podanym id.
      *
-     * @param supplier
+     * @param id identyfikator dostawcy
+     * @return dostawca
+     */
+    public Supplier findById(Long id) {return supplierRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono dostawcy"));}
+
+    /**
+     * Usuwa dostawcę.
+     *
+     * @param supplier usuwany dostawca
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteSupplier(Supplier supplier) {
-        session = sessionFactory.openSession();
-        boolean result = false;
-
+    public boolean delete(Supplier supplier) {
         try {
-            transaction = session.beginTransaction();
-            session.flush();
-            session.delete(supplier);
-            transaction.commit();
-            result = true;
-        } catch (PersistenceException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Rekord jest używany przez inne tabele");
-            alert.show();
+            supplierRepository.delete(supplier);
+            return true;
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText(e.getMessage());
-            alert.show();
-        } finally {
-            session.close();
+            return false;
         }
-
-        return result;
     }
 
     /**
      * Dodaje nowego dostawcę.
      *
-     * @param email
-     * @param country
-     * @param place
-     * @param street
-     * @param name
-     * @param nip
-     * @return
+     * @param supplier nowy dostawca
+     * @return dodany dostawca
      */
-    public Supplier saveSupplier(String email, String country, String place, String street, String name, String nip) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Supplier supplier = new Supplier(email, country, place, street, name, nip);
-
-        session.save(supplier);
-
-        session.getTransaction().commit();
-        session.close();
-
-        return supplier;
-    }
+    public Supplier save(Supplier supplier) {return supplierRepository.save(supplier);}
 
     /**
      * Aktualizuje dostawcę.
      *
-     * @param supplier
+     * @param newSupplier aktualizowany dostawca
      */
-    public void updateSupplier(Supplier supplier) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-        session.update(supplier);
-        session.getTransaction().commit();
-        session.close();
-    }
+    public void update(Supplier newSupplier) {
+        Supplier supplier = findById(newSupplier.getId());
+        supplier.setId(newSupplier.getId());
+        supplier.setEmail(newSupplier.getEmail());
+        supplier.setCountry(newSupplier.getCountry());
+        supplier.setPlace(newSupplier.getPlace());
+        supplier.setStreet(newSupplier.getStreet());
+        supplier.setNip(newSupplier.getNip());
 
+        supplierRepository.save(supplier);
+    }
 }

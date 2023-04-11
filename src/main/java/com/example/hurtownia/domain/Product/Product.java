@@ -24,7 +24,7 @@ public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @NonNull
     @ManyToOne(targetEntity = Supplier.class)
@@ -57,11 +57,11 @@ public class Product implements Serializable {
 
     @NonNull
     @Column(name = "ilosc")
-    private int number;
+    private Integer number;
 
     @NonNull
     @Column(name = "maxIlosc")
-    private int maxNumber;
+    private Integer maxNumber;
 
     @Transient
     private boolean supply = false;
