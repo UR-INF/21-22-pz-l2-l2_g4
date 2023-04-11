@@ -1,6 +1,5 @@
-package com.example.hurtownia.DatabaseAccess;
+package com.example.hurtownia.databaseaccess;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 

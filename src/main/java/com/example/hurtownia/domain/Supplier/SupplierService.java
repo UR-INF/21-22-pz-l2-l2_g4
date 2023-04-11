@@ -1,38 +1,40 @@
-package com.example.hurtownia.domain.Customer;
+package com.example.hurtownia.domain.supplier;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Zawiera metody dla tabeli 'klient'.
+ * Zawiera metody dla tabeli 'dostawca'.
  */
-public class KlientService {
+@Service
+public class SupplierService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public KlientService() {
+    public SupplierService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
     /**
-     * Pobiera wszystkich klientów z bazy danych.
+     * Pobiera wszystkich dostawców z bazy danych.
      *
-     * @return lista wszystkich klientów
+     * @return lista wszystkich dostawców
      */
-    public List<Klient> getKlienci() {
+    public List<Supplier> getSuppliers() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Klient> list = session.createSQLQuery("select * from klient").addEntity(Klient.class).list();
+        List<Supplier> list = session.createSQLQuery("select * from dostawca").addEntity(Supplier.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -41,39 +43,20 @@ public class KlientService {
     }
 
     /**
-     * Zwraca klienta o podanym id.
+     * Usuwa dostawcę z bazy danych.
      *
-     * @param id
-     * @return
-     */
-    public Klient getKlient(String id) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Klient k = (Klient) session.createSQLQuery("select * from klient where id=\'" + id + "\'").addEntity(Klient.class).getSingleResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return k;
-    }
-
-    /**
-     * Usuwa klienta z bazy danych.
-     *
-     * @param klient
+     * @param supplier
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteKlient(Klient klient) {
+    public boolean deleteSupplier(Supplier supplier) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(klient);
+            session.delete(supplier);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -94,45 +77,43 @@ public class KlientService {
     }
 
     /**
-     * Dodaje nowego klienta.
+     * Dodaje nowego dostawcę.
      *
-     * @param imie
-     * @param nazwisko
-     * @param pesel
-     * @param numerTelefonu
      * @param email
-     * @param miejscowosc
-     * @param ulica
-     * @param numerMieszkania
-     * @param numerBudynku
+     * @param country
+     * @param place
+     * @param street
+     * @param name
+     * @param nip
      * @return
      */
-    public Klient saveKlient(String imie, String nazwisko, String pesel, String numerTelefonu, String email, String miejscowosc, String ulica, int numerMieszkania, int numerBudynku) {
+    public Supplier saveSupplier(String email, String country, String place, String street, String name, String nip) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Klient k = new Klient(imie,  nazwisko,  pesel,  numerTelefonu,  email,  miejscowosc,  ulica,  numerMieszkania,  numerBudynku);
+        Supplier supplier = new Supplier(email, country, place, street, name, nip);
 
-        session.save(k);
+        session.save(supplier);
 
         session.getTransaction().commit();
         session.close();
 
-        return k;
+        return supplier;
     }
 
     /**
-     * Aktualizuje klienta.
+     * Aktualizuje dostawcę.
      *
-     * @param k
+     * @param supplier
      */
-    public void updateKlient(Klient k) {
+    public void updateSupplier(Supplier supplier) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(k);
+        session.update(supplier);
         session.getTransaction().commit();
         session.close();
     }
+
 }

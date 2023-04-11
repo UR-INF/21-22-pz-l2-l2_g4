@@ -1,6 +1,6 @@
-package com.example.hurtownia.domain.Supplier;
+package com.example.hurtownia.domain.user;
 
-import com.example.hurtownia.PDFGeneration.RaportAbstract;
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -11,16 +11,16 @@ import com.itextpdf.layout.element.Table;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class DostawcyRaport extends RaportAbstract {
+public class UserReport extends AbstractReport {
 
-    private List<Dostawca> data;
+    private List<User> data;
 
-    public DostawcyRaport(List<Dostawca> data) {
+    public UserReport(List<User> data) {
         this.data = data;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -29,9 +29,9 @@ public class DostawcyRaport extends RaportAbstract {
         Paragraph paragraph = new Paragraph(title);
         document.add(paragraph);
 
-        float columnWidth[] = {40, 40, 40, 40, 40, 40, 40};
+        float columnWidth[] = {40, 40, 40, 40, 40, 40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id", "Nazwa", "NIP", "Email", "Miejscowosc", "Ulica", "Kraj"};
+        String[] tableHeader = {"Id", "Imie", "Nazwisko", "Numer telefonu", "Email", "Haslo", "Administrator", "Generowanie raportow", "Udzielanie rabatow"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
@@ -39,15 +39,19 @@ public class DostawcyRaport extends RaportAbstract {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[6])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[7])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getNazwa())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getNip())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getName())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getSurname())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getPhoneNumber())));
             table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getMiejscowosc())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getUlica())));
-            table.addCell(new Cell().add(new Paragraph(data.get(i).getKraj())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getPassword())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getIsAdmin() != 0 ? "Tak" : "Nie")));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getGeneratingReports() != 0 ? "Tak" : "Nie")));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getIsAdmin() != 0 ? "Tak" : "Nie")));
         }
 
         document.add(table);

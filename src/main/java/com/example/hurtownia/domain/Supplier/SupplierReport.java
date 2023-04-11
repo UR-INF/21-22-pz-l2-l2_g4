@@ -1,6 +1,6 @@
-package com.example.hurtownia.domain.OrderItem;
+package com.example.hurtownia.domain.supplier;
 
-import com.example.hurtownia.PDFGeneration.RaportAbstract;
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -11,16 +11,16 @@ import com.itextpdf.layout.element.Table;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class ElementyZamowieniaRaport extends RaportAbstract {
+public class SupplierReport extends AbstractReport {
 
-    private List<OrderItem> data;
+    private List<Supplier> data;
 
-    public ElementyZamowieniaRaport(List<OrderItem> data) {
+    public SupplierReport(List<Supplier> data) {
         this.data = data;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -29,23 +29,25 @@ public class ElementyZamowieniaRaport extends RaportAbstract {
         Paragraph paragraph = new Paragraph(title);
         document.add(paragraph);
 
-        float columnWidth[] = {40, 40, 40, 40, 40, 40};
+        float columnWidth[] = {40, 40, 40, 40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id", "Id zamowienia", "Id produktu", "Cena elementu", "Cena za jednostke", "Ilosc"};
+        String[] tableHeader = {"Id", "Nazwa", "NIP", "Email", "Miejscowosc", "Ulica", "Kraj"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[6])));
 
         for (int i = 0; i < data.size(); i++) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getZamowienie().getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getProdukt().getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCenaElementu()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCenaZaJednostke()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getIlosc()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getName())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getNip())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getEmail())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getPlace())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getStreet())));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getCountry())));
         }
 
         document.add(table);

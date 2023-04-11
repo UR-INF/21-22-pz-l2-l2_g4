@@ -1,7 +1,9 @@
-package com.example.hurtownia.domain.OrderItem;
+package com.example.hurtownia.domain.orderitem;
 
-import com.example.hurtownia.domain.Order.Zamowienie;
-import com.example.hurtownia.domain.Product.Produkt;
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.product.Product;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +11,13 @@ import java.io.Serializable;
 /**
  * Reprezentuje tabelę 'ElementZamowienia' w bazie danych.
  */
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@RequiredArgsConstructor
+@SuperBuilder(toBuilder = true)
+@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
 @Table(name = "element_zamowienia")
 public class OrderItem implements Serializable {
@@ -18,84 +27,25 @@ public class OrderItem implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @ManyToOne(targetEntity = Zamowienie.class)
+    @NonNull
+    @ManyToOne(targetEntity = Order.class)
     @JoinColumn(name = "idZamowienie")
-    private Zamowienie idZamowienie;
+    private Order Order;
 
-    @ManyToOne(targetEntity = Produkt.class)
+    @NonNull
+    @ManyToOne(targetEntity = Product.class)
     @JoinColumn(name = "idProdukt")
-    private Produkt idProdukt;
+    private Product product;
 
+    @NonNull
     @Column(name = "ilosc")
-    private int ilosc;
+    private int number;
 
+    @NonNull
     @Column(name = "cenaElementu")
-    private Double cenaElementu;
+    private Double itemPrice;
 
+    @NonNull
     @Column(name = "cenaZaJednostke")
-    private Double cenaZaJednostke;
-
-    public OrderItem() {
-    }
-
-    public OrderItem(Zamowienie idZamowienie, Produkt idProdukt, int ilosc, Double cenaElementu, Double cenaZaJednostke) {
-        this.idZamowienie = idZamowienie;
-        this.idProdukt = idProdukt;
-        this.ilosc = ilosc;
-        this.cenaElementu = cenaElementu;
-        this.cenaZaJednostke = cenaZaJednostke;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Zamowienie getZamowienie() {
-        return idZamowienie;
-    }
-
-    public void setZamowienie(Zamowienie idZamowienie) {
-        this.idZamowienie = idZamowienie;
-    }
-
-    public Produkt getProdukt() {
-        return idProdukt;
-    }
-
-    public void setProdukt(Produkt idProdukt) {
-        this.idProdukt = idProdukt;
-    }
-
-    public int getIlosc() {
-        return ilosc;
-    }
-
-    public void setIlosc(int ilosc) {
-        this.ilosc = ilosc;
-    }
-
-    public Double getCenaElementu() {
-        return cenaElementu;
-    }
-
-    public void setCenaElementu(Double cenaElementu) {
-        this.cenaElementu = cenaElementu;
-    }
-
-    public Double getCenaZaJednostke() {
-        return cenaZaJednostke;
-    }
-
-    public void setCenaZaJednostke(Double cenaZaJednostke) {
-        this.cenaZaJednostke = cenaZaJednostke;
-    }
-
-    @Override
-    public String toString() {
-        return "ElementZamowienia{" + "id=" + id + ", idZamowienie=" + idZamowienie + ", idProdukt=" + idProdukt + ", ilosc=" + ilosc + ", cenaElementu=" + cenaElementu + ", cenaZaJednostke=" + cenaZaJednostke + '}';
-    }
+    private Double pricePerUnit;
 }

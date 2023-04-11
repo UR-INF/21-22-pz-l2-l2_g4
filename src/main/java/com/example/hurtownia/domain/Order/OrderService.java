@@ -1,38 +1,41 @@
-package com.example.hurtownia.domain.Supplier;
+package com.example.hurtownia.domain.order;
 
-import com.example.hurtownia.Singleton.SingletonConnection;
+import com.example.hurtownia.databaseaccess.SingletonConnection;
+import com.example.hurtownia.domain.customer.Customer;
 import javafx.scene.control.Alert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
- * Zawiera metody dla tabeli 'dostawca'.
+ * Zawiera metody dla tabeli 'zamowienie'.
  */
-public class DostawcaService {
+@Service
+public class OrderService {
 
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
 
-    public DostawcaService() {
+    public OrderService() {
         this.sessionFactory = SingletonConnection.getSessionFactory();
     }
 
     /**
-     * Pobiera wszystkich dostawców z bazy danych.
+     * Pobiera wszystkie zamówienia z bazy danych.
      *
-     * @return lista wszystkich dostawców
+     * @return lista wszystkich zamówień
      */
-    public List<Dostawca> getDostawcy() {
+    public List<Order> getOrder() {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        List<Dostawca> list = session.createSQLQuery("select * from dostawca").addEntity(Dostawca.class).list();
+        List<Order> list = session.createSQLQuery("select * from zamowienie").addEntity(Order.class).list();
 
         session.getTransaction().commit();
         session.close();
@@ -41,39 +44,20 @@ public class DostawcaService {
     }
 
     /**
-     * Zwraca dostawcę o podanym id.
+     * Usuwa zamówienie z bazy danych.
      *
-     * @param id
-     * @return
-     */
-    public Dostawca getDostawca(String id) {
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.flush();
-
-        Dostawca d = (Dostawca) session.createSQLQuery("select * from dostawca where id=\'" + id + "\'").addEntity(Dostawca.class).getSingleResult();
-
-        session.getTransaction().commit();
-        session.close();
-
-        return d;
-    }
-
-    /**
-     * Usuwa dostawcę z bazy danych.
-     *
-     * @param dostawca
+     * @param order
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean deleteDostawca(Dostawca dostawca) {
+    public boolean deleteOrder(Order order) {
         session = sessionFactory.openSession();
         boolean result = false;
 
         try {
             transaction = session.beginTransaction();
             session.flush();
-            session.delete(dostawca);
+            session.delete(order);
             transaction.commit();
             result = true;
         } catch (PersistenceException e) {
@@ -94,41 +78,59 @@ public class DostawcaService {
     }
 
     /**
-     * Dodaje nowego dostawcę.
+     * Dodaje zamowienie.
      *
-     * @param email
-     * @param kraj
-     * @param miejscowosc
-     * @param ulica
-     * @param nazwa
-     * @param nip
+     * @param idCustomer
+     * @param date
+     * @param status
+     * @param discount
      * @return
      */
-    public Dostawca saveDostawca(String email, String kraj, String miejscowosc, String ulica, String nazwa, String nip) {
+    public Order saveOrder(int idCustomer, String date, String status, Double discount) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
 
-        Dostawca d = new Dostawca(email, kraj, miejscowosc, ulica, nazwa, nip);
+        Customer customer = (Customer) session.createSQLQuery("select * from klient where id=\'" + idCustomer + "\'").addEntity(Customer.class).getSingleResult();
+        Order order = new Order(customer, date, status, discount);
 
-        session.save(d);
+        session.save(order);
 
         session.getTransaction().commit();
         session.close();
 
-        return d;
+        return order;
     }
 
     /**
-     * Aktualizuje dostawcę.
+     * Aktualizuje zamówienie.
      *
-     * @param d
+     * @param order
      */
-    public void updateDostawca(Dostawca d) {
+    public void updateOrder(Order order) {
         session = sessionFactory.openSession();
         session.beginTransaction();
         session.flush();
-        session.update(d);
+        session.update(order);
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
+     * Aktualizuje klienta zamówienia.
+     *
+     * @param order
+     * @param idCustomer
+     */
+    public void updateOrderCustomer(Order order, String idCustomer) {
+        session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.flush();
+
+        Customer customer = (Customer) session.createSQLQuery("select * from klient where id=\'" + idCustomer + "\'").addEntity(Customer.class).getSingleResult();
+        order.setCustomer(customer);
+        session.update(customer);
+
         session.getTransaction().commit();
         session.close();
     }

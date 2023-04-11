@@ -1,25 +1,26 @@
-package com.example.hurtownia.PDFGeneration;
+package com.example.hurtownia.domain.order;
 
+import com.example.hurtownia.domain.AbstractReport;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.example.hurtownia.domain.Product.Produkt;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
-public class DostawaRaport extends RaportAbstract {
-    private List<Produkt> data;
+public class OrderReport extends AbstractReport {
 
-    public DostawaRaport(List<Produkt> data) {
+    private List<Order> data;
+
+    public OrderReport(List<Order> data) {
         this.data = data;
     }
 
     @Override
-    public void generatePDF(String path, String title) throws FileNotFoundException {
+    public void generateReport(String path, String title) throws FileNotFoundException {
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -28,21 +29,21 @@ public class DostawaRaport extends RaportAbstract {
         Paragraph paragraph = new Paragraph(title);
         document.add(paragraph);
 
-        float columnWidth[] = {40, 40, 40, 40};
+        float columnWidth[] = {40, 40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
+        String[] tableHeader = {"Id", "Id klienta", "Data zamowienia", "Rabat", "Stan"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
 
         for (int i = 0; i < data.size(); i++) {
-            if(data.get(i).isDostawa()) {
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDostawca().getId()))));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getKod())));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getJednostkaMiary())));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxIlosc()-data.get(i).getIlosc()))));
-            }
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getId()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getCustomer().getId()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getDate())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getDiscount()))));
+            table.addCell(new Cell().add(new Paragraph(data.get(i).getState())));
         }
 
         document.add(table);
