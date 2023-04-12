@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class OrderDTO {
+public class OrderUpdateRequest {
 
     private Long id;
     private Long customerId;

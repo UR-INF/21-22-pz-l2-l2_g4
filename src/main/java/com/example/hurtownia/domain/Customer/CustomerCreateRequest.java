@@ -9,9 +9,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class CustomerDTO {
+public class CustomerCreateRequest {
 
-    private Long id;
     private String name;
     private String surname;
     private String pesel;

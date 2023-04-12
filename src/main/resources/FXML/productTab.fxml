@@ -14,23 +14,24 @@
     <children>
         <TableView fx:id="productsTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="554.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
             <columns>
-                <TableColumn fx:id="idColumn" editable="false" prefWidth="55.20001220703125" text="Id" />
-                <TableColumn fx:id="supplierIdColumn" prefWidth="102.4000244140625" text="Id dostawcy" />
-                <TableColumn fx:id="codeColumn" prefWidth="105.60003662109375" text="Kod" />
-                <TableColumn fx:id="priceColumn" prefWidth="98.4000244140625" text="Cena" />
-                <TableColumn fx:id="numberColumn" prefWidth="106.39993286132812" text="Ilość" />
-                <TableColumn fx:id="unitColumn" prefWidth="116.79998779296875" text="Jednostka miary" />
-                <TableColumn fx:id="countryColumn" prefWidth="123.20001220703125" text="Kraj" />
-                <TableColumn fx:id="colorColumn" prefWidth="102.4000244140625" text="Kolor" />
-                <TableColumn fx:id="maxNumberColumn" prefWidth="96.800048828125" text="Max. ilość" />
-                <TableColumn fx:id="stateColumn" editable="false" prefWidth="82.4000244140625" text="Stan" />
-                <TableColumn fx:id="deliveryReportColumn" prefWidth="105.5999755859375" text="Uwzględnij w raporcie" />
-                <TableColumn fx:id="deleteColumn" editable="false" prefWidth="60.7999267578125" text="Usuń" />
+                <TableColumn fx:id="idColumn" editable="false" prefWidth="44.79998779296875" text="Id" />
+                <TableColumn fx:id="supplierIdColumn" prefWidth="85.60003662109375" text="Id dostawcy" />
+            <TableColumn fx:id="nameColumn" prefWidth="86.4000244140625" text="Nazwa" />
+                <TableColumn fx:id="codeColumn" prefWidth="71.20001220703125" text="Kod" />
+                <TableColumn fx:id="priceColumn" prefWidth="76.0" text="Cena" />
+                <TableColumn fx:id="numberColumn" prefWidth="99.199951171875" text="Ilość" />
+                <TableColumn fx:id="unitColumn" prefWidth="116.800048828125" text="Jednostka miary" />
+                <TableColumn fx:id="countryColumn" prefWidth="90.39996337890625" text="Kraj" />
+                <TableColumn fx:id="colorColumn" prefWidth="107.99993896484375" text="Kolor" />
+                <TableColumn fx:id="maxNumberColumn" prefWidth="104.7999267578125" text="Max. ilość" />
+                <TableColumn fx:id="stateColumn" editable="false" prefWidth="97.5999755859375" text="Stan" />
+                <TableColumn fx:id="supplyReportColumn" prefWidth="122.39990234375" text="Uwzględnij w raporcie" />
+                <TableColumn fx:id="deleteColumn" editable="false" prefWidth="64.800048828125" text="Usuń" />
             </columns>
         </TableView>
         <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
             <children>
-                <Text layoutX="187.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj product">
+                <Text layoutX="187.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj produkt">
                     <font>
                         <Font size="18.0" />
                     </font>
@@ -70,11 +71,11 @@
                 <TextArea fx:id="informationArea" layoutX="111.0" layoutY="618.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
             </children>
         </AnchorPane>
-        <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="60.0" />
-        <TextField fx:id="supplierIdSearchField" layoutX="390.0" layoutY="100.0" prefHeight="26.0" prefWidth="102.0" />
-        <TextField fx:id="maxNumberSearchField" layoutX="1145.0" layoutY="100.0" prefHeight="26.0" prefWidth="104.0" />
+        <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="44.0" />
+        <TextField fx:id="supplierIdSearchField" layoutX="374.0" layoutY="100.0" prefHeight="26.0" prefWidth="85.0" />
+        <TextField fx:id="maxNumberSearchField" layoutX="1113.0" layoutY="100.0" prefHeight="26.0" prefWidth="104.0" />
         <TextField fx:id="numberSearchField" layoutX="696.0" layoutY="100.0" prefHeight="26.0" prefWidth="102.0" />
-        <TextField fx:id="countrySearchField" layoutX="916.0" layoutY="100.0" prefHeight="26.0" prefWidth="127.0" />
+        <TextField fx:id="countrySearchField" layoutX="916.0" layoutY="100.0" prefHeight="26.0" prefWidth="95.0" />
         <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#productsBtnSearchClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
             <font>
                 <Font size="16.0" />
@@ -99,10 +100,10 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </Button>
-        <TextField fx:id="codeSearchField" layoutX="492.0" layoutY="100.0" prefHeight="26.0" prefWidth="102.0" />
-        <TextField fx:id="priceSearchField" layoutX="594.0" layoutY="100.0" prefHeight="26.0" prefWidth="102.0" />
+        <TextField fx:id="codeSearchField" layoutX="545.0" layoutY="100.0" prefHeight="26.0" prefWidth="75.0" />
+        <TextField fx:id="priceSearchField" layoutX="621.0" layoutY="100.0" prefHeight="26.0" prefWidth="75.0" />
         <TextField fx:id="unitSearchField" layoutX="798.0" layoutY="100.0" prefHeight="26.0" prefWidth="117.0" />
-        <TextField fx:id="colorSearchField" layoutX="1043.0" layoutY="100.0" prefHeight="26.0" prefWidth="101.0" />
+        <TextField fx:id="colorSearchField" layoutX="1011.0" layoutY="100.0" prefHeight="26.0" prefWidth="101.0" />
         <Button layoutX="980.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ProductsBtnSupplyReportClicked" prefHeight="38.0" prefWidth="190.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport dostaw">
             <font>
                 <Font size="16.0" />
@@ -111,6 +112,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </Button>
-        <TextField fx:id="stateSearchField" layoutX="1249.0" layoutY="100.0" prefHeight="26.0" prefWidth="75.0" />
+        <TextField fx:id="stateSearchField" layoutX="1217.0" layoutY="100.0" prefHeight="26.0" prefWidth="95.0" />
+      <TextField fx:id="nameSearchField" layoutX="460.0" layoutY="100.0" prefHeight="26.0" prefWidth="85.0" />
     </children>
 </AnchorPane>

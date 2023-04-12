@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'klient'.
@@ -13,6 +14,8 @@ import java.util.List;
 public class CustomerService {
 
     @Autowired
+    private CustomerMapper mapper;
+    @Autowired
     private CustomerRepository customerRepository;
 
     /**
@@ -20,8 +23,10 @@ public class CustomerService {
      *
      * @return lista wszystkich klientów
      */
-    public List<Customer> findAll() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> findAll() {
+        return customerRepository.findAll().stream()
+                .map(customer -> mapper.mapToDto(customer))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -30,18 +35,20 @@ public class CustomerService {
      * @param id identyfikator klienta
      * @return klient
      */
-    public Customer findById(Long id) {return customerRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono klienta"));}
+    public Customer findById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono klienta"));
+    }
 
     /**
      * Usuwa klienta.
      *
-     * @param customer usuwany klient
+     * @param id identyfikator usuwanego klienta
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Customer customer) {
+    public boolean delete(Long id) {
         try {
-            customerRepository.delete(customer);
+            customerRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -51,30 +58,18 @@ public class CustomerService {
     /**
      * Dodaje nowego klienta.
      *
-     * @param customer nowy klient
-     * @return dodany klient
+     * @param customerCreateRequest obiekt z danymi do utworzenia nowego klienta
      */
-    public Customer save(Customer customer) {
-        return customerRepository.save(customer);
+    public Customer save(CustomerCreateRequest customerCreateRequest) {
+        return customerRepository.save(mapper.mapToEntity(customerCreateRequest));
     }
 
     /**
      * Aktualizuje klienta.
      *
-     * @param newCustomer aktualizowany klient
+     * @param customerUpdateRequest aktualizowany klient
      */
-    public void update(Customer newCustomer) {
-        Customer customer = findById(newCustomer.getId());
-        customer.setName(newCustomer.getName());
-        customer.setSurname(newCustomer.getSurname());
-        customer.setPesel(newCustomer.getPesel());
-        customer.setPhoneNumber(newCustomer.getPhoneNumber());
-        customer.setEmail(newCustomer.getEmail());
-        customer.setPlace(newCustomer.getPlace());
-        customer.setStreet(newCustomer.getStreet());
-        customer.setBuildingNumber(newCustomer.getBuildingNumber());
-        customer.setApartmentNumber(newCustomer.getApartmentNumber());
-
-        customerRepository.save(customer);
+    public Customer update(CustomerUpdateRequest customerUpdateRequest) {
+        return customerRepository.save(mapper.mapToEntity(customerUpdateRequest));
     }
 }

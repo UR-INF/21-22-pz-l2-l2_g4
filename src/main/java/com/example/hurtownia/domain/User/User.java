@@ -15,9 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder(toBuilder = true)
-@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
-@Table(name = "Uzytkownik")
+@Table(name = "uzytkownik")
 public class User implements Serializable {
 
     @Id
@@ -46,11 +45,11 @@ public class User implements Serializable {
     private String phoneNumber;
 
     @Column(name = "isAdmin")
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
     @Column(name = "generowanieRaportow")
-    private boolean generatingReports;
+    private Boolean generatingReports;
 
     @Column(name = "udzielanieRabatow")
-    private boolean grantingDiscounts;
+    private Boolean grantingDiscounts;
 }

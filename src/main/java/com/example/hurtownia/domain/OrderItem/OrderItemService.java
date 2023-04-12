@@ -1,10 +1,15 @@
 package com.example.hurtownia.domain.orderitem;
 
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.order.OrderService;
+import com.example.hurtownia.domain.product.Product;
+import com.example.hurtownia.domain.product.ProductService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
@@ -14,23 +19,23 @@ public class OrderItemService {
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private OrderItemMapper mapper;
 
     /**
      * Pobiera elementy zamówień.
      *
      * @return lista wszystkich elementów zamówień
      */
-    public List<OrderItem> findAll() {
-        return orderItemRepository.findAll();
+    public List<OrderItemDTO> findAll() {
+        return orderItemRepository.findAll().stream()
+                .map(orderItem -> mapper.mapToDto(orderItem))
+                .collect(Collectors.toList());
     }
-
-    /**
-     * Pobiera element zamówienia o podanym id.
-     *
-     * @param id identyfikator elementu zamówienia
-     * @return element zamówienia
-     */
-    public OrderItem findById(Long id) {return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));}
 
     /**
      * Pobiera wszystkie elementy konkretnego zamówienia. Używana przy obliczaniu wartości całego zamówienia.
@@ -38,18 +43,24 @@ public class OrderItemService {
      * @param id identyfikator zamówienia
      * @return lista elementów zamówienia o podanym id
      */
-    public List<OrderItem> findAllByOrderId(Long id) {return orderItemRepository.findAllByOrderId(id);}
+    public List<OrderItem> findAllByOrderId(Long id) {
+        return orderItemRepository.findAllByOrderId(id);
+    }
+
+    public OrderItem findById(Long id) {
+        return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));
+    }
 
     /**
      * Usuwa element zamówienia.
      *
-     * @param orderItem usuwany element zamówienia
+     * @param id identyfikator usuwanego zamówienia
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(OrderItem orderItem) {
+    public boolean delete(Long id) {
         try {
-            orderItemRepository.delete(orderItem);
+            orderItemRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -59,26 +70,22 @@ public class OrderItemService {
     /**
      * Dodaje nowy element zamówienia.
      *
-     * @param orderItem nowy element zamówienia
-     * @return dodany element zamówienia
+     * @param orderItemCreateRequest nowy element zamówienia
      */
-    public OrderItem save(OrderItem orderItem) {
-        return orderItemRepository.save(orderItem);
+    public OrderItem save(OrderItemCreateRequest orderItemCreateRequest) {
+        Order order = orderService.findById(orderItemCreateRequest.getOrderId());
+        Product product = productService.findById(orderItemCreateRequest.getProductId());
+        return orderItemRepository.save(mapper.mapToEntity(orderItemCreateRequest, order, product));
     }
 
     /**
      * Aktualizuje element zamówienia.
      *
-     * @param newOrderItem aktualizowany element zamówienia
+     * @param orderItemUpdateRequest aktualizowany element zamówienia
      */
-    public void update(OrderItem newOrderItem) {
-        OrderItem orderItem = findById(newOrderItem.getId());
-        orderItem.setOrder(newOrderItem.getOrder());
-        orderItem.setProduct(newOrderItem.getProduct());
-        orderItem.setAmount(newOrderItem.getAmount());
-        orderItem.setItemPrice(newOrderItem.getItemPrice());
-        orderItem.setPricePerUnit(newOrderItem.getPricePerUnit());
-
-        orderItemRepository.save(orderItem);
+    public OrderItem update(OrderItemUpdateRequest orderItemUpdateRequest) {
+        Order order = orderService.findById(orderItemUpdateRequest.getOrderId());
+        Product product = productService.findById(orderItemUpdateRequest.getProductId());
+        return orderItemRepository.save(mapper.mapToEntity(orderItemUpdateRequest, order, product));
     }
 }

@@ -1,10 +1,13 @@
 package com.example.hurtownia.domain.product;
 
+import com.example.hurtownia.domain.supplier.Supplier;
+import com.example.hurtownia.domain.supplier.SupplierService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'produkt'.
@@ -14,14 +17,20 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private SupplierService supplierService;
+    @Autowired
+    private ProductMapper mapper;
 
     /**
      * Pobiera wszystkie produkty.
      *
      * @return lista wszystkich produktów
      */
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductDTO> findAll() {
+        return productRepository.findAll().stream()
+                .map(product -> mapper.mapToDto(product))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -30,18 +39,20 @@ public class ProductService {
      * @param id identyfikator produktu
      * @return produkt
      */
-    public Product findById(Long id) {return productRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono produktu"));}
+    public Product findById(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono produktu"));
+    }
 
     /**
      * Usuwa produkt.
      *
-     * @param product usuwany produkt
+     * @param id identyfikator usuwanego produktu
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Product product) {
+    public boolean delete(Long id) {
         try {
-            productRepository.delete(product);
+            productRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -51,30 +62,29 @@ public class ProductService {
     /**
      * Dodaje produkt.
      *
-     * @param product nowy produkt
-     * @return dodany produkt
+     * @param productCreateRequest nowy produkt
      */
-    public Product save(Product product) {
-        return productRepository.save(product);
+    public Product save(ProductCreateRequest productCreateRequest) {
+        Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
+        return productRepository.save(mapper.mapToEntity(productCreateRequest, supplier));
     }
 
     /**
      * Aktualizuje produkt.
      *
-     * @param newProduct aktualizowany produkt
+     * @param productCreateRequest aktualizowany produkt
      */
-    public void update(Product newProduct) {
-        Product product = findById(newProduct.getId());
-        product.setSupplier(newProduct.getSupplier());
-        product.setName(newProduct.getName());
-        product.setUnitOfMeasurement(newProduct.getUnitOfMeasurement());
-        product.setPrice(newProduct.getPrice());
-        product.setCountry(newProduct.getCountry());
-        product.setCode(newProduct.getCode());
-        product.setColor(newProduct.getColor());
-        product.setNumber(newProduct.getNumber());
-        product.setMaxNumber(newProduct.getMaxNumber());
+    public Product update(ProductUpdateRequest productCreateRequest) {
+        Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
+        return productRepository.save(mapper.mapToEntity(productCreateRequest, supplier));
+    }
 
-        productRepository.save(product);
+    public List<SupplyData> getSupplyData(List<Long> ids) {
+        return ids.stream()
+                .map(id -> {
+                    Product product = findById(id);
+                    Supplier supplier = supplierService.findById(product.getSupplier().getId());
+                    return mapper.mapToSupplyData(product, supplier);
+                }).collect(Collectors.toList());
     }
 }

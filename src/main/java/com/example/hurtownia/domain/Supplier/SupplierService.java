@@ -1,10 +1,12 @@
 package com.example.hurtownia.domain.supplier;
 
+
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'dostawca'.
@@ -14,13 +16,19 @@ public class SupplierService {
 
     @Autowired
     private SupplierRepository supplierRepository;
+    @Autowired
+    private SupplierMapper mapper;
 
     /**
      * Pobiera wszystkich dostawców.
      *
      * @return lista wszystkich dostawców
      */
-    public List<Supplier> findAll() {return supplierRepository.findAll();}
+    public List<SupplierDTO> findAll() {
+        return supplierRepository.findAll().stream()
+                .map(supplier -> mapper.mapToDto(supplier))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Pobiera dostawcę o podanym id.
@@ -28,18 +36,20 @@ public class SupplierService {
      * @param id identyfikator dostawcy
      * @return dostawca
      */
-    public Supplier findById(Long id) {return supplierRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono dostawcy"));}
+    public Supplier findById(Long id) {
+        return supplierRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono dostawcy"));
+    }
 
     /**
      * Usuwa dostawcę.
      *
-     * @param supplier usuwany dostawca
+     * @param id identyfikator usuwanego dostawcy
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Supplier supplier) {
+    public boolean delete(Long id) {
         try {
-            supplierRepository.delete(supplier);
+            supplierRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -49,25 +59,18 @@ public class SupplierService {
     /**
      * Dodaje nowego dostawcę.
      *
-     * @param supplier nowy dostawca
-     * @return dodany dostawca
+     * @param supplierCreateRequest nowy dostawca
      */
-    public Supplier save(Supplier supplier) {return supplierRepository.save(supplier);}
+    public Supplier save(SupplierCreateRequest supplierCreateRequest) {
+        return supplierRepository.save(mapper.mapToEntity(supplierCreateRequest));
+    }
 
     /**
      * Aktualizuje dostawcę.
      *
-     * @param newSupplier aktualizowany dostawca
+     * @param supplierUpdateRequest aktualizowany dostawca
      */
-    public void update(Supplier newSupplier) {
-        Supplier supplier = findById(newSupplier.getId());
-        supplier.setId(newSupplier.getId());
-        supplier.setEmail(newSupplier.getEmail());
-        supplier.setCountry(newSupplier.getCountry());
-        supplier.setPlace(newSupplier.getPlace());
-        supplier.setStreet(newSupplier.getStreet());
-        supplier.setNip(newSupplier.getNip());
-
-        supplierRepository.save(supplier);
+    public Supplier update(SupplierUpdateRequest supplierUpdateRequest) {
+        return supplierRepository.save(mapper.mapToEntity(supplierUpdateRequest));
     }
 }

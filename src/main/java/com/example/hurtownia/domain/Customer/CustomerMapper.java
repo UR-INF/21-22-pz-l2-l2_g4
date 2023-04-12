@@ -1,13 +1,13 @@
-package com.example.hurtownia.domain.Customer;
+package com.example.hurtownia.domain.customer;
 
-import com.example.hurtownia.domain.customer.Customer;
 import org.mapstruct.Mapper;
 
-import java.util.List;
+@Mapper
+public abstract class CustomerMapper {
 
-@Mapper(componentModel = "spring")
-public interface CustomerMapper {
+    public abstract CustomerDTO mapToDto(Customer customer);
 
-    CustomerDTO mapToDto(Customer customer);
-    List<CustomerDTO> mapToDto(List<Customer> customers);
+    public abstract Customer mapToEntity(CustomerCreateRequest customerCreateRequest);
+
+    public abstract Customer mapToEntity(CustomerUpdateRequest customerUpdateRequest);
 }

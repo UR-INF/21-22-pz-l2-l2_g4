@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class CustomerDTO {
+public class CustomerUpdateRequest {
 
     private Long id;
     private String name;
