@@ -55,12 +55,18 @@ public class SupplierController implements Initializable {
     private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
     @Autowired
     private SupplierService supplierService;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         suppliersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
     }
 
     @FXML

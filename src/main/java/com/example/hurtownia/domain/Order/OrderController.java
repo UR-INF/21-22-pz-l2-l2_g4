@@ -8,8 +8,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -62,12 +62,49 @@ public class OrderController implements Initializable {
     private TableColumn<OrderDTO, Void> invoiceColumn, deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGrantingDiscounds() {
+        ordersTable.getColumns().get(4).setEditable(false);
+        discountTextField.setDisable(true);
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
+        invoiceColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<OrderDTO, Void> call(final TableColumn<OrderDTO, Void> param) {
+                final TableCell<OrderDTO, Void> cell = new TableCell<>() {
+                    final Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/invoiceBtn.png")), 25, 25, false, false);
+                    private final Button btn = new Button();
+
+                    {
+                        btn.setDisable(true);
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else {
+                            btn.setStyle("-fx-background-color: #ffffff; ");
+                            btn.setGraphic(new ImageView(image));
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
     }
 
     /**
@@ -89,7 +126,9 @@ public class OrderController implements Initializable {
     @FXML
     public void ordersBtnAddClicked(MouseEvent event) {
         try {
-            Double discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
+            Double discount;
+            if (discountTextField.getText() == null) discount = 0.0;
+            else discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
             Long customerId = Long.valueOf(customerIdTextField.getText());
             String date = dateTextField.getText();
             String state = orderStates[0];

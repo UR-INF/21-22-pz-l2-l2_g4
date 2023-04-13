@@ -54,12 +54,18 @@ public class OrderItemController implements Initializable {
     private TableColumn<OrderItemDTO, Void> deleteColumn;
     @FXML
     private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
         productIdTextField.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
     }
 
     /**

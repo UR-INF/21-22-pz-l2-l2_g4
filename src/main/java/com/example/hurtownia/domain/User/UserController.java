@@ -64,6 +64,20 @@ public class UserController implements Initializable {
         usersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+
+        isAdminCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                generatingReportsCheckBox.setSelected(true);
+                generatingReportsCheckBox.setDisable(true);
+                grantingDiscountsCheckBox.setSelected(true);
+                grantingDiscountsCheckBox.setDisable(true);
+            } else {
+                generatingReportsCheckBox.setSelected(false);
+                generatingReportsCheckBox.setDisable(false);
+                grantingDiscountsCheckBox.setSelected(false);
+                grantingDiscountsCheckBox.setDisable(false);
+            }
+        });
     }
 
     /**

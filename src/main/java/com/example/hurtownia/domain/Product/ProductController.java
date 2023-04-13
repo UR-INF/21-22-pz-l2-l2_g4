@@ -69,12 +69,43 @@ public class ProductController implements Initializable {
     private ProductService productService;
     @Autowired
     private SupplierService supplierService;
+    @FXML
+    private Button generateReportBtn;
+    @FXML
+    private Button generateSupplyReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
+        generateSupplyReportBtn.setDisable(true);
+        supplyReportColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<ProductDTO, Boolean> call(final TableColumn<ProductDTO, Boolean> param) {
+                final TableCell<ProductDTO, Boolean> cell = new TableCell<>() {
+                    private final CheckBox checkBox = new CheckBox();
+
+                    {
+                        checkBox.setDisable(true);
+                    }
+
+                    @Override
+                    public void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else setGraphic(checkBox);
+
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
     }
 
     /**
@@ -376,9 +407,7 @@ public class ProductController implements Initializable {
                     private final CheckBox checkBox = new CheckBox();
 
                     {
-                        checkBox.setOnAction((ActionEvent event) -> {
-                            products.get(getIndex()).setSupply(!products.get(getIndex()).getSupply());
-                        });
+                        checkBox.setOnAction((ActionEvent event) -> products.get(getIndex()).setSupply(!products.get(getIndex()).getSupply()));
                         checkBox.setOnMouseEntered((EventHandler<javafx.event.Event>) event -> getScene().setCursor(Cursor.HAND));
                         checkBox.setOnMouseExited((EventHandler<javafx.event.Event>) event -> getScene().setCursor(Cursor.DEFAULT));
                     }

@@ -57,12 +57,18 @@ public class CustomerController implements Initializable {
     private TableColumn<CustomerDTO, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
     }
 
     /**

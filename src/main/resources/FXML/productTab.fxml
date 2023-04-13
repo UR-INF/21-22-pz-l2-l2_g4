@@ -92,7 +92,7 @@
                 <Cursor fx:constant="HAND" />
             </cursor>
         </Button>
-        <Button layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#productsBtnReportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
+        <Button fx:id="generateReportBtn" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#productsBtnReportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
             <font>
                 <Font size="16.0" />
             </font>
@@ -104,7 +104,7 @@
         <TextField fx:id="priceSearchField" layoutX="621.0" layoutY="100.0" prefHeight="26.0" prefWidth="75.0" />
         <TextField fx:id="unitSearchField" layoutX="798.0" layoutY="100.0" prefHeight="26.0" prefWidth="117.0" />
         <TextField fx:id="colorSearchField" layoutX="1011.0" layoutY="100.0" prefHeight="26.0" prefWidth="101.0" />
-        <Button layoutX="980.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ProductsBtnSupplyReportClicked" prefHeight="38.0" prefWidth="190.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport dostaw">
+        <Button fx:id="generateSupplyReportBtn" layoutX="980.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ProductsBtnSupplyReportClicked" prefHeight="38.0" prefWidth="190.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport dostaw">
             <font>
                 <Font size="16.0" />
             </font>

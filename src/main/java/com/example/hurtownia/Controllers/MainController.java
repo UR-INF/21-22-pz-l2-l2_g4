@@ -1,15 +1,24 @@
 package com.example.hurtownia.controllers;
 
 import com.example.hurtownia.authentication.LoginService;
+import com.example.hurtownia.domain.customer.CustomerController;
 import com.example.hurtownia.domain.customer.CustomerService;
+import com.example.hurtownia.domain.order.OrderController;
 import com.example.hurtownia.domain.order.OrderService;
+import com.example.hurtownia.domain.orderitem.OrderItemController;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
+import com.example.hurtownia.domain.product.ProductController;
 import com.example.hurtownia.domain.product.ProductService;
+import com.example.hurtownia.domain.supplier.SupplierController;
 import com.example.hurtownia.domain.supplier.SupplierService;
+import com.example.hurtownia.domain.user.User;
 import com.example.hurtownia.domain.user.UserService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +48,20 @@ public class MainController implements Initializable {
     public SupplierService supplierService;
     @Autowired
     public UserService userService;
-
+    @FXML
+    public TabPane tabPane;
+    @FXML
+    public Tab customerTab, orderTab, userTab;
+    @FXML
+    private OrderController orderTabContentController;
+    @FXML
+    private CustomerController customerTabContentController;
+    @FXML
+    private OrderItemController orderItemTabContentController;
+    @FXML
+    private ProductController productTabContentController;
+    @FXML
+    private SupplierController supplierTabContentController;
     @FXML
     private Text clockLabel, userNameLabel;
     private LoginService loginService;
@@ -49,11 +71,23 @@ public class MainController implements Initializable {
         //TODO: Panel logowania
 
         loginService = new LoginService();
-        loginService.logIn("admin", "1234");
+        User user = User.builder()
+                .name("name")
+                .surname("surname")
+                .email("email")
+                .password("password")
+                .phoneNumber("phoneNumber")
+                .isAdmin(Boolean.TRUE)
+                .generatingReports(Boolean.TRUE)
+                .grantingDiscounts(Boolean.TRUE)
+                .build();
+        loginService.logIn(user.getEmail(), user.getPassword());
         userNameLabel.setText(loginService.getLogin());
 
+        checkPermissions(user);
+
         insertData();
-        new Thread(() -> runClock()).start();
+        new Thread(this::runClock).start();
     }
 
     /**
@@ -72,6 +106,24 @@ public class MainController implements Initializable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void checkPermissions(User user) {
+        if (Boolean.FALSE.equals(user.getIsAdmin())) {
+            userTab.setDisable(true);
+            SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+            selectionModel.select(customerTab);
+        }
+        if (Boolean.FALSE.equals(user.getGrantingDiscounts())) {
+            orderTabContentController.disableGrantingDiscounds();
+        }
+        if (Boolean.FALSE.equals(user.getGeneratingReports())) {
+            customerTabContentController.disableGeneratingReports();
+            orderTabContentController.disableGeneratingReports();
+            orderItemTabContentController.disableGeneratingReports();
+            productTabContentController.disableGeneratingReports();
+            supplierTabContentController.disableGeneratingReports();
         }
     }
 
