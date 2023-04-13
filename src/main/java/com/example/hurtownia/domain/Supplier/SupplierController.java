@@ -1,6 +1,8 @@
 package com.example.hurtownia.domain.supplier;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.supplier.request.SupplierCreateRequest;
+import com.example.hurtownia.domain.supplier.request.SupplierUpdateRequest;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;

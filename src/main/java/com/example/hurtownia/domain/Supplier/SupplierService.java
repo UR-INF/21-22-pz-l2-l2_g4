@@ -1,6 +1,8 @@
 package com.example.hurtownia.domain.supplier;
 
 
+import com.example.hurtownia.domain.supplier.request.SupplierCreateRequest;
+import com.example.hurtownia.domain.supplier.request.SupplierUpdateRequest;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,15 @@ public class SupplierService {
      * @param supplierCreateRequest nowy dostawca
      */
     public Supplier save(SupplierCreateRequest supplierCreateRequest) {
-        return supplierRepository.save(mapper.mapToEntity(supplierCreateRequest));
+        Supplier supplier = Supplier.builder()
+                .name(supplierCreateRequest.getName())
+                .email(supplierCreateRequest.getEmail())
+                .country(supplierCreateRequest.getCountry())
+                .place(supplierCreateRequest.getPlace())
+                .street(supplierCreateRequest.getStreet())
+                .nip(supplierCreateRequest.getNip())
+                .build();
+        return supplierRepository.save(supplier);
     }
 
     /**
@@ -71,6 +81,14 @@ public class SupplierService {
      * @param supplierUpdateRequest aktualizowany dostawca
      */
     public Supplier update(SupplierUpdateRequest supplierUpdateRequest) {
-        return supplierRepository.save(mapper.mapToEntity(supplierUpdateRequest));
+        Supplier supplier = Supplier.builder()
+                .name(supplierUpdateRequest.getName())
+                .email(supplierUpdateRequest.getEmail())
+                .country(supplierUpdateRequest.getCountry())
+                .place(supplierUpdateRequest.getPlace())
+                .street(supplierUpdateRequest.getStreet())
+                .nip(supplierUpdateRequest.getNip())
+                .build();
+        return supplierRepository.save(supplier);
     }
 }

@@ -1,9 +1,18 @@
 package com.example.hurtownia.domain.customer;
 
+import com.example.hurtownia.domain.customer.request.CustomerCreateRequest;
+import com.example.hurtownia.domain.customer.request.CustomerUpdateRequest;
+import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.order.OrderService;
+import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
+import com.example.hurtownia.domain.product.Product;
+import com.example.hurtownia.domain.product.ProductService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,7 +70,18 @@ public class CustomerService {
      * @param customerCreateRequest obiekt z danymi do utworzenia nowego klienta
      */
     public Customer save(CustomerCreateRequest customerCreateRequest) {
-        return customerRepository.save(mapper.mapToEntity(customerCreateRequest));
+        Customer customer = Customer.builder()
+                .name(customerCreateRequest.getName())
+                .surname(customerCreateRequest.getSurname())
+                .pesel(customerCreateRequest.getPesel())
+                .phoneNumber(customerCreateRequest.getPhoneNumber())
+                .email(customerCreateRequest.getEmail())
+                .place(customerCreateRequest.getPlace())
+                .street(customerCreateRequest.getStreet())
+                .buildingNumber(customerCreateRequest.getBuildingNumber())
+                .apartmentNumber(customerCreateRequest.getApartmentNumber())
+                .build();
+        return customerRepository.save(customer);
     }
 
     /**
@@ -70,6 +90,17 @@ public class CustomerService {
      * @param customerUpdateRequest aktualizowany klient
      */
     public Customer update(CustomerUpdateRequest customerUpdateRequest) {
-        return customerRepository.save(mapper.mapToEntity(customerUpdateRequest));
+        Customer customer = Customer.builder()
+                .name(customerUpdateRequest.getName())
+                .surname(customerUpdateRequest.getSurname())
+                .pesel(customerUpdateRequest.getPesel())
+                .phoneNumber(customerUpdateRequest.getPhoneNumber())
+                .email(customerUpdateRequest.getEmail())
+                .place(customerUpdateRequest.getPlace())
+                .street(customerUpdateRequest.getStreet())
+                .buildingNumber(customerUpdateRequest.getBuildingNumber())
+                .apartmentNumber(customerUpdateRequest.getApartmentNumber())
+                .build();
+        return customerRepository.save(customer);
     }
 }

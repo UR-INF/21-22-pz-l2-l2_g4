@@ -1,5 +1,7 @@
 package com.example.hurtownia.domain.product;
 
+import com.example.hurtownia.domain.product.request.ProductCreateRequest;
+import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.domain.supplier.Supplier;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import org.hibernate.ObjectNotFoundException;
@@ -66,7 +68,18 @@ public class ProductService {
      */
     public Product save(ProductCreateRequest productCreateRequest) {
         Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
-        return productRepository.save(mapper.mapToEntity(productCreateRequest, supplier));
+        Product product = Product.builder()
+                .supplier(supplier)
+                .name(productCreateRequest.getName())
+                .unitOfMeasurement(productCreateRequest.getUnitOfMeasurement())
+                .price(productCreateRequest.getPrice())
+                .country(productCreateRequest.getCountry())
+                .code(productCreateRequest.getCode())
+                .color(productCreateRequest.getColor())
+                .number(productCreateRequest.getNumber())
+                .maxNumber(productCreateRequest.getMaxNumber())
+                .build();
+        return productRepository.save(product);
     }
 
     /**
@@ -76,7 +89,18 @@ public class ProductService {
      */
     public Product update(ProductUpdateRequest productCreateRequest) {
         Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
-        return productRepository.save(mapper.mapToEntity(productCreateRequest, supplier));
+        Product product = Product.builder()
+                .supplier(supplier)
+                .name(productCreateRequest.getName())
+                .unitOfMeasurement(productCreateRequest.getUnitOfMeasurement())
+                .price(productCreateRequest.getPrice())
+                .country(productCreateRequest.getCountry())
+                .code(productCreateRequest.getCode())
+                .color(productCreateRequest.getColor())
+                .number(productCreateRequest.getNumber())
+                .maxNumber(productCreateRequest.getMaxNumber())
+                .build();
+        return productRepository.save(product);
     }
 
     public List<SupplyData> getSupplyData(List<Long> ids) {
@@ -84,7 +108,13 @@ public class ProductService {
                 .map(id -> {
                     Product product = findById(id);
                     Supplier supplier = supplierService.findById(product.getSupplier().getId());
-                    return mapper.mapToSupplyData(product, supplier);
+                    SupplyData supplyData = SupplyData.builder()
+                            .supplierName(supplier.getName())
+                            .productCode(product.getCode())
+                            .productUnitOfMeasurement(product.getUnitOfMeasurement())
+                            .amount(String.valueOf(product.getMaxNumber() - product.getNumber()))
+                            .build();
+                    return supplyData;
                 }).collect(Collectors.toList());
     }
 }

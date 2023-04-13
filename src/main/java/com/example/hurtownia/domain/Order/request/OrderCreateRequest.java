@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.order;
+package com.example.hurtownia.domain.order.request;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;

@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.customer;
+package com.example.hurtownia.domain.customer.request;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -9,9 +9,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class CustomerUpdateRequest {
+public class CustomerCreateRequest {
 
-    private Long id;
     private String name;
     private String surname;
     private String pesel;

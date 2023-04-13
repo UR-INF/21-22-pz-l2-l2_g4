@@ -1,5 +1,7 @@
 package com.example.hurtownia.domain.user;
 
+import com.example.hurtownia.domain.user.request.UserCreateRequest;
+import com.example.hurtownia.domain.user.request.UserUpdateRequest;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +63,17 @@ public class UserService {
      * @param userCreateRequest nowy użytkownik
      */
     public User save(UserCreateRequest userCreateRequest) {
-        return userRepository.save(mapper.mapToEntity(userCreateRequest));
+        User user = User.builder()
+                .name(userCreateRequest.getName())
+                .surname(userCreateRequest.getSurname())
+                .email(userCreateRequest.getEmail())
+                .password(userCreateRequest.getPassword())
+                .phoneNumber(userCreateRequest.getPhoneNumber())
+                .isAdmin(userCreateRequest.getIsAdmin())
+                .generatingReports(userCreateRequest.getGeneratingReports())
+                .grantingDiscounts(userCreateRequest.getGrantingDiscounts())
+                .build();
+        return userRepository.save(user);
     }
 
     /**
@@ -70,6 +82,16 @@ public class UserService {
      * @param userUpdateRequest aktualizowany użytkownik
      */
     public User update(UserUpdateRequest userUpdateRequest) {
-        return userRepository.save(mapper.mapToEntity(userUpdateRequest));
+        User user = User.builder()
+                .name(userUpdateRequest.getName())
+                .surname(userUpdateRequest.getSurname())
+                .email(userUpdateRequest.getEmail())
+                .password(userUpdateRequest.getPassword())
+                .phoneNumber(userUpdateRequest.getPhoneNumber())
+                .isAdmin(userUpdateRequest.getIsAdmin())
+                .generatingReports(userUpdateRequest.getGeneratingReports())
+                .grantingDiscounts(userUpdateRequest.getGrantingDiscounts())
+                .build();
+        return userRepository.save(user);
     }
 }

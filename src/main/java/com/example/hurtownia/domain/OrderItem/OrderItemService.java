@@ -2,6 +2,8 @@ package com.example.hurtownia.domain.orderitem;
 
 import com.example.hurtownia.domain.order.Order;
 import com.example.hurtownia.domain.order.OrderService;
+import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
+import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
 import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductService;
 import org.hibernate.ObjectNotFoundException;
@@ -75,7 +77,13 @@ public class OrderItemService {
     public OrderItem save(OrderItemCreateRequest orderItemCreateRequest) {
         Order order = orderService.findById(orderItemCreateRequest.getOrderId());
         Product product = productService.findById(orderItemCreateRequest.getProductId());
-        return orderItemRepository.save(mapper.mapToEntity(orderItemCreateRequest, order, product));
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .product(product)
+                .amount(orderItemCreateRequest.getAmount())
+                .pricePerUnit(product.getPrice())
+                .build();
+        return orderItemRepository.save(orderItem);
     }
 
     /**
@@ -86,6 +94,12 @@ public class OrderItemService {
     public OrderItem update(OrderItemUpdateRequest orderItemUpdateRequest) {
         Order order = orderService.findById(orderItemUpdateRequest.getOrderId());
         Product product = productService.findById(orderItemUpdateRequest.getProductId());
-        return orderItemRepository.save(mapper.mapToEntity(orderItemUpdateRequest, order, product));
+        OrderItem orderItem = OrderItem.builder()
+                .order(order)
+                .product(product)
+                .amount(orderItemUpdateRequest.getAmount())
+                .pricePerUnit(product.getPrice())
+                .build();
+        return orderItemRepository.save(orderItem);
     }
 }

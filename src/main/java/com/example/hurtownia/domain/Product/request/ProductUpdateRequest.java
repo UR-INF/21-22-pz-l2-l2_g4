@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.product;
+package com.example.hurtownia.domain.product.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +11,9 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class ProductCreateRequest {
+public class ProductUpdateRequest {
 
+    private Long id;
     private Long supplierId;
     private String name;
     private String unitOfMeasurement;

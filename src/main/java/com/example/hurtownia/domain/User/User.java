@@ -45,11 +45,11 @@ public class User implements Serializable {
     private String phoneNumber;
 
     @Column(name = "isAdmin")
-    private Boolean isAdmin;
+    private boolean isAdmin;
 
     @Column(name = "generowanieRaportow")
-    private Boolean generatingReports;
+    private boolean generatingReports;
 
     @Column(name = "udzielanieRabatow")
-    private Boolean grantingDiscounts;
+    private boolean grantingDiscounts;
 }

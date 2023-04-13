@@ -1,6 +1,8 @@
 package com.example.hurtownia.domain.orderitem;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
+import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;

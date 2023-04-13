@@ -110,15 +110,15 @@ public class MainController implements Initializable {
     }
 
     private void checkPermissions(User user) {
-        if (Boolean.FALSE.equals(user.getIsAdmin())) {
+        if (Boolean.FALSE.equals(user.isAdmin())) {
             userTab.setDisable(true);
             SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
             selectionModel.select(customerTab);
         }
-        if (Boolean.FALSE.equals(user.getGrantingDiscounts())) {
+        if (Boolean.FALSE.equals(user.isGrantingDiscounts())) {
             orderTabContentController.disableGrantingDiscounds();
         }
-        if (Boolean.FALSE.equals(user.getGeneratingReports())) {
+        if (Boolean.FALSE.equals(user.isGeneratingReports())) {
             customerTabContentController.disableGeneratingReports();
             orderTabContentController.disableGeneratingReports();
             orderItemTabContentController.disableGeneratingReports();

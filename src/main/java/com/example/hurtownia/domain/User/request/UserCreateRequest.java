@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.user;
+package com.example.hurtownia.domain.user.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,8 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class UserUpdateRequest {
+public class UserCreateRequest {
 
-    private Long id;
     private String name;
     private String surname;
     private String email;

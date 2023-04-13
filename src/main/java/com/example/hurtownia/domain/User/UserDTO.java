@@ -19,7 +19,7 @@ public class UserDTO {
     private String email;
     private String password;
     private String phoneNumber;
-    private Boolean isAdmin;
-    private Boolean generatingReports;
-    private Boolean grantingDiscounts;
+    private boolean isAdmin;
+    private boolean generatingReports;
+    private boolean grantingDiscounts;
 }

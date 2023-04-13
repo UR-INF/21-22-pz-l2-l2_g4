@@ -2,6 +2,8 @@ package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.AbstractReport;
+import com.example.hurtownia.domain.product.request.ProductCreateRequest;
+import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;

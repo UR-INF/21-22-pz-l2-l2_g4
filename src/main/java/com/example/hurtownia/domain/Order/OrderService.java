@@ -2,6 +2,8 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.domain.customer.Customer;
 import com.example.hurtownia.domain.customer.CustomerService;
+import com.example.hurtownia.domain.order.request.OrderCreateRequest;
+import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.domain.orderitem.OrderItem;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
 import org.hibernate.ObjectNotFoundException;
@@ -35,8 +37,15 @@ public class OrderService {
         return orderRepository.findAll().stream()
                 .map(order -> {
                     List<OrderItem> orderItems = orderItemService.findAllByOrderId(order.getId());
-                    return mapper.mapToDto(order, orderItems);
+                    return mapper.mapToDto(order, calculateValue(orderItems));
                 }).collect(Collectors.toList());
+    }
+
+    private double calculateValue(List<OrderItem> orderItems) {
+        double value = 0.0;
+        for (OrderItem orderItem : orderItems) value += orderItem.getPricePerUnit() * orderItem.getAmount();
+        value = Math.round(value * 100.0) / 100.0;
+        return value;
     }
 
     /**
@@ -72,7 +81,13 @@ public class OrderService {
      */
     public Order save(OrderCreateRequest orderCreateRequest) {
         Customer customer = customerService.findById(orderCreateRequest.getCustomerId());
-        return orderRepository.save(mapper.mapToEntity(orderCreateRequest, customer));
+        Order order = Order.builder()
+                .customer(customer)
+                .date(orderCreateRequest.getDate())
+                .state(orderCreateRequest.getState())
+                .discount(orderCreateRequest.getDiscount())
+                .build();
+        return orderRepository.save(order);
     }
 
     /**
@@ -82,7 +97,13 @@ public class OrderService {
      */
     public Order update(OrderUpdateRequest orderUpdateRequest) {
         Customer customer = customerService.findById(orderUpdateRequest.getCustomerId());
-        return orderRepository.save(mapper.mapToEntity(orderUpdateRequest, customer));
+        Order order = Order.builder()
+                .customer(customer)
+                .date(orderUpdateRequest.getDate())
+                .state(orderUpdateRequest.getState())
+                .discount(orderUpdateRequest.getDiscount())
+                .build();
+        return orderRepository.save(order);
     }
 
     /**
@@ -93,6 +114,20 @@ public class OrderService {
     public InvoiceData getInvoiceData(Long id) {
         Order order = findById(id);
         List<OrderItem> orderItems = orderItemService.findAllByOrderId(id);
-        return mapper.mapToInvoiceData(order, orderItems);
+        InvoiceData invoiceData = InvoiceData.builder()
+                .name(order.getCustomer().getName())
+                .surname(order.getCustomer().getSurname())
+                .date(order.getDate())
+                .value(String.valueOf(calculateValue(orderItems)))
+                .discount(String.valueOf(order.getDiscount()))
+                .valueAfterDiscount(calculateValueAfterDiscount(order, orderItems))
+                .build();
+        return invoiceData;
+    }
+
+    private String calculateValueAfterDiscount(Order order, List<OrderItem> orderItems) {
+        double value = calculateValue(orderItems);
+        double valueAfterDiscount = value - (value * order.getDiscount());
+        return String.valueOf(valueAfterDiscount);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.hurtownia.domain.supplier;
+package com.example.hurtownia.domain.supplier.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +11,8 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class SupplierUpdateRequest {
+public class SupplierCreateRequest {
 
-    private Long id;
     private String email;
     private String country;
     private String place;
