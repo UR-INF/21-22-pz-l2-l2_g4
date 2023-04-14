@@ -53,39 +53,28 @@
       </AnchorPane>
    </bottom>
    <center>
-      <TabPane prefHeight="795.0" prefWidth="1550.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-        <tabs>
-            <Tab fx:id="usersTab" text="Zarzadzanie użytkownikami">
-               <content>
-                  <fx:include fx:id="tabZarzadzaniePage" source="userTab.fxml" />
-               </content>
-            </Tab>
-            <Tab fx:id="customerTab" text="Klienci">
-               <content>
-                  <fx:include fx:id="tabKlienciPage" source="customerTab.fxml" />
-               </content>
-            </Tab>
-            <Tab fx:id="supplierTab" text="Dostawcy">
-               <content>
-                  <fx:include fx:id="tabDostawcyPage" source="supplierTab.fxml" />
-               </content>
-            </Tab>
-            <Tab fx:id="productTab" text="Produkty">
-               <content>
-                  <fx:include fx:id="tabProduktyPage" source="productTab.fxml" />
-               </content>
-            </Tab>
-            <Tab fx:id="orderTab" text="Zamówienia">
-               <content>
-                  <fx:include fx:id="tabZamowieniaPage" source="orderTab.fxml" />
-               </content>
-            </Tab>
-            <Tab fx:id="orderItemTab" text="Elementy zamówienia">
-               <content>
-                  <fx:include fx:id="tabElementyZamowieniaPage" source="orderItemTab.fxml" />
-               </content>
-            </Tab>
-        </tabs>
+      <TabPane fx:id="tabPane" prefHeight="795.0" prefWidth="1550.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <cursor>
+            <Cursor fx:constant="DEFAULT"/>
+         </cursor>
+         <Tab fx:id="userTab" text="Zarzadzanie użytkownikami">
+            <fx:include fx:id="userTabContent" source="userTab.fxml"/>
+         </Tab>
+         <Tab fx:id="customerTab" text="Klienci">
+            <fx:include fx:id="customerTabContent" source="customerTab.fxml"/>
+         </Tab>
+         <Tab fx:id="supplierTab" text="Dostawcy">
+            <fx:include fx:id="supplierTabContent" source="supplierTab.fxml"/>
+         </Tab>
+         <Tab fx:id="productTab" text="Produkty">
+            <fx:include fx:id="productTabContent" source="productTab.fxml"/>
+         </Tab>
+         <Tab fx:id="orderTab" text="Zamówienia">
+            <fx:include fx:id="orderTabContent" source="orderTab.fxml"/>
+         </Tab>
+         <Tab fx:id="orderItemTab" text="Elementy zamówienia">
+            <fx:include fx:id="orderItemTabContent" source="orderItemTab.fxml"/>
+         </Tab>
       </TabPane>
    </center>
 </BorderPane>

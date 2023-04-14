@@ -1,10 +1,17 @@
 package com.example.hurtownia.domain.order;
 
+import com.example.hurtownia.domain.customer.Customer;
+import com.example.hurtownia.domain.customer.CustomerService;
+import com.example.hurtownia.domain.order.request.OrderCreateRequest;
+import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
+import com.example.hurtownia.domain.orderitem.OrderItem;
+import com.example.hurtownia.domain.orderitem.OrderItemService;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'zamowienie'.
@@ -13,6 +20,12 @@ import java.util.List;
 public class OrderService {
 
     @Autowired
+    public OrderItemService orderItemService;
+    @Autowired
+    public CustomerService customerService;
+    @Autowired
+    private OrderMapper orderMapper;
+    @Autowired
     private OrderRepository orderRepository;
 
     /**
@@ -20,8 +33,19 @@ public class OrderService {
      *
      * @return lista wszystkich zamówień
      */
-    public List<Order> findAll() {
-        return orderRepository.findAll();
+    public List<OrderDTO> findAll() {
+        return orderRepository.findAll().stream()
+                .map(order -> {
+                    List<OrderItem> orderItems = orderItemService.findAllByOrderId(order.getId());
+                    return orderMapper.mapToDto(order, calculateValue(orderItems));
+                }).collect(Collectors.toList());
+    }
+
+    private double calculateValue(List<OrderItem> orderItems) {
+        double value = 0.0;
+        for (OrderItem orderItem : orderItems) value += orderItem.getPricePerUnit() * orderItem.getAmount();
+        value = Math.round(value * 100.0) / 100.0;
+        return value;
     }
 
     /**
@@ -30,18 +54,20 @@ public class OrderService {
      * @param id identyfikator zamówienia
      * @return zamówienie
      */
-    public Order findById(Long id) {return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));}
+    public Order findById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono zamówienia"));
+    }
 
     /**
      * Usuwa zamówienie.
      *
-     * @param order usuwane zamówienie
+     * @param id identyfikator usuwanego zamówienia
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(Order order) {
+    public boolean delete(Long id) {
         try {
-            orderRepository.delete(order);
+            orderRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -51,25 +77,56 @@ public class OrderService {
     /**
      * Dodaje nowe zamowienie.
      *
-     * @param order nowe zzamówienie
-     * @return dodane zamówienie
+     * @param orderCreateRequest nowe zamówienie
      */
-    public Order save(Order order) {
+    public Order create(OrderCreateRequest orderCreateRequest) {
+        Customer customer = customerService.findById(orderCreateRequest.getCustomerId());
+        Order order = Order.builder()
+                .customer(customer)
+                .date(orderCreateRequest.getDate())
+                .state(orderCreateRequest.getState())
+                .discount(orderCreateRequest.getDiscount())
+                .build();
         return orderRepository.save(order);
     }
 
     /**
      * Aktualizuje zamówienie.
      *
-     * @param newOrder aktualizowane zamówienie
+     * @param orderUpdateRequest aktualizowane zamówienie
      */
-    public void update(Order newOrder) {
-        Order order = findById(newOrder.getId());
-        order.setCustomer(newOrder.getCustomer());
-        order.setDate(newOrder.getDate());
-        order.setState(newOrder.getState());
-        order.setDiscount(newOrder.getDiscount());
+    public Order update(OrderUpdateRequest orderUpdateRequest) {
+        Order order = findById(orderUpdateRequest.getId());
+        Customer customer = customerService.findById(orderUpdateRequest.getCustomerId());
+        order.setCustomer(customer);
+        order.setDate(orderUpdateRequest.getDate());
+        order.setState(orderUpdateRequest.getState());
+        order.setDiscount(orderUpdateRequest.getDiscount());
+        return orderRepository.save(order);
+    }
 
-        orderRepository.save(order);
+    /**
+     * Aktualizuje zamówienie.
+     *
+     * @param id identyfikator zamówienia, z którego ma  być wygenerowana faktura
+     */
+    public InvoiceData getInvoiceData(Long id) {
+        Order order = findById(id);
+        List<OrderItem> orderItems = orderItemService.findAllByOrderId(id);
+        InvoiceData invoiceData = InvoiceData.builder()
+                .name(order.getCustomer().getName())
+                .surname(order.getCustomer().getSurname())
+                .date(order.getDate())
+                .value(String.valueOf(calculateValue(orderItems)))
+                .discount(String.valueOf(order.getDiscount()))
+                .valueAfterDiscount(calculateValueAfterDiscount(order, orderItems))
+                .build();
+        return invoiceData;
+    }
+
+    private String calculateValueAfterDiscount(Order order, List<OrderItem> orderItems) {
+        double value = calculateValue(orderItems);
+        double valueAfterDiscount = value - (value * order.getDiscount());
+        return String.valueOf(valueAfterDiscount);
     }
 }

@@ -1,10 +1,13 @@
 package com.example.hurtownia.domain.user;
 
+import com.example.hurtownia.domain.user.request.UserCreateRequest;
+import com.example.hurtownia.domain.user.request.UserUpdateRequest;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'uzytkownik'.
@@ -14,13 +17,17 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * Pobiera wszystkich użytkowników.
      *
      * @return lista wszystkich użytkowników
      */
-    public List<User> findAll() {return userRepository.findAll();}
+    public List<UserDTO> findAll() {
+        return userMapper.mapToDto(userRepository.findAll());
+    }
 
     /**
      * Pobiera użytkownika o podanym id.
@@ -28,18 +35,20 @@ public class UserService {
      * @param id identyfikator użytkownika
      * @return użytkownik
      */
-    public User findById(Long id) {return userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono użytkownika"));}
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono użytkownika"));
+    }
 
     /**
      * Usuwa użytkownika.
      *
-     * @param user usuwany użytkownik
+     * @param id identyfikator usuwanego użytkownika
      * @return true - jeśli pomyślnie usunięto;
      * false - jeśli wystąpiły błędy
      */
-    public boolean delete(User user) {
+    public boolean delete(Long id) {
         try {
-            userRepository.delete(user);
+            userRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
             return false;
@@ -49,29 +58,37 @@ public class UserService {
     /**
      * Dodaje nowego użytkownika.
      *
-     * @param user nowy użytkownik
-     * @return dodany użytkownik
+     * @param userCreateRequest nowy użytkownik
      */
-    public User save(User user) {
+    public User create(UserCreateRequest userCreateRequest) {
+        User user = User.builder()
+                .name(userCreateRequest.getName())
+                .surname(userCreateRequest.getSurname())
+                .email(userCreateRequest.getEmail())
+                .password(userCreateRequest.getPassword())
+                .phoneNumber(userCreateRequest.getPhoneNumber())
+                .isAdmin(userCreateRequest.getIsAdmin())
+                .generatingReports(userCreateRequest.getGeneratingReports())
+                .grantingDiscounts(userCreateRequest.getGrantingDiscounts())
+                .build();
         return userRepository.save(user);
     }
 
     /**
      * Aktualizuje użytkownika.
      *
-     * @param newUser aktualizowany użytkownik
+     * @param userUpdateRequest aktualizowany użytkownik
      */
-    public void update(User newUser) {
-        User user = findById(newUser.getId());
-        user.setName(newUser.getName());
-        user.setSurname(newUser.getSurname());
-        user.setEmail(newUser.getEmail());
-        user.setPassword(newUser.getPassword());
-        user.setPhoneNumber(newUser.getPhoneNumber());
-        user.setAdmin(newUser.isAdmin());
-        user.setGeneratingReports(newUser.isGeneratingReports());
-        user.setGrantingDiscounts(newUser.isGrantingDiscounts());
-
-        userRepository.save(user);
+    public User update(UserUpdateRequest userUpdateRequest) {
+        User user = findById(userUpdateRequest.getId());
+        user.setName(userUpdateRequest.getName());
+        user.setSurname(userUpdateRequest.getSurname());
+        user.setEmail(userUpdateRequest.getEmail());
+        user.setPassword(userUpdateRequest.getPassword());
+        user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+        user.setIsAdmin(userUpdateRequest.getIsAdmin());
+        user.setGeneratingReports(userUpdateRequest.getGeneratingReports());
+        user.setGrantingDiscounts(userUpdateRequest.getGrantingDiscounts());
+        return userRepository.save(user);
     }
 }

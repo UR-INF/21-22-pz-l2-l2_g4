@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Reprezentuje tabelę 'ElementZamowienia' w bazie danych.
+ * Reprezentuje tabelę 'element_zamowienia' w bazie danych.
  */
 @Getter
 @Setter
@@ -17,7 +17,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @SuperBuilder(toBuilder = true)
-@AllArgsConstructor(onConstructor = @__(@Builder))
 @Entity
 @Table(name = "element_zamowienia")
 public class OrderItem implements Serializable {
@@ -40,10 +39,6 @@ public class OrderItem implements Serializable {
     @NonNull
     @Column(name = "ilosc")
     private Integer amount;
-
-    @NonNull
-    @Column(name = "cenaElementu")
-    private Double itemPrice;
 
     @NonNull
     @Column(name = "cenaZaJednostke")

@@ -1,11 +1,15 @@
 package com.example.hurtownia.domain.supplier;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.supplier.request.SupplierCreateRequest;
+import com.example.hurtownia.domain.supplier.request.SupplierUpdateRequest;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -35,27 +40,35 @@ import java.util.ResourceBundle;
 @Controller
 public class SupplierController implements Initializable {
 
-    public static ObservableList<Supplier> suppliers = FXCollections.observableArrayList();
+    public static ObservableList<SupplierDTO> suppliers = FXCollections.observableArrayList();
     @FXML
     private TextArea informationArea;
     @FXML
     private TextField emailTextField, countryTextField, placeTextField, nameTextField, nipTextField, streetTextField;
     @FXML
-    private TableView<Supplier> suppliersTable;
+    private TableView<SupplierDTO> suppliersTable;
     @FXML
-    private TableColumn<Supplier, String> emailColumn, nipColumn, idColumn, countryColumn, placeColumn, nameColumn, streetColumn;
+    private TableColumn<SupplierDTO, Number> idColumn;
     @FXML
-    private TableColumn<Supplier, Void> deleteColumn;
+    private TableColumn<SupplierDTO, String> emailColumn, nipColumn, countryColumn, placeColumn, nameColumn, streetColumn;
+    @FXML
+    private TableColumn<SupplierDTO, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
     @Autowired
     private SupplierService supplierService;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         suppliersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
     }
 
     @FXML
@@ -78,7 +91,7 @@ public class SupplierController implements Initializable {
             String place = placeTextField.getText();
             String street = streetTextField.getText();
             String nip = nipTextField.getText();
-            Supplier supplier = Supplier.builder()
+            SupplierCreateRequest supplierCreateRequest = SupplierCreateRequest.builder()
                     .name(name)
                     .email(email)
                     .country(country)
@@ -86,7 +99,7 @@ public class SupplierController implements Initializable {
                     .street(street)
                     .nip(nip)
                     .build();
-            supplierService.save(supplier);
+            supplierService.create(supplierCreateRequest);
             informationArea.appendText("\nDodano nowego dostawcę");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego dostawcy");
@@ -136,18 +149,27 @@ public class SupplierController implements Initializable {
      * Inicjalizuje tabelę.
      */
     private void setTable() {
+        idColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getId()));
+        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        nipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
+        emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
+        placeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlace()));
+        streetColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStreet()));
+        countryColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCountry()));
+
         StringConverter<String> converter = new DefaultStringConverter();
         nameColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setName(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setName(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -157,13 +179,14 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setNip(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setNip(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -173,13 +196,14 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setEmail(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setEmail(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -189,13 +213,14 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setPlace(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setPlace(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -205,13 +230,14 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setStreet(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setStreet(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
@@ -221,44 +247,37 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!Objects.equals(newValue, getItem())) {
-                    Supplier supplier = suppliersTable.getSelectionModel().getSelectedItem();
+                    SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
-                        supplier.setCountry(newValue);
-                        supplierService.update(supplier);
-                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplier.getId());
+                        BeanUtils.copyProperties(supplierUpdateRequest, suppliersTable.getSelectionModel().getSelectedItem());
+                        supplierUpdateRequest.setCountry(newValue);
+                        supplierService.update(supplierUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano dostawcę o id " + supplierUpdateRequest.getId());
                     } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplier.getId());
+                        informationArea.appendText("\nNie udało się edytować dostawcy o id " + supplierUpdateRequest.getId());
                     }
                 }
                 super.commitEdit(newValue);
             }
         });
-
-        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-        nipColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNip()));
-        emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-        placeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlace()));
-        streetColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStreet()));
-        countryColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCountry()));
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Supplier, Void> call(final TableColumn<Supplier, Void> param) {
-                final TableCell<Supplier, Void> cell = new TableCell<>() {
-                    final Image image = new Image(getClass().getResourceAsStream("/Images/deleteBtn.jpg"), 25, 25, false, false);
+            public TableCell<SupplierDTO, Void> call(final TableColumn<SupplierDTO, Void> param) {
+                final TableCell<SupplierDTO, Void> cell = new TableCell<>() {
+                    final Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/deleteBtn.jpg")), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Supplier supplier = getTableView().getItems().get(getIndex());
-                            if (supplierService.delete(supplier)) {
-                                suppliers.remove(supplier);
-                                informationArea.appendText("\nPomyślnie usunięto dostawcę o id " + supplier.getId());
+                            Long id = getTableView().getItems().get(getIndex()).getId();
+                            if (supplierService.delete(id)) {
+                                suppliers.remove(getTableView().getItems().get(getIndex()));
+                                informationArea.appendText("\nPomyślnie usunięto dostawcę o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia dostawcy o id " + supplier.getId());
+                                informationArea.appendText("\nBłąd przy próbie usunięcia dostawcy o id " + id);
                         });
-                        btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
-                        btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
+                        btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
+                        btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
 
                     @Override

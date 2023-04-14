@@ -1,20 +1,20 @@
-package com.example.hurtownia.domain.Order;
+package com.example.hurtownia.domain.order;
 
-import com.example.hurtownia.domain.customer.Customer;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class OrderDTO {
 
     private Long id;
-    private Customer customerDTO;
+    private Long customerId;
     private String date;
-    private String state;
     private Double discount;
+    private String state;
+    private Double value;
 }

@@ -1,20 +1,24 @@
 package com.example.hurtownia.controllers;
 
 import com.example.hurtownia.authentication.LoginService;
-import com.example.hurtownia.domain.customer.Customer;
+import com.example.hurtownia.domain.customer.CustomerController;
 import com.example.hurtownia.domain.customer.CustomerService;
-import com.example.hurtownia.domain.order.Order;
+import com.example.hurtownia.domain.order.OrderController;
 import com.example.hurtownia.domain.order.OrderService;
-import com.example.hurtownia.domain.orderitem.OrderItem;
+import com.example.hurtownia.domain.orderitem.OrderItemController;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
-import com.example.hurtownia.domain.product.Product;
+import com.example.hurtownia.domain.product.ProductController;
 import com.example.hurtownia.domain.product.ProductService;
-import com.example.hurtownia.domain.supplier.Supplier;
+import com.example.hurtownia.domain.supplier.SupplierController;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.domain.user.User;
 import com.example.hurtownia.domain.user.UserService;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +49,20 @@ public class MainController implements Initializable {
     @Autowired
     public UserService userService;
     @FXML
+    public TabPane tabPane;
+    @FXML
+    public Tab customerTab, orderTab, userTab;
+    @FXML
+    private OrderController orderTabContentController;
+    @FXML
+    private CustomerController customerTabContentController;
+    @FXML
+    private OrderItemController orderItemTabContentController;
+    @FXML
+    private ProductController productTabContentController;
+    @FXML
+    private SupplierController supplierTabContentController;
+    @FXML
     private Text clockLabel, userNameLabel;
     private LoginService loginService;
 
@@ -53,11 +71,23 @@ public class MainController implements Initializable {
         //TODO: Panel logowania
 
         loginService = new LoginService();
-        loginService.logIn("admin", "1234");
+        User user = User.builder()
+                .name("name")
+                .surname("surname")
+                .email("email")
+                .password("password")
+                .phoneNumber("phoneNumber")
+                .isAdmin(Boolean.TRUE)
+                .generatingReports(Boolean.TRUE)
+                .grantingDiscounts(Boolean.TRUE)
+                .build();
+        loginService.logIn(user.getEmail(), user.getPassword());
         userNameLabel.setText(loginService.getLogin());
 
+        checkPermissions(user);
+
         insertData();
-        new Thread(() -> runClock()).start();
+        new Thread(this::runClock).start();
     }
 
     /**
@@ -69,7 +99,8 @@ public class MainController implements Initializable {
 
         while (true) {
             date = outputformat.format(Calendar.getInstance().getTime());
-            clockLabel.setText(date);
+            String finalDate = date;
+            Platform.runLater(() -> clockLabel.setText(finalDate));
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -78,74 +109,28 @@ public class MainController implements Initializable {
         }
     }
 
+    private void checkPermissions(User user) {
+        if (Boolean.FALSE.equals(user.getIsAdmin())) {
+            userTab.setDisable(true);
+            SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+            selectionModel.select(customerTab);
+        }
+        if (Boolean.FALSE.equals(user.getGrantingDiscounts())) {
+            orderTabContentController.disableGrantingDiscounds();
+        }
+        if (Boolean.FALSE.equals(user.getGeneratingReports())) {
+            customerTabContentController.disableGeneratingReports();
+            orderTabContentController.disableGeneratingReports();
+            orderItemTabContentController.disableGeneratingReports();
+            productTabContentController.disableGeneratingReports();
+            supplierTabContentController.disableGeneratingReports();
+        }
+    }
+
     /**
      * Testowy insert danych.
      */
     private void insertData() {
-        User user = User.builder()
-                .name("imie")
-                .surname("nazwisko")
-                .email("email")
-                .password("haslo")
-                .phoneNumber("123456789")
-                .isAdmin(true)
-                .generatingReports(true)
-                .grantingDiscounts(true)
-                .build();
-        userService.save(user);
-
-        Supplier supplier = Supplier.builder()
-                .name("nazwa")
-                .email("email")
-                .country("kraj")
-                .place("miejscowosc")
-                .street("ulica")
-                .nip("nip")
-                .build();
-        supplierService.save(supplier);
-
-        Customer customer = Customer.builder()
-                .name("imie")
-                .surname("nazwisko")
-                .pesel("12345678911")
-                .phoneNumber("123456789")
-                .email("email")
-                .place("miejscowosc")
-                .street("ulica")
-                .buildingNumber(10)
-                .apartmentNumber(12)
-                .build();
-        customerService.save(customer);
-
-        Product product = Product.builder()
-                .supplier(supplier)
-                .name("nazwa")
-                .unitOfMeasurement("sztuka")
-                .price(12.5)
-                .country("kraj")
-                .code("KOD")
-                .color("czerwony")
-                .number(50)
-                .maxNumber(100)
-                .build();
-        productService.save(product);
-
-        Order order = Order.builder()
-                .customer(customer)
-                .date("22-02-2022")
-                .state("w przygotowaniu")
-                .discount(0.2)
-                .build();
-        orderService.save(order);
-
-        OrderItem orderItem = OrderItem.builder()
-                .order(order)
-                .product(product)
-                .amount(10)
-                .itemPrice(product.getPrice() * 10)
-                .pricePerUnit(product.getPrice())
-                .build();
-        orderItemService.save(orderItem);
     }
 
     /**

@@ -7,15 +7,17 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 
+@Component
 public class InvoiceReport extends AbstractReport {
 
-    private Order order;
+    private InvoiceData invoiceData;
 
-    public InvoiceReport(Order order) {
-        this.order = order;
+    public void setData(InvoiceData invoiceData) {
+        this.invoiceData = invoiceData;
     }
 
     @Override
@@ -38,26 +40,14 @@ public class InvoiceReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[5])));
 
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getSurname())));
-        table.addCell(new Cell().add(new Paragraph(order.getDate())));
-        table.addCell(new Cell().add(new Paragraph(order.getCustomer().getName())));
-        String discount;
-        switch (String.valueOf(order.getDiscount())) {
-            case "0.1":
-                discount = "-10%";
-                break;
-            case "0.2":
-                discount = "-20%";
-                break;
-            default:
-                discount = "nie udzielono";
-        }
-        table.addCell(new Cell().add(new Paragraph(discount)));
-        table.addCell(new Cell().add(new Paragraph(order.getState())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getName())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getSurname())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getDate())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getValue())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getDiscount())));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getValueAfterDiscount())));
 
         document.add(table);
-
         document.close();
     }
 }

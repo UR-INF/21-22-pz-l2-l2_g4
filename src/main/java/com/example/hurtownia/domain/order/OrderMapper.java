@@ -1,16 +1,11 @@
-package com.example.hurtownia.domain.Order;
+package com.example.hurtownia.domain.order;
 
-import com.example.hurtownia.domain.order.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
-//@Mapper(componentModel = "spring", uses = {OrderItemMapper.class})
+@Mapper
 public interface OrderMapper {
 
-    @Mapping(target = "customerDTO", source = "customer")
-    OrderDTO mapToDto(Order order);
-    List<OrderDTO> mapToDto(List<Order> orders);
+    @Mapping(target = "customerId", source = "order.customer.id")
+    OrderDTO mapToDto(Order order, double value);
 }
