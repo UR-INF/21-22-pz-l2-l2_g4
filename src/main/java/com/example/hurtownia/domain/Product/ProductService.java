@@ -22,7 +22,7 @@ public class ProductService {
     @Autowired
     private SupplierService supplierService;
     @Autowired
-    private ProductMapper mapper;
+    private ProductMapper productMapper;
 
     /**
      * Pobiera wszystkie produkty.
@@ -30,9 +30,7 @@ public class ProductService {
      * @return lista wszystkich produktów
      */
     public List<ProductDTO> findAll() {
-        return productRepository.findAll().stream()
-                .map(product -> mapper.mapToDto(product))
-                .collect(Collectors.toList());
+        return productMapper.mapListToDto(productRepository.findAll());
     }
 
     /**
@@ -66,7 +64,7 @@ public class ProductService {
      *
      * @param productCreateRequest nowy produkt
      */
-    public Product save(ProductCreateRequest productCreateRequest) {
+    public Product create(ProductCreateRequest productCreateRequest) {
         Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
         Product product = Product.builder()
                 .supplier(supplier)
@@ -89,17 +87,16 @@ public class ProductService {
      */
     public Product update(ProductUpdateRequest productCreateRequest) {
         Supplier supplier = supplierService.findById(productCreateRequest.getSupplierId());
-        Product product = Product.builder()
-                .supplier(supplier)
-                .name(productCreateRequest.getName())
-                .unitOfMeasurement(productCreateRequest.getUnitOfMeasurement())
-                .price(productCreateRequest.getPrice())
-                .country(productCreateRequest.getCountry())
-                .code(productCreateRequest.getCode())
-                .color(productCreateRequest.getColor())
-                .number(productCreateRequest.getNumber())
-                .maxNumber(productCreateRequest.getMaxNumber())
-                .build();
+        Product product = findById(productCreateRequest.getId());
+        product.setSupplier(supplier);
+        product.setName(productCreateRequest.getName());
+        product.setUnitOfMeasurement(productCreateRequest.getUnitOfMeasurement());
+        product.setPrice(productCreateRequest.getPrice());
+        product.setCountry(productCreateRequest.getCountry());
+        product.setCode(productCreateRequest.getCode());
+        product.setColor(productCreateRequest.getColor());
+        product.setNumber(productCreateRequest.getNumber());
+        product.setMaxNumber(productCreateRequest.getMaxNumber());
         return productRepository.save(product);
     }
 
@@ -108,13 +105,12 @@ public class ProductService {
                 .map(id -> {
                     Product product = findById(id);
                     Supplier supplier = supplierService.findById(product.getSupplier().getId());
-                    SupplyData supplyData = SupplyData.builder()
+                    return SupplyData.builder()
                             .supplierName(supplier.getName())
                             .productCode(product.getCode())
                             .productUnitOfMeasurement(product.getUnitOfMeasurement())
                             .amount(String.valueOf(product.getMaxNumber() - product.getNumber()))
                             .build();
-                    return supplyData;
                 }).collect(Collectors.toList());
     }
 }

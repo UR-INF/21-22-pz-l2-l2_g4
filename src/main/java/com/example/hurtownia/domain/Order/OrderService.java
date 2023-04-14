@@ -24,7 +24,7 @@ public class OrderService {
     @Autowired
     public CustomerService customerService;
     @Autowired
-    private OrderMapper mapper;
+    private OrderMapper orderMapper;
     @Autowired
     private OrderRepository orderRepository;
 
@@ -37,7 +37,7 @@ public class OrderService {
         return orderRepository.findAll().stream()
                 .map(order -> {
                     List<OrderItem> orderItems = orderItemService.findAllByOrderId(order.getId());
-                    return mapper.mapToDto(order, calculateValue(orderItems));
+                    return orderMapper.mapToDto(order, calculateValue(orderItems));
                 }).collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class OrderService {
      *
      * @param orderCreateRequest nowe zamówienie
      */
-    public Order save(OrderCreateRequest orderCreateRequest) {
+    public Order create(OrderCreateRequest orderCreateRequest) {
         Customer customer = customerService.findById(orderCreateRequest.getCustomerId());
         Order order = Order.builder()
                 .customer(customer)
@@ -96,13 +96,12 @@ public class OrderService {
      * @param orderUpdateRequest aktualizowane zamówienie
      */
     public Order update(OrderUpdateRequest orderUpdateRequest) {
+        Order order = findById(orderUpdateRequest.getId());
         Customer customer = customerService.findById(orderUpdateRequest.getCustomerId());
-        Order order = Order.builder()
-                .customer(customer)
-                .date(orderUpdateRequest.getDate())
-                .state(orderUpdateRequest.getState())
-                .discount(orderUpdateRequest.getDiscount())
-                .build();
+        order.setCustomer(customer);
+        order.setDate(orderUpdateRequest.getDate());
+        order.setState(orderUpdateRequest.getState());
+        order.setDiscount(orderUpdateRequest.getDiscount());
         return orderRepository.save(order);
     }
 

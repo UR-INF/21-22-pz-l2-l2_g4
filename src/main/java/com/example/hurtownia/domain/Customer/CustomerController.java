@@ -112,7 +112,7 @@ public class CustomerController implements Initializable {
                     .buildingNumber(buildingNumber)
                     .apartmentNumber(apartmentNumber)
                     .build();
-            customerService.save(customerCreateRequest);
+            customerService.create(customerCreateRequest);
             informationArea.appendText("\nDodano nowego klienta");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego klienta");

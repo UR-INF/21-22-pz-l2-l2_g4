@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class CustomerService {
 
     @Autowired
-    private CustomerMapper mapper;
+    private CustomerMapper customerMapper;
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -33,9 +33,7 @@ public class CustomerService {
      * @return lista wszystkich klientów
      */
     public List<CustomerDTO> findAll() {
-        return customerRepository.findAll().stream()
-                .map(customer -> mapper.mapToDto(customer))
-                .collect(Collectors.toList());
+        return customerMapper.mapToDto(customerRepository.findAll());
     }
 
     /**
@@ -69,7 +67,7 @@ public class CustomerService {
      *
      * @param customerCreateRequest obiekt z danymi do utworzenia nowego klienta
      */
-    public Customer save(CustomerCreateRequest customerCreateRequest) {
+    public Customer create(CustomerCreateRequest customerCreateRequest) {
         Customer customer = Customer.builder()
                 .name(customerCreateRequest.getName())
                 .surname(customerCreateRequest.getSurname())
@@ -90,17 +88,16 @@ public class CustomerService {
      * @param customerUpdateRequest aktualizowany klient
      */
     public Customer update(CustomerUpdateRequest customerUpdateRequest) {
-        Customer customer = Customer.builder()
-                .name(customerUpdateRequest.getName())
-                .surname(customerUpdateRequest.getSurname())
-                .pesel(customerUpdateRequest.getPesel())
-                .phoneNumber(customerUpdateRequest.getPhoneNumber())
-                .email(customerUpdateRequest.getEmail())
-                .place(customerUpdateRequest.getPlace())
-                .street(customerUpdateRequest.getStreet())
-                .buildingNumber(customerUpdateRequest.getBuildingNumber())
-                .apartmentNumber(customerUpdateRequest.getApartmentNumber())
-                .build();
+        Customer customer = findById(customerUpdateRequest.getId());
+        customer.setName(customerUpdateRequest.getName());
+        customer.setSurname(customerUpdateRequest.getSurname());
+        customer.setPesel(customerUpdateRequest.getPesel());
+        customer.setPhoneNumber(customerUpdateRequest.getPhoneNumber());
+        customer.setEmail(customerUpdateRequest.getEmail());
+        customer.setPlace(customerUpdateRequest.getPlace());
+        customer.setStreet(customerUpdateRequest.getStreet());
+        customer.setBuildingNumber(customerUpdateRequest.getBuildingNumber());
+        customer.setApartmentNumber(customerUpdateRequest.getApartmentNumber());
         return customerRepository.save(customer);
     }
 }

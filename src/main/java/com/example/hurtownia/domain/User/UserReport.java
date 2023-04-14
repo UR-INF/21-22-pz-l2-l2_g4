@@ -49,9 +49,9 @@ public class UserReport extends AbstractReport {
             table.addCell(new Cell().add(new Paragraph(datum.getPhoneNumber())));
             table.addCell(new Cell().add(new Paragraph(datum.getEmail())));
             table.addCell(new Cell().add(new Paragraph(datum.getPassword())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.isAdmin()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.isGeneratingReports()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.isGrantingDiscounts()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getIsAdmin()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getGeneratingReports()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getGrantingDiscounts()))));
         }
 
         document.add(table);

@@ -149,7 +149,7 @@ public class ProductController implements Initializable {
                     .number(number)
                     .maxNumber(maxNumber)
                     .build();
-            productService.save(productCreateRequest);
+            productService.create(productCreateRequest);
             informationArea.appendText("\nDodano nowy produkt");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego produktu");

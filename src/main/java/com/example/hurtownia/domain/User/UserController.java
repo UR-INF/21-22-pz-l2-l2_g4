@@ -119,7 +119,7 @@ public class UserController implements Initializable {
                     .generatingReports(generatingReports)
                     .grantingDiscounts(grantingDiscounts)
                     .build();
-            userService.save(userCreateRequest);
+            userService.create(userCreateRequest);
             informationArea.appendText("\nDodano nowego użytkownika");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego użytkownika");
@@ -175,9 +175,9 @@ public class UserController implements Initializable {
         phoneNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         passwordColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPassword()));
-        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().isAdmin())));
-        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().isGeneratingReports())));
-        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().isGrantingDiscounts())));
+        isAdminColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().getIsAdmin())));
+        generatingReportsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().getGeneratingReports())));
+        grantingDiscountsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(BooleanConverter.convertToString(cellData.getValue().getGrantingDiscounts())));
 
         StringConverter<String> converter = new DefaultStringConverter();
         nameColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
@@ -187,6 +187,7 @@ public class UserController implements Initializable {
                     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
                     try {
                         BeanUtils.copyProperties(userUpdateRequest, usersTable.getSelectionModel().getSelectedItem());
+                        userUpdateRequest.setIsAdmin(usersTable.getSelectionModel().getSelectedItem().getIsAdmin());
                         userUpdateRequest.setName(newValue);
                         userService.update(userUpdateRequest);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + userUpdateRequest.getId());
@@ -271,6 +272,7 @@ public class UserController implements Initializable {
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
                     BeanUtils.copyProperties(userUpdateRequest, usersTable.getSelectionModel().getSelectedItem());
+                    usersTable.getSelectionModel().getSelectedItem().setIsAdmin(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userUpdateRequest.setIsAdmin(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userService.update(userUpdateRequest);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + userUpdateRequest.getId());
@@ -285,6 +287,7 @@ public class UserController implements Initializable {
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
                     BeanUtils.copyProperties(userUpdateRequest, usersTable.getSelectionModel().getSelectedItem());
+                    usersTable.getSelectionModel().getSelectedItem().setGeneratingReports(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userUpdateRequest.setGeneratingReports(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userService.update(userUpdateRequest);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + userUpdateRequest.getId());
@@ -299,6 +302,7 @@ public class UserController implements Initializable {
             if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
                 try {
                     BeanUtils.copyProperties(userUpdateRequest, usersTable.getSelectionModel().getSelectedItem());
+                    usersTable.getSelectionModel().getSelectedItem().setGrantingDiscounts(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userUpdateRequest.setGrantingDiscounts(BooleanConverter.convertToBoolean(t.getNewValue()));
                     userService.update(userUpdateRequest);
                     informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + userUpdateRequest.getId());

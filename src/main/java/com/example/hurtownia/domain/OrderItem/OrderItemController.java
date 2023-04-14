@@ -97,7 +97,7 @@ public class OrderItemController implements Initializable {
                     .productId(productId)
                     .amount(amount)
                     .build();
-            orderItemService.save(orderItemCreateRequest);
+            orderItemService.create(orderItemCreateRequest);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");

@@ -33,6 +33,8 @@ target/
 .idea/libraries/
 .idea/sonarlint/
 .idea/sonarlint/*
+.idea/sonarlint/issuestore/index.pb
+.idea/sonarlint/securityhotspotstore/index.pb
 *.iws
 *.iml
 *.ipr

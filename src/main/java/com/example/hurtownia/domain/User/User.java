@@ -44,12 +44,15 @@ public class User implements Serializable {
     @Column(name = "numerTelefonu")
     private String phoneNumber;
 
+    @NonNull
     @Column(name = "isAdmin")
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
+    @NonNull
     @Column(name = "generowanieRaportow")
-    private boolean generatingReports;
+    private Boolean generatingReports;
 
+    @NonNull
     @Column(name = "udzielanieRabatow")
-    private boolean grantingDiscounts;
+    private Boolean grantingDiscounts;
 }

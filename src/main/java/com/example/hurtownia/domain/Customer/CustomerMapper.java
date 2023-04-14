@@ -2,8 +2,12 @@ package com.example.hurtownia.domain.customer;
 
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+import java.util.List;
+
+@Mapper
 public interface CustomerMapper {
 
     CustomerDTO mapToDto(Customer customer);
+
+    List<CustomerDTO> mapToDto(List<Customer> customers);
 }

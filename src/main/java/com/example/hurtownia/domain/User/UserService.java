@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserMapper mapper;
+    private UserMapper userMapper;
 
     /**
      * Pobiera wszystkich użytkowników.
@@ -26,9 +26,7 @@ public class UserService {
      * @return lista wszystkich użytkowników
      */
     public List<UserDTO> findAll() {
-        return userRepository.findAll().stream()
-                .map(user -> mapper.mapToDto(user))
-                .collect(Collectors.toList());
+        return userMapper.mapToDto(userRepository.findAll());
     }
 
     /**
@@ -62,7 +60,7 @@ public class UserService {
      *
      * @param userCreateRequest nowy użytkownik
      */
-    public User save(UserCreateRequest userCreateRequest) {
+    public User create(UserCreateRequest userCreateRequest) {
         User user = User.builder()
                 .name(userCreateRequest.getName())
                 .surname(userCreateRequest.getSurname())
@@ -82,16 +80,15 @@ public class UserService {
      * @param userUpdateRequest aktualizowany użytkownik
      */
     public User update(UserUpdateRequest userUpdateRequest) {
-        User user = User.builder()
-                .name(userUpdateRequest.getName())
-                .surname(userUpdateRequest.getSurname())
-                .email(userUpdateRequest.getEmail())
-                .password(userUpdateRequest.getPassword())
-                .phoneNumber(userUpdateRequest.getPhoneNumber())
-                .isAdmin(userUpdateRequest.getIsAdmin())
-                .generatingReports(userUpdateRequest.getGeneratingReports())
-                .grantingDiscounts(userUpdateRequest.getGrantingDiscounts())
-                .build();
+        User user = findById(userUpdateRequest.getId());
+        user.setName(userUpdateRequest.getName());
+        user.setSurname(userUpdateRequest.getSurname());
+        user.setEmail(userUpdateRequest.getEmail());
+        user.setPassword(userUpdateRequest.getPassword());
+        user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
+        user.setIsAdmin(userUpdateRequest.getIsAdmin());
+        user.setGeneratingReports(userUpdateRequest.getGeneratingReports());
+        user.setGrantingDiscounts(userUpdateRequest.getGrantingDiscounts());
         return userRepository.save(user);
     }
 }

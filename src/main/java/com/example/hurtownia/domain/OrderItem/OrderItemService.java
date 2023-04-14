@@ -26,7 +26,7 @@ public class OrderItemService {
     @Autowired
     private ProductService productService;
     @Autowired
-    private OrderItemMapper mapper;
+    private OrderItemMapper orderItemMapper;
 
     /**
      * Pobiera elementy zamówień.
@@ -34,9 +34,7 @@ public class OrderItemService {
      * @return lista wszystkich elementów zamówień
      */
     public List<OrderItemDTO> findAll() {
-        return orderItemRepository.findAll().stream()
-                .map(orderItem -> mapper.mapToDto(orderItem))
-                .collect(Collectors.toList());
+        return orderItemMapper.mapListToDto(orderItemRepository.findAll());
     }
 
     /**
@@ -74,7 +72,7 @@ public class OrderItemService {
      *
      * @param orderItemCreateRequest nowy element zamówienia
      */
-    public OrderItem save(OrderItemCreateRequest orderItemCreateRequest) {
+    public OrderItem create(OrderItemCreateRequest orderItemCreateRequest) {
         Order order = orderService.findById(orderItemCreateRequest.getOrderId());
         Product product = productService.findById(orderItemCreateRequest.getProductId());
         OrderItem orderItem = OrderItem.builder()
@@ -94,12 +92,11 @@ public class OrderItemService {
     public OrderItem update(OrderItemUpdateRequest orderItemUpdateRequest) {
         Order order = orderService.findById(orderItemUpdateRequest.getOrderId());
         Product product = productService.findById(orderItemUpdateRequest.getProductId());
-        OrderItem orderItem = OrderItem.builder()
-                .order(order)
-                .product(product)
-                .amount(orderItemUpdateRequest.getAmount())
-                .pricePerUnit(product.getPrice())
-                .build();
+        OrderItem orderItem = findById(orderItemUpdateRequest.getId());
+        orderItem.setOrder(order);
+        orderItem.setProduct(product);
+        orderItem.setAmount(orderItemUpdateRequest.getAmount());
+        orderItem.setPricePerUnit(product.getPrice());
         return orderItemRepository.save(orderItem);
     }
 }

@@ -19,7 +19,7 @@ public class SupplierService {
     @Autowired
     private SupplierRepository supplierRepository;
     @Autowired
-    private SupplierMapper mapper;
+    private SupplierMapper supplierMapper;
 
     /**
      * Pobiera wszystkich dostawców.
@@ -27,9 +27,7 @@ public class SupplierService {
      * @return lista wszystkich dostawców
      */
     public List<SupplierDTO> findAll() {
-        return supplierRepository.findAll().stream()
-                .map(supplier -> mapper.mapToDto(supplier))
-                .collect(Collectors.toList());
+        return supplierMapper.mapToDto(supplierRepository.findAll());
     }
 
     /**
@@ -63,7 +61,7 @@ public class SupplierService {
      *
      * @param supplierCreateRequest nowy dostawca
      */
-    public Supplier save(SupplierCreateRequest supplierCreateRequest) {
+    public Supplier create(SupplierCreateRequest supplierCreateRequest) {
         Supplier supplier = Supplier.builder()
                 .name(supplierCreateRequest.getName())
                 .email(supplierCreateRequest.getEmail())
@@ -81,14 +79,13 @@ public class SupplierService {
      * @param supplierUpdateRequest aktualizowany dostawca
      */
     public Supplier update(SupplierUpdateRequest supplierUpdateRequest) {
-        Supplier supplier = Supplier.builder()
-                .name(supplierUpdateRequest.getName())
-                .email(supplierUpdateRequest.getEmail())
-                .country(supplierUpdateRequest.getCountry())
-                .place(supplierUpdateRequest.getPlace())
-                .street(supplierUpdateRequest.getStreet())
-                .nip(supplierUpdateRequest.getNip())
-                .build();
+        Supplier supplier = findById(supplierUpdateRequest.getId());
+        supplier.setName(supplierUpdateRequest.getName());
+        supplier.setEmail(supplierUpdateRequest.getEmail());
+        supplier.setCountry(supplierUpdateRequest.getCountry());
+        supplier.setPlace(supplierUpdateRequest.getPlace());
+        supplier.setStreet(supplierUpdateRequest.getStreet());
+        supplier.setNip(supplierUpdateRequest.getNip());
         return supplierRepository.save(supplier);
     }
 }

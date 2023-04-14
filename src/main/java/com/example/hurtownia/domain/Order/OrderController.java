@@ -140,7 +140,7 @@ public class OrderController implements Initializable {
                     .state(state)
                     .discount(discount)
                     .build();
-            orderService.save(orderCreateRequest);
+            orderService.create(orderCreateRequest);
             informationArea.appendText("\nDodano nowe zamówienie");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego zamówienia");

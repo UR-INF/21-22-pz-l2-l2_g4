@@ -99,7 +99,7 @@ public class SupplierController implements Initializable {
                     .street(street)
                     .nip(nip)
                     .build();
-            supplierService.save(supplierCreateRequest);
+            supplierService.create(supplierCreateRequest);
             informationArea.appendText("\nDodano nowego dostawcę");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego dostawcy");
