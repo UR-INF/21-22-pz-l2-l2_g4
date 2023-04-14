@@ -1,11 +1,16 @@
 package com.example.hurtownia.domain.customer;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.customer.request.CustomerCreateRequest;
+import com.example.hurtownia.domain.customer.request.CustomerUpdateRequest;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +29,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.NumberStringConverter;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -35,7 +42,7 @@ import java.util.ResourceBundle;
 @Controller
 public class CustomerController implements Initializable {
 
-    public static ObservableList<Customer> customers = FXCollections.observableArrayList();
+    public static ObservableList<CustomerDTO> customers = FXCollections.observableArrayList();
     @Autowired
     public CustomerService customerService;
     @FXML
@@ -43,19 +50,27 @@ public class CustomerController implements Initializable {
     @FXML
     private TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField;
     @FXML
-    private TableView<Customer> customersTable;
+    private TableView<CustomerDTO> customersTable;
     @FXML
-    private TableColumn<Customer, String> emailColumn, idColumn, nameColumn, placeColumn, surnameColumn, buildingNumberColumn, apartmentNumberColumn, phoneNumberColumn, peselColumn, streetColumn;
+    private TableColumn<CustomerDTO, Number> idColumn, buildingNumberColumn, apartmentNumberColumn;
     @FXML
-    private TableColumn<Customer, Void> deleteColumn;
+    private TableColumn<CustomerDTO, String> emailColumn, nameColumn, placeColumn, surnameColumn, phoneNumberColumn, peselColumn, streetColumn;
+    @FXML
+    private TableColumn<CustomerDTO, Void> deleteColumn;
     @FXML
     private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField;
+    @FXML
+    private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void disableGeneratingReports() {
+        generateReportBtn.setDisable(true);
     }
 
     /**
@@ -86,7 +101,7 @@ public class CustomerController implements Initializable {
             String street = streetTextField.getText();
             Integer buildingNumber = Integer.valueOf(buildingNumberTextField.getText());
             Integer apartmentNumber = Integer.valueOf(apartmentNumberTextField.getText());
-            Customer customer = Customer.builder()
+            CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
                     .name(name)
                     .surname(surname)
                     .pesel(pesel)
@@ -97,7 +112,7 @@ public class CustomerController implements Initializable {
                     .buildingNumber(buildingNumber)
                     .apartmentNumber(apartmentNumber)
                     .build();
-            customerService.save(customer);
+            customerService.create(customerCreateRequest);
             informationArea.appendText("\nDodano nowego klienta");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego klienta");
@@ -147,180 +162,190 @@ public class CustomerController implements Initializable {
      * Inicjalizuje tabelę.
      */
     private void setTable() {
-        StringConverter<String> converter = new DefaultStringConverter();
-        nameColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setName(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        surnameColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setSurname(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        placeColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setPlace(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        streetColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setStreet(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        buildingNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setBuildingNumber(Integer.parseInt(newValue));
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        apartmentNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setApartmentNumber(Integer.parseInt(newValue));
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        emailColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setEmail(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        phoneNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setPhoneNumber(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-        peselColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    Customer customer = customersTable.getSelectionModel().getSelectedItem();
-                    try {
-                        customer.setPesel(newValue);
-                        customerService.update(customer);
-                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customer.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować klienta o id " + customer.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
-
-        idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getId())));
+        idColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getId()));
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         surnameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSurname()));
         placeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlace()));
         streetColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStreet()));
-        buildingNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getBuildingNumber())));
-        apartmentNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getApartmentNumber())));
+        buildingNumberColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getBuildingNumber()));
+        apartmentNumberColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getApartmentNumber()));
         emailColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         phoneNumberColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPhoneNumber()));
         peselColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPesel()));
+
+        StringConverter<String> stringConverter = new DefaultStringConverter();
+        NumberStringConverter numberConverter = new NumberStringConverter();
+        nameColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setName(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        surnameColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setSurname(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        placeColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setPlace(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        streetColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setStreet(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        buildingNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
+            @Override
+            public void commitEdit(Number newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setBuildingNumber(newValue.intValue());
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        apartmentNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
+            @Override
+            public void commitEdit(Number newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setApartmentNumber(newValue.intValue());
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        emailColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setEmail(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        phoneNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setPhoneNumber(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        peselColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setPesel(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
         deleteColumn.setCellFactory(new Callback<>() {
             @Override
-            public TableCell<Customer, Void> call(final TableColumn<Customer, Void> param) {
-                final TableCell<Customer, Void> cell = new TableCell<>() {
-                    final Image image = new Image(getClass().getResourceAsStream("/Images/deleteBtn.jpg"), 25, 25, false, false);
+            public TableCell<CustomerDTO, Void> call(final TableColumn<CustomerDTO, Void> param) {
+                final TableCell<CustomerDTO, Void> cell = new TableCell<>() {
+                    final Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Images/deleteBtn.jpg")), 25, 25, false, false);
                     private final Button btn = new Button();
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
-                            Customer customer = getTableView().getItems().get(getIndex());
-                            if (customerService.delete(customer)) {
-                                customers.remove(customer);
-                                informationArea.appendText("\nPomyślnie usunięto klienta o id " + customer.getId());
+                            Long id = getTableView().getItems().get(getIndex()).getId();
+                            if (customerService.delete(id)) {
+                                customers.remove(getTableView().getItems().get(getIndex()));
+                                informationArea.appendText("\nPomyślnie usunięto klienta o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia klienta o id " + customer.getId());
+                                informationArea.appendText("\nBłąd przy próbie usunięcia klienta o id " + id);
                         });
-                        btn.setOnMouseEntered((EventHandler) event -> getScene().setCursor(Cursor.HAND));
-                        btn.setOnMouseExited((EventHandler) event -> getScene().setCursor(Cursor.DEFAULT));
+                        btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
+                        btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
 
                     @Override

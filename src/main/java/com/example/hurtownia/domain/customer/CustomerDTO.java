@@ -1,14 +1,14 @@
-package com.example.hurtownia.domain.Customer;
+package com.example.hurtownia.domain.customer;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class CustomerDTO {
 
     private Long id;

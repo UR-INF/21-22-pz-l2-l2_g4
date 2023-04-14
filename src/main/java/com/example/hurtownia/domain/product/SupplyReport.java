@@ -7,14 +7,17 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
+@Component
 public class SupplyReport extends AbstractReport {
-    private List<Product> data;
 
-    public SupplyReport(List<Product> data) {
+    private List<SupplyData> data;
+
+    public void setData(List<SupplyData> data) {
         this.data = data;
     }
 
@@ -30,23 +33,20 @@ public class SupplyReport extends AbstractReport {
 
         float columnWidth[] = {40, 40, 40, 40};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
+        String[] tableHeader = {"Nazwa dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
 
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).isSupply()) {
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getSupplier().getId()))));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getCode())));
-                table.addCell(new Cell().add(new Paragraph(data.get(i).getUnitOfMeasurement())));
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(data.get(i).getMaxNumber() - data.get(i).getNumber()))));
-            }
+        for (SupplyData datum : data) {
+            table.addCell(new Cell().add(new Paragraph(datum.getSupplierName())));
+            table.addCell(new Cell().add(new Paragraph(datum.getProductCode())));
+            table.addCell(new Cell().add(new Paragraph(datum.getProductUnitOfMeasurement())));
+            table.addCell(new Cell().add(new Paragraph(datum.getAmount())));
         }
 
         document.add(table);
-
         document.close();
     }
 }

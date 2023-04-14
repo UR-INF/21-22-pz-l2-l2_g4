@@ -1,7 +1,6 @@
 package com.example.hurtownia.domain.user;
 
 import com.example.hurtownia.domain.AbstractReport;
-import com.example.hurtownia.domain.supplier.Supplier;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -14,9 +13,9 @@ import java.util.List;
 
 public class UserReport extends AbstractReport {
 
-    private List<User> data;
+    private List<UserDTO> data;
 
-    public UserReport(List<User> data) {
+    public UserReport(List<UserDTO> data) {
         this.data = data;
     }
 
@@ -43,20 +42,19 @@ public class UserReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[7])));
         table.addCell(new Cell().add(new Paragraph(tableHeader[8])));
 
-        for (User datum : data) {
+        for (UserDTO datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
             table.addCell(new Cell().add(new Paragraph(datum.getName())));
             table.addCell(new Cell().add(new Paragraph(datum.getSurname())));
             table.addCell(new Cell().add(new Paragraph(datum.getPhoneNumber())));
             table.addCell(new Cell().add(new Paragraph(datum.getEmail())));
             table.addCell(new Cell().add(new Paragraph(datum.getPassword())));
-            table.addCell(new Cell().add(new Paragraph(datum.isAdmin() ? "Tak" : "Nie")));
-            table.addCell(new Cell().add(new Paragraph(datum.isGeneratingReports() ? "Tak" : "Nie")));
-            table.addCell(new Cell().add(new Paragraph(datum.isGrantingDiscounts() ? "Tak" : "Nie")));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getIsAdmin()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getGeneratingReports()))));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getGrantingDiscounts()))));
         }
 
         document.add(table);
-
         document.close();
     }
 }
