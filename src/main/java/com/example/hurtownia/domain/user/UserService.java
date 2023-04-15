@@ -39,6 +39,25 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono użytkownika"));
     }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new ObjectNotFoundException(email, "Nie znaleziono użytkownika"));
+    }
+
+    /**
+     * Obsługuje procedurę logowania łącząc się z bazą danych.
+     * @param email email użytkownika
+     * @param password hasło użytkownika
+     * @return użytkownik
+     */
+    public User login(String email, String password) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Usuwa użytkownika.
      *

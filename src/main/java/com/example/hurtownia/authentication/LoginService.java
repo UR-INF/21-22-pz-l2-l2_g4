@@ -1,5 +1,8 @@
 package com.example.hurtownia.authentication;
 
+import com.example.hurtownia.domain.user.User;
+import com.example.hurtownia.domain.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,38 +11,45 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginService {
 
-    private boolean isAdmin;
-    private String login;
+    @Autowired
+    UserService userService;
+    private User currentUser;
 
+    /**
+     * Procedura logowania dla wersji użytkowej aplikacji.
+     * Ustawiany jest aktualny użytkownik
+     * Zwracane jest true w przypadku powodzenia, natomiast false w przyapdku błędnych danych logowania.
+     * @param login
+     * @param password
+     * @return true/false
+     */
     public boolean logIn(String login, String password) {
-        isAdmin = false;
-        if (login.equals("user") && password.equals("1234")) {
-            this.login = login;
-            return true;
-        } else if (login.equals("admin") && password.equals("1234")) {
-            this.login = login;
-            isAdmin = true;
-            return true;
-        } else return false;
+        currentUser = userService.login(login,password);
+        return currentUser != null;
     }
 
+    /**
+     * Obsługa procedury wylogowania.
+     * Bieżący użytkownik ustawiany jest jako null
+     */
     public void logOut() {
-        isAdmin = false;
+        currentUser=null;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    /**
+     * Zwracane są uprawnienia admina bieżącego użytkownika
+     * @return isAdmin
+     */
+    public User getCurrentUser()
+    {
+        return currentUser;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
+    /**
+     * Zwraca imię i nazwisko bieżącego użytkownika
+     * @return Imie i nazwisko
+     */
     public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
+        return currentUser.getName()+" "+currentUser.getSurname();
     }
 }
