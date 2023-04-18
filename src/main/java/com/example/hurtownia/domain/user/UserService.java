@@ -80,6 +80,8 @@ public class UserService {
      * @param userCreateRequest nowy użytkownik
      */
     public User create(UserCreateRequest userCreateRequest) {
+        if(findByEmail(userCreateRequest.getEmail())!=null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
+            return null;
         User user = User.builder()
                 .name(userCreateRequest.getName())
                 .surname(userCreateRequest.getSurname())
