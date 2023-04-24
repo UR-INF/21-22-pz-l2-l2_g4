@@ -13,17 +13,18 @@ import com.example.hurtownia.domain.supplier.SupplierController;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.domain.user.User;
 import com.example.hurtownia.domain.user.UserService;
+import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.naming.OperationNotSupportedException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -64,14 +65,21 @@ public class MainController implements Initializable {
     private SupplierController supplierTabContentController;
     @FXML
     private Text clockLabel, userNameLabel;
+    @FXML
+    private TextField loginTextField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private AnchorPane loginPane;
+
+    @Autowired
     private LoginService loginService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //TODO: Panel logowania
 
-        loginService = new LoginService();
-        User user = User.builder()
+        UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                 .name("name")
                 .surname("surname")
                 .email("email")
@@ -81,10 +89,11 @@ public class MainController implements Initializable {
                 .generatingReports(Boolean.TRUE)
                 .grantingDiscounts(Boolean.TRUE)
                 .build();
-        loginService.logIn(user.getEmail(), user.getPassword());
-        userNameLabel.setText(loginService.getLogin());
-
-        checkPermissions(user);
+        try {
+            userService.create(userCreateRequest);
+        } catch (OperationNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
 
         insertData();
         new Thread(this::runClock).start();
@@ -140,7 +149,11 @@ public class MainController implements Initializable {
      */
     @FXML
     public void btnLogInClicked(MouseEvent event) {
-        //TODO: obsłużyć logowanie
+        if (loginService.logIn(loginTextField.getText(), passwordField.getText())) {
+            userNameLabel.setText(loginService.getLogin());
+            checkPermissions(loginService.getCurrentUser());
+            loginPane.setVisible(false);
+        }
     }
 
     /**
@@ -150,7 +163,10 @@ public class MainController implements Initializable {
      */
     @FXML
     public void btnLogOutClicked(MouseEvent event) {
-        //TODO: obsłużyć wylogowanie
+        loginService.logOut();
+        passwordField.setText("");
+        loginTextField.setText("");
+        loginPane.setVisible(true);
     }
 
     /**
