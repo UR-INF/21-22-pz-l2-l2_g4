@@ -4,10 +4,12 @@ import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import com.example.hurtownia.domain.user.request.UserUpdateRequest;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'uzytkownik'.
@@ -19,6 +21,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * Pobiera wszystkich użytkowników.
@@ -40,22 +44,22 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new ObjectNotFoundException(email, "Nie znaleziono użytkownika"));
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     /**
      * Obsługuje procedurę logowania łącząc się z bazą danych.
-     * @param email email użytkownika
+     *
+     * @param email    email użytkownika
      * @param password hasło użytkownika
      * @return użytkownik
      */
     public User login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        } else {
-            return null;
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ObjectNotFoundException(email, "Błędne dane logowania"));
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ObjectNotFoundException(email, "Błędne dane logowania");
         }
+        return user;
     }
 
     /**
@@ -79,14 +83,16 @@ public class UserService {
      *
      * @param userCreateRequest nowy użytkownik
      */
-    public User create(UserCreateRequest userCreateRequest) {
-        if(findByEmail(userCreateRequest.getEmail())!=null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
+    public User create(UserCreateRequest userCreateRequest) throws OperationNotSupportedException {
+        if (findByEmail(userCreateRequest.getEmail()) != null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
             return null;
+
+        String password = passwordEncoder.encode(userCreateRequest.getPassword());
         User user = User.builder()
                 .name(userCreateRequest.getName())
                 .surname(userCreateRequest.getSurname())
                 .email(userCreateRequest.getEmail())
-                .password(userCreateRequest.getPassword())
+                .password(password)
                 .phoneNumber(userCreateRequest.getPhoneNumber())
                 .isAdmin(userCreateRequest.getIsAdmin())
                 .generatingReports(userCreateRequest.getGeneratingReports())
@@ -100,12 +106,15 @@ public class UserService {
      *
      * @param userUpdateRequest aktualizowany użytkownik
      */
-    public User update(UserUpdateRequest userUpdateRequest) {
+    public User update(UserUpdateRequest userUpdateRequest) throws OperationNotSupportedException {
         User user = findById(userUpdateRequest.getId());
+        if (findByEmail(userUpdateRequest.getEmail()) != null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
+            return null;
+        String password = passwordEncoder.encode(userUpdateRequest.getPassword());
         user.setName(userUpdateRequest.getName());
         user.setSurname(userUpdateRequest.getSurname());
         user.setEmail(userUpdateRequest.getEmail());
-        user.setPassword(userUpdateRequest.getPassword());
+        user.setPassword(password);
         user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
         user.setIsAdmin(userUpdateRequest.getIsAdmin());
         user.setGeneratingReports(userUpdateRequest.getGeneratingReports());
