@@ -117,6 +117,8 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
 - ###### [Diagram stanów]
 ![5](https://user-images.githubusercontent.com/103111656/226665593-7dbcd5af-0370-4242-a8e9-0c9b9acf9989.PNG)
 ![6](https://user-images.githubusercontent.com/103111656/226665652-69c3ddc6-5c97-453b-9a84-fafd79d0c4ce.PNG)
+- ###### [Diagram klas dla pakietu order]
+![order_class_diagram](https://user-images.githubusercontent.com/101945722/232893294-cec11f9e-75a9-4899-b8b7-eb93d9019903.PNG)
 
 
 ## Baza danych
