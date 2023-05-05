@@ -49,6 +49,8 @@ public class OrderController implements Initializable {
     @Autowired
     public OrderService orderService;
     @Autowired
+    public OrderReport orderReport;
+    @Autowired
     private InvoiceReport invoiceReport;
     @FXML
     private TextField customerIdTextField, dateTextField, discountTextField;
@@ -79,6 +81,11 @@ public class OrderController implements Initializable {
         discountTextField.setDisable(true);
     }
 
+    public void enableGrantingDiscounds() {
+        ordersTable.getColumns().get(4).setEditable(true);
+        discountTextField.setDisable(false);
+    }
+
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
         invoiceColumn.setCellFactory(new Callback<>() {
@@ -90,6 +97,60 @@ public class OrderController implements Initializable {
 
                     {
                         btn.setDisable(true);
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else {
+                            btn.setStyle("-fx-background-color: #ffffff; ");
+                            btn.setGraphic(new ImageView(image));
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+    }
+
+    public void enableGeneratingReports() {
+        generateReportBtn.setDisable(false);
+        invoiceColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<OrderDTO, Void> call(final TableColumn<OrderDTO, Void> param) {
+                final TableCell<OrderDTO, Void> cell = new TableCell<>() {
+                    final Image image = new Image(getClass().getResourceAsStream("/Images/invoiceBtn.png"), 25, 25, false, false);
+                    private final Button btn = new Button();
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Long id = getTableView().getItems().get(getIndex()).getId();
+                            invoiceReport.setData(orderService.getInvoiceData(id));
+                            try {
+                                Stage stage = new Stage();
+                                stage.initModality(Modality.APPLICATION_MODAL);
+                                stage.setOpacity(1);
+                                stage.setTitle("Generuj raport");
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
+                                Parent root = fxmlLoader.load();
+                                ReportController controller = fxmlLoader.getController();
+                                controller.setReport(invoiceReport);
+                                Scene scene = new Scene(root);
+                                stage.setScene(scene);
+                                stage.showAndWait();
+                            } catch (IOException e) {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("ERROR");
+                                alert.setHeaderText("ERROR");
+                                alert.setContentText("Błąd załadowania modułu generowania raportu.");
+                                alert.showAndWait();
+                            }
+                        });
+                        btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
+                        btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
 
                     @Override
@@ -164,7 +225,7 @@ public class OrderController implements Initializable {
      */
     @FXML
     public void ordersBtnReportClicked(MouseEvent event) {
-        OrderReport report = new OrderReport(ordersTable.getItems());
+        orderReport.setData(ordersTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -173,7 +234,7 @@ public class OrderController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(orderReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();

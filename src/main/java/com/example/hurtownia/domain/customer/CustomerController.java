@@ -45,6 +45,8 @@ public class CustomerController implements Initializable {
     public static ObservableList<CustomerDTO> customers = FXCollections.observableArrayList();
     @Autowired
     public CustomerService customerService;
+    @Autowired
+    public CustomerReport customerReport;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -71,6 +73,10 @@ public class CustomerController implements Initializable {
 
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
+    }
+
+    public void enableGeneratingReports() {
+        generateReportBtn.setDisable(false);
     }
 
     /**
@@ -136,7 +142,7 @@ public class CustomerController implements Initializable {
      */
     @FXML
     public void customersBtnReportClicked(MouseEvent event) {
-        CustomerReport report = new CustomerReport(customersTable.getItems());
+        customerReport.setData(customersTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -145,7 +151,7 @@ public class CustomerController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(customerReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();

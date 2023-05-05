@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -8,42 +9,45 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ap" prefHeight="300.0" prefWidth="429.0" style="-fx-border-color: #427aa1; -fx-border-width: 4;"
-            stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.hurtownia.controllers.ReportController">
+<AnchorPane fx:id="ap" prefHeight="300.0" prefWidth="429.0" style="-fx-border-color: #427aa1; -fx-border-width: 4;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.ReportController">
     <Label layoutX="45.0" layoutY="71.0" text="Tytuł raportu">
         <font>
-      <Font size="16.0"/>
+      <Font size="16.0" />
         </font>
     </Label>
     <Label layoutX="45.0" layoutY="151.0" text="Nazwa pliku">
         <font>
-      <Font size="16.0"/>
+      <Font size="16.0" />
         </font>
     </Label>
-    <TextField fx:id="fileNameTextField" layoutX="184.0" layoutY="151.0" prefWidth="200.0"/>
+    <TextField fx:id="fileNameTextField" layoutX="184.0" layoutY="151.0" prefWidth="200.0" />
     <Label layoutX="45.0" layoutY="191.0" text="Lokalizacja">
         <font>
-      <Font size="16.0"/>
+      <Font size="16.0" />
         </font>
     </Label>
-    <TextField fx:id="titleTextField" layoutX="184.0" layoutY="71.0" prefHeight="26.0" prefWidth="200.0"/>
+    <TextField fx:id="titleTextField" layoutX="184.0" layoutY="71.0" prefHeight="26.0" prefWidth="200.0" />
     <Label layoutX="45.0" layoutY="111.0" text="Rozszerzenie">
         <font>
-      <Font size="16.0"/>
+      <Font size="16.0" />
         </font>
     </Label>
-    <ComboBox fx:id="fileExtensionComboBox" layoutX="184.0" layoutY="111.0" prefWidth="200.0"/>
-    <TextField fx:id="directoryTextField" editable="false" layoutX="184.0" layoutY="191.0" prefHeight="26.0"
-               prefWidth="130.0"/>
-    <Button layoutX="323.0" layoutY="191.0" onAction="#handleChangeDirectoryBtnClick" style="-fx-border-color: #427aa1;"
-            text="Wybierz"/>
-    <Button fx:id="saveBtn" layoutX="184.0" layoutY="238.0" onAction="#handleSaveBtnClick" prefHeight="30.0"
-            prefWidth="200.0" style="-fx-border-color: #427aa1;" text="Zapisz"/>
-    <Text fill="#427aa1" layoutX="102.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0"
-          text="Generowanie raportu">
+    <ComboBox fx:id="fileExtensionComboBox" layoutX="184.0" layoutY="111.0" prefWidth="200.0">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></ComboBox>
+    <TextField fx:id="directoryTextField" editable="false" layoutX="184.0" layoutY="191.0" prefHeight="26.0" prefWidth="130.0" />
+    <Button layoutX="323.0" layoutY="191.0" onAction="#handleChangeDirectoryBtnClick" style="-fx-border-color: #427aa1;" text="Wybierz">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></Button>
+    <Button fx:id="saveBtn" layoutX="184.0" layoutY="238.0" onAction="#handleSaveBtnClick" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" text="Zapisz">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor></Button>
+    <Text fill="#427aa1" layoutX="102.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generowanie raportu">
         <font>
-          <Font size="24.0"/>
+          <Font size="24.0" />
         </font>
     </Text>
 </AnchorPane>

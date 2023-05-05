@@ -2,10 +2,10 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.domain.customer.Customer;
 import com.example.hurtownia.domain.customer.CustomerService;
+import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.domain.orderitem.OrderItem;
 import com.example.hurtownia.domain.orderitem.OrderItemService;
-import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.supplier.Supplier;
 import org.hibernate.ObjectNotFoundException;
@@ -28,6 +28,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+    static Order order;
+    static OrderDTO orderDTO;
+    static List<Order> listOfOrder;
+    static List<OrderDTO> listOfOrderDTO;
+    static OrderItem orderItem;
+    static List<OrderItem> listOfOrderItem;
+    static Customer customer;
+    static OrderCreateRequest orderCreateRequest;
+    static OrderUpdateRequest orderUpdateRequest;
+    static Product product;
+    static Supplier supplier;
     @Mock
     OrderItemService orderItemService;
     @Mock
@@ -36,26 +47,9 @@ class OrderServiceTest {
     OrderMapper orderMapper;
     @Mock
     OrderRepository orderRepository;
-
     @InjectMocks
     @Spy
     OrderService orderService;
-
-    static Order order;
-    static OrderDTO orderDTO;
-    static List<Order> listOfOrder;
-    static List<OrderDTO> listOfOrderDTO;
-
-    static OrderItem orderItem;
-    static List<OrderItem> listOfOrderItem;
-
-
-    static Customer customer;
-    static OrderCreateRequest orderCreateRequest;
-    static OrderUpdateRequest orderUpdateRequest;
-
-    static Product product;
-    static Supplier supplier;
 
     @BeforeEach
     void setUp() {
@@ -145,8 +139,7 @@ class OrderServiceTest {
     @Test
     void findById() {
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> orderService.findById(any()))
-                .isInstanceOf(ObjectNotFoundException.class);
+        assertThatThrownBy(() -> orderService.findById(any())).isInstanceOf(ObjectNotFoundException.class);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         assertThat(orderService.findById(any())).isEqualTo(order);
@@ -187,18 +180,21 @@ class OrderServiceTest {
     void getInvoiceData() {
         when(orderRepository.findById(any())).thenReturn(Optional.ofNullable(order));
         when(orderItemService.findAllByOrderId(any())).thenReturn(listOfOrderItem);
-        var calculateValue = listOfOrderItem.get(0).getPricePerUnit() *
-                listOfOrderItem.get(0).getAmount();
-        var calculateValueString = String.valueOf(calculateValue);
-//        var calculateValueAfterDiscountString = String.valueOf(calculateValue * ((100-order.getDiscount())/100));
+        var calculateValue = listOfOrderItem.get(0).getPricePerUnit() * listOfOrderItem.get(0).getAmount();
+        var calculateValueAfterDiscount = calculateValue - (calculateValue * order.getDiscount());
         assertThat(orderService.getInvoiceData(1L))
                 .satisfies(invoiceData -> {
                     assertThat(invoiceData.getName()).isEqualTo(order.getCustomer().getName());
                     assertThat(invoiceData.getSurname()).isEqualTo(order.getCustomer().getSurname());
+                    assertThat(invoiceData.getPlace()).isEqualTo(order.getCustomer().getPlace());
+                    assertThat(invoiceData.getStreet()).isEqualTo(order.getCustomer().getStreet());
+                    assertThat(invoiceData.getBuildingNumber()).isEqualTo(order.getCustomer().getBuildingNumber());
+                    assertThat(invoiceData.getApartmentNumber()).isEqualTo(order.getCustomer().getApartmentNumber());
+                    assertThat(invoiceData.getPhoneNumber()).isEqualTo(order.getCustomer().getPhoneNumber());
                     assertThat(invoiceData.getDate()).isEqualTo(order.getDate());
-                    assertThat(invoiceData.getValue()).isEqualTo(calculateValueString);
-                    assertThat(invoiceData.getDiscount()).isEqualTo(String.valueOf(order.getDiscount()));
-//                    assertThat(invoiceData.getValueAfterDiscount()).isEqualTo(calculateValueAfterDiscountString);
+                    assertThat(invoiceData.getValue()).isEqualTo(String.valueOf(calculateValue));
+                    assertThat(invoiceData.getDiscount()).isEqualTo(DiscountConverter.fromNumericToPercentage(order.getDiscount()));
+                    assertThat(invoiceData.getValueAfterDiscount()).isEqualTo(String.valueOf(calculateValueAfterDiscount));
                 });
     }
 }

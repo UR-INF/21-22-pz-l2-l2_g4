@@ -1,7 +1,6 @@
 package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.controllers.ReportController;
-import com.example.hurtownia.domain.AbstractReport;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.domain.supplier.SupplierService;
@@ -51,6 +50,8 @@ public class ProductController implements Initializable {
     public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
     @Autowired
     private SupplyReport supplyReport;
+    @Autowired
+    public ProductReport productReport;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -94,6 +95,35 @@ public class ProductController implements Initializable {
 
                     {
                         checkBox.setDisable(true);
+                    }
+
+                    @Override
+                    public void updateItem(Boolean item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) setGraphic(null);
+                        else setGraphic(checkBox);
+
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+    }
+
+    public void enableGeneratingReports() {
+        generateReportBtn.setDisable(false);
+        generateSupplyReportBtn.setDisable(false);
+        supplyReportColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<ProductDTO, Boolean> call(final TableColumn<ProductDTO, Boolean> param) {
+                final TableCell<ProductDTO, Boolean> cell = new TableCell<>() {
+                    private final CheckBox checkBox = new CheckBox();
+
+                    {
+                        checkBox.setOnAction((ActionEvent event) -> products.get(getIndex()).setSupply(!products.get(getIndex()).getSupply()));
+                        checkBox.setOnMouseEntered((EventHandler<javafx.event.Event>) event -> getScene().setCursor(Cursor.HAND));
+                        checkBox.setOnMouseExited((EventHandler<javafx.event.Event>) event -> getScene().setCursor(Cursor.DEFAULT));
                     }
 
                     @Override
@@ -173,7 +203,7 @@ public class ProductController implements Initializable {
      */
     @FXML
     public void productsBtnReportClicked(MouseEvent event) {
-        AbstractReport report = new ProductReport(productsTable.getItems());
+        productReport.setData(productsTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -182,7 +212,7 @@ public class ProductController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(productReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();
