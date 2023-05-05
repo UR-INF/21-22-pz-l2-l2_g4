@@ -14,4 +14,5 @@ public class HurtowniaApplication {
     public static void main(String[] args) {
         Application.launch(Start.class, args);
     }
+
 }

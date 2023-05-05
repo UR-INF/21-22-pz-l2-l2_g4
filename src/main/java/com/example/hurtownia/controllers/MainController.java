@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.naming.OperationNotSupportedException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -78,8 +79,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //TODO: Panel logowania
 
-//        loginService = new LoginService();
-                UserCreateRequest userCreateRequest = UserCreateRequest.builder()
+        UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                 .name("name")
                 .surname("surname")
                 .email("email")
@@ -89,11 +89,11 @@ public class MainController implements Initializable {
                 .generatingReports(Boolean.TRUE)
                 .grantingDiscounts(Boolean.TRUE)
                 .build();
-                userService.create(userCreateRequest);
-//        loginService.logIn(user.getEmail(), user.getPassword());
-//        userNameLabel.setText(loginService.getLogin());
-
-//        checkPermissions(user);
+        try {
+            userService.create(userCreateRequest);
+        } catch (OperationNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
 
         insertData();
         new Thread(this::runClock).start();
