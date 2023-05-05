@@ -44,6 +44,8 @@ public class OrderItemController implements Initializable {
     public static ObservableList<OrderItemDTO> orderItems = FXCollections.observableArrayList();
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    public OrderItemReport orderItemReport;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -68,6 +70,10 @@ public class OrderItemController implements Initializable {
 
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
+    }
+
+    public void enableGeneratingReports() {
+        generateReportBtn.setDisable(false);
     }
 
     /**
@@ -121,7 +127,7 @@ public class OrderItemController implements Initializable {
      */
     @FXML
     public void orderItemsBtnReportClicked(MouseEvent event) {
-        OrderItemReport report = new OrderItemReport(orderItemTable.getItems());
+        orderItemReport.setData(orderItemTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -130,7 +136,7 @@ public class OrderItemController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(orderItemReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();

@@ -15,53 +15,44 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.MainController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.MainController">
     <BorderPane>
         <bottom>
-            <AnchorPane prefHeight="69.0" prefWidth="1550.0" style="-fx-background-color: #427aa1;"
-                        BorderPane.alignment="CENTER">
-                <Text fill="WHITE" layoutX="847.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Zalogowano jako:">
+            <AnchorPane prefHeight="69.0" prefWidth="1550.0" style="-fx-background-color: #427aa1;" BorderPane.alignment="CENTER">
+                <Text fill="WHITE" layoutX="847.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zalogowano jako:">
                     <font>
-                        <Font name="Arial" size="18.0"/>
+                        <Font name="Arial" size="18.0" />
                     </font>
                 </Text>
-                <Button fx:id="exitBtn" layoutX="1400.0" layoutY="15.0" mnemonicParsing="false"
-                        onMouseClicked="#btnExitClicked" prefHeight="30.0" prefWidth="118.0"
-                        style="-fx-background-color: #EBF2FA;" text="Zakończ" textAlignment="CENTER" textFill="#427aa1">
+                <Button fx:id="exitBtn" layoutX="1400.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#btnExitClicked" prefHeight="30.0" prefWidth="118.0" style="-fx-background-color: #EBF2FA;" text="Zakończ" textAlignment="CENTER" textFill="#427aa1">
                     <font>
-                        <Font size="16.0"/>
+                        <Font size="16.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Text fill="WHITE" layoutX="378.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Hurtownia budowlana, wersja: 0.2">
+                <Text fill="WHITE" layoutX="378.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hurtownia budowlana, wersja: 0.2">
                     <font>
-                        <Font name="Arial" size="18.0"/>
+                        <Font name="Arial" size="18.0" />
                     </font>
                 </Text>
-                <Text fx:id="clockLabel" fill="WHITE" layoutX="40.0" layoutY="40.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="13.03.2023, 12:42">
+                <Text fx:id="clockLabel" fill="WHITE" layoutX="40.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="13.03.2023, 12:42">
                     <font>
-                        <Font name="Arial Bold" size="20.0"/>
+                        <Font name="Arial Bold" size="20.0" />
                     </font>
                 </Text>
-                <Button fx:id="logOutBtn" layoutX="1250.0" layoutY="15.0" mnemonicParsing="false"
-                        onMouseClicked="#btnLogOutClicked" prefHeight="30.0" prefWidth="118.0"
-                        style="-fx-background-color: #EBF2FA;" text="Wyloguj" textAlignment="CENTER" textFill="#427aa1">
+                <Button fx:id="logOutBtn" layoutX="1250.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#btnLogOutClicked" prefHeight="30.0" prefWidth="118.0" style="-fx-background-color: #EBF2FA;" text="Wyloguj" textAlignment="CENTER" textFill="#427aa1">
                     <font>
-                        <Font size="16.0"/>
+                        <Font size="16.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Text fx:id="userNameLabel" fill="WHITE" layoutX="998.0" layoutY="41.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="nazwa użytkownika">
+                <Text fx:id="userNameLabel" fill="WHITE" layoutX="998.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nazwa użytkownika">
                     <font>
-                        <Font name="Arial" size="18.0"/>
+                        <Font name="Arial" size="18.0" />
                     </font>
                 </Text>
             </AnchorPane>
@@ -92,43 +83,40 @@
             </TabPane>
         </center>
     </BorderPane>
-    <AnchorPane fx:id="loginPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                prefHeight="800.0" prefWidth="1562.0" style="visibility: true; -fx-background-color: white;">
-        <PasswordField fx:id="passwordField" layoutX="925.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0"
-                       style="-fx-border-color: #427aa1;"/>
-        <TextField fx:id="loginTextField" layoutX="925.0" layoutY="316.0" prefHeight="30.0" prefWidth="200.0"
-                   style="-fx-border-color: #427aa1;"/>
+    <AnchorPane fx:id="loginPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1562.0" style="visibility: true; -fx-background-color: white;">
+        <PasswordField fx:id="passwordField" layoutX="925.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" />
+        <TextField fx:id="loginTextField" layoutX="925.0" layoutY="316.0" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" />
         <Label layoutX="755.0" layoutY="311.0" text="Email" textFill="#427aa1">
         <font>
-            <Font size="25.0"/>
+            <Font size="25.0" />
         </font>
         </Label>
         <Label layoutX="755.0" layoutY="385.0" text="Hasło" textFill="#427aa1">
         <font>
-            <Font size="25.0"/>
+            <Font size="25.0" />
         </font>
         </Label>
-        <Button layoutX="816.0" layoutY="478.0" mnemonicParsing="false" onMouseClicked="#btnLogInClicked"
-                prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #427aa1; -fx-border-color: #427aa1;"
-                text="Login" textAlignment="CENTER" textFill="WHITE">
+        <Button layoutX="816.0" layoutY="478.0" mnemonicParsing="false" onMouseClicked="#btnLogInClicked" prefHeight="30.0" prefWidth="200.0" style="-fx-background-color: #427aa1; -fx-border-color: #427aa1;" text="Zaloguj" textAlignment="CENTER" textFill="WHITE">
         <font>
-            <Font name="System Bold" size="18.0"/>
+            <Font name="System Bold" size="18.0" />
         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
         </Button>
         <AnchorPane layoutX="4.0" prefHeight="800.0" prefWidth="570.0" style="-fx-background-color: #427aa1;">
-            <Text fill="WHITE" layoutX="158.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Hurtownia">
+            <Text fill="WHITE" layoutX="158.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hurtownia">
                 <font>
-                    <Font size="60.0"/>
+                    <Font size="60.0" />
                 </font>
             </Text>
             <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="187.0" layoutY="347.0">
-                <Image url="@../Images/logo.png"/>
+                <Image url="@../Images/logo.png" />
             </ImageView>
         </AnchorPane>
         <Text fill="#427aa1" layoutX="808.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Logowanie">
            <font>
-               <Font size="40.0"/>
+               <Font size="40.0" />
            </font>
         </Text>
     </AnchorPane>

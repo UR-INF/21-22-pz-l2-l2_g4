@@ -1,49 +1,49 @@
 package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.domain.AbstractReport;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
+import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
+@Component
 public class OrderReport extends AbstractReport {
 
     private List<OrderDTO> data;
 
-    public OrderReport(List<OrderDTO> data) {
+    protected OrderReport() throws IOException {}
+
+    public void setData(List<OrderDTO> data) {
         this.data = data;
     }
 
     @Override
-    public void generateReport(String path, String title) throws FileNotFoundException {
-        PdfWriter pdfWriter = new PdfWriter(path);
-        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-        pdfDocument.addNewPage();
-        Document document = new Document(pdfDocument);
+    public void generateReport(String path, String title) throws IOException {
+        generateReportHeader(path, title);
 
-        Paragraph paragraph = new Paragraph(title);
-        document.add(paragraph);
-
-        float columnWidth[] = {40, 40, 40, 40, 40};
+        float columnWidth[] = {10f, 100f, 100f, 100f, 100f, 100f};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Id", "Id klienta", "Data zamowienia", "Rabat", "Stan"};
-        table.addCell(new Cell().add(new Paragraph(tableHeader[0])));
-        table.addCell(new Cell().add(new Paragraph(tableHeader[1])));
-        table.addCell(new Cell().add(new Paragraph(tableHeader[2])));
-        table.addCell(new Cell().add(new Paragraph(tableHeader[3])));
-        table.addCell(new Cell().add(new Paragraph(tableHeader[4])));
+        String[] tableHeader = {"Lp.", "Id", "Id klienta", "Data zamówienia", "Rabat", "Stan"};
+        table.addCell(new Cell().add(new Paragraph(tableHeader[0]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[1]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[2]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[3]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[4]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[5]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
+        int n = 1;
         for (OrderDTO datum : data) {
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId()))));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getCustomerId()))));
-            table.addCell(new Cell().add(new Paragraph(datum.getDate())));
-            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getDiscount()))));
-            table.addCell(new Cell().add(new Paragraph(datum.getState())));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(n)).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId())).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getCustomerId())).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(datum.getDate()).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(DiscountConverter.fromNumericToPercentage(datum.getDiscount())).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(datum.getState()).addStyle(styleTableContent)));
+            n++;
         }
 
         document.add(table);

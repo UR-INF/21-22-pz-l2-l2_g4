@@ -116,10 +116,16 @@ public class OrderService {
         InvoiceData invoiceData = InvoiceData.builder()
                 .name(order.getCustomer().getName())
                 .surname(order.getCustomer().getSurname())
+                .place(order.getCustomer().getPlace())
+                .street(order.getCustomer().getStreet())
+                .apartmentNumber(order.getCustomer().getApartmentNumber())
+                .buildingNumber(order.getCustomer().getBuildingNumber())
+                .phoneNumber(order.getCustomer().getPhoneNumber())
                 .date(order.getDate())
                 .value(String.valueOf(calculateValue(orderItems)))
-                .discount(String.valueOf(order.getDiscount()))
+                .discount(DiscountConverter.fromNumericToPercentage(order.getDiscount()))
                 .valueAfterDiscount(calculateValueAfterDiscount(order, orderItems))
+                .items(orderItemService.findAllByOrderId(id))
                 .build();
         return invoiceData;
     }
