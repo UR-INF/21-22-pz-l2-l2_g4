@@ -51,7 +51,7 @@ public class LoginService {
      *
      * @return Imie i nazwisko
      */
-    public String getLogin() {
+    public String getCurrentUserName() {
         return currentUser.getName() + " " + currentUser.getSurname();
     }
 }

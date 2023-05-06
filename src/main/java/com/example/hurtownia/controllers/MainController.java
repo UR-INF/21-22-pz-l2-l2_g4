@@ -77,13 +77,11 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //TODO: Panel logowania
-
         UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                 .name("name")
                 .surname("surname")
-                .email("email")
-                .password("password")
+                .email("admin")
+                .password("admin")
                 .phoneNumber("phoneNumber")
                 .isAdmin(Boolean.TRUE)
                 .generatingReports(Boolean.TRUE)
@@ -95,7 +93,6 @@ public class MainController implements Initializable {
             throw new RuntimeException(e);
         }
 
-        insertData();
         new Thread(this::runClock).start();
     }
 
@@ -118,6 +115,11 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Blokuje pewne funkcje aplikacji w zależności od uprawnień zalogowanego użytkownika.
+     *
+     * @param user
+     */
     private void checkPermissions(User user) {
         if (Boolean.FALSE.equals(user.getIsAdmin())) {
             userTab.setDisable(true);
@@ -137,9 +139,19 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Testowy insert danych.
+     * Odblokuwuje wszystkie funkcje aplikacji po wylogowaniu.
      */
-    private void insertData() {
+    private void resetPermissions() {
+        userTab.setDisable(false);
+        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+        selectionModel.select(userTab);
+
+        orderTabContentController.enableGrantingDiscounds();
+        customerTabContentController.enableGeneratingReports();
+        orderTabContentController.enableGeneratingReports();
+        orderItemTabContentController.enableGeneratingReports();
+        productTabContentController.enableGeneratingReports();
+        supplierTabContentController.enableGeneratingReports();
     }
 
     /**
@@ -150,7 +162,7 @@ public class MainController implements Initializable {
     @FXML
     public void btnLogInClicked(MouseEvent event) {
         if (loginService.logIn(loginTextField.getText(), passwordField.getText())) {
-            userNameLabel.setText(loginService.getLogin());
+            userNameLabel.setText(loginService.getCurrentUserName());
             checkPermissions(loginService.getCurrentUser());
             loginPane.setVisible(false);
         }
@@ -164,6 +176,7 @@ public class MainController implements Initializable {
     @FXML
     public void btnLogOutClicked(MouseEvent event) {
         loginService.logOut();
+        resetPermissions();
         passwordField.setText("");
         loginTextField.setText("");
         loginPane.setVisible(true);
@@ -176,6 +189,7 @@ public class MainController implements Initializable {
      */
     @FXML
     public void btnExitClicked(MouseEvent event) {
-        //TODO: obsłużyć wyjście z aplikacji (logout and close)
+        loginService.logOut();
+        Platform.exit();
     }
 }

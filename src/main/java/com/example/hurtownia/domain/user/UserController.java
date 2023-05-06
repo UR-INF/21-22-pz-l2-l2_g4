@@ -60,6 +60,8 @@ public class UserController implements Initializable {
     private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField, passwordSearchField, isAdminSearchField, generatingReportsSearchField, grantingDiscountsSearchField;
     @Autowired
     private UserService userService;
+    @Autowired
+    public UserReport userReport;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -143,7 +145,7 @@ public class UserController implements Initializable {
      */
     @FXML
     public void usersBtnReportClicked(MouseEvent event) {
-        UserReport report = new UserReport(usersTable.getItems());
+        userReport.setData(usersTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -152,7 +154,7 @@ public class UserController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(userReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();

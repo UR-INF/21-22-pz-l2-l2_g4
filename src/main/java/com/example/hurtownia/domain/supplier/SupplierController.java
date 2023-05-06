@@ -57,6 +57,8 @@ public class SupplierController implements Initializable {
     private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
     @Autowired
     private SupplierService supplierService;
+    @Autowired
+    public SupplierReport supplierReport;
     @FXML
     private Button generateReportBtn;
 
@@ -69,6 +71,10 @@ public class SupplierController implements Initializable {
 
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
+    }
+
+    public void enableGeneratingReports() {
+        generateReportBtn.setDisable(false);
     }
 
     @FXML
@@ -123,7 +129,7 @@ public class SupplierController implements Initializable {
      */
     @FXML
     public void suppliersBtnReportClicked(MouseEvent event) {
-        SupplierReport report = new SupplierReport(suppliersTable.getItems());
+        supplierReport.setData(suppliersTable.getItems());
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -132,7 +138,7 @@ public class SupplierController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/report-save-view.fxml"));
             Parent root = fxmlLoader.load();
             ReportController controller = fxmlLoader.getController();
-            controller.setReport(report);
+            controller.setReport(supplierReport);
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.showAndWait();
