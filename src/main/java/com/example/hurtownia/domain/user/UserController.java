@@ -123,6 +123,8 @@ public class UserController implements Initializable {
                     .build();
             userService.create(userCreateRequest);
             informationArea.appendText("\nDodano nowego użytkownika");
+        } catch (UnsupportedOperationException e) {
+            informationArea.appendText("\nIstnieje już użytkownik o takim emailu.");
         } catch (Exception e) {
             informationArea.appendText("\nNie udało się dodać nowego użytkownika");
         }
@@ -244,6 +246,9 @@ public class UserController implements Initializable {
                         userUpdateRequest.setEmail(newValue);
                         userService.update(userUpdateRequest);
                         informationArea.appendText("\nPomyślnie edytowano użytkownika o id " + userUpdateRequest.getId());
+                    } catch (UnsupportedOperationException e) {
+                        informationArea.appendText("\nIstnieje już użytkownik o takim emailu.");
+                        return;
                     } catch (Exception e) {
                         informationArea.appendText("\nNie udało się edytować użytkownika o id " + userUpdateRequest.getId());
                     }

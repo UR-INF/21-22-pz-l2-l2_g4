@@ -95,6 +95,7 @@ class OrderServiceTest {
                 .discount(10.0)
                 .build();
 
+
         orderDTO = OrderDTO.builder()
                 .id(1L)
                 .customerId(1L)
@@ -131,8 +132,7 @@ class OrderServiceTest {
     void findAll() {
         when(orderRepository.findAll()).thenReturn(listOfOrder);
         when(orderItemService.findAllByOrderId(any())).thenReturn(listOfOrderItem);
-        when(orderMapper.mapToDto(order, listOfOrderItem.get(0).getPricePerUnit() * listOfOrderItem.get(0).getAmount()))
-                .thenReturn(orderDTO);
+        when(orderMapper.mapToDto(order, listOfOrderItem.get(0).getPricePerUnit() * listOfOrderItem.get(0).getAmount())).thenReturn(orderDTO);
         assertThat(orderService.findAll()).isEqualTo(listOfOrderDTO);
     }
 
