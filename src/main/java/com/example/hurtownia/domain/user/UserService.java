@@ -30,7 +30,7 @@ public class UserService {
      * @return lista wszystkich użytkowników
      */
     public List<UserDTO> findAll() {
-        return userMapper.mapToDto(userRepository.findAll());
+        return userMapper.mapListToDto(userRepository.findAll());
     }
 
     /**
@@ -54,10 +54,10 @@ public class UserService {
      * @param password hasło użytkownika
      * @return użytkownik
      */
-    public User login(String email, String password) {
+    public User login(String email, String password) throws Exception {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new ObjectNotFoundException(email, "Błędne dane logowania"));
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new ObjectNotFoundException(email, "Błędne dane logowania");
+            throw new Exception();
         }
         return user;
     }
@@ -83,9 +83,10 @@ public class UserService {
      *
      * @param userCreateRequest nowy użytkownik
      */
-    public User create(UserCreateRequest userCreateRequest) throws OperationNotSupportedException {
-        if (findByEmail(userCreateRequest.getEmail()) != null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
-            return null;
+    public User create(UserCreateRequest userCreateRequest) {
+        if (findByEmail(userCreateRequest.getEmail()) != null) {
+            throw new UnsupportedOperationException();
+        }
 
         String password = passwordEncoder.encode(userCreateRequest.getPassword());
         User user = User.builder()
@@ -106,10 +107,13 @@ public class UserService {
      *
      * @param userUpdateRequest aktualizowany użytkownik
      */
-    public User update(UserUpdateRequest userUpdateRequest) throws OperationNotSupportedException {
+    public User update(UserUpdateRequest userUpdateRequest) {
         User user = findById(userUpdateRequest.getId());
-        if (findByEmail(userUpdateRequest.getEmail()) != null) // zapobiega tymczasowo duplikowaniu uzytkownika o tym samym mailu
-            return null;
+
+        if (findByEmail(userUpdateRequest.getEmail()) != null) {
+            throw new UnsupportedOperationException();
+        }
+
         String password = passwordEncoder.encode(userUpdateRequest.getPassword());
         user.setName(userUpdateRequest.getName());
         user.setSurname(userUpdateRequest.getSurname());

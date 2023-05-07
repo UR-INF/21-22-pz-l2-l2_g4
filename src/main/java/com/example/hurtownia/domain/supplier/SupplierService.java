@@ -27,7 +27,7 @@ public class SupplierService {
      * @return lista wszystkich dostawców
      */
     public List<SupplierDTO> findAll() {
-        return supplierMapper.mapToDto(supplierRepository.findAll());
+        return supplierMapper.mapListToDto(supplierRepository.findAll());
     }
 
     /**
