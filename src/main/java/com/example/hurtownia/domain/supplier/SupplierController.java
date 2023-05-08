@@ -34,8 +34,10 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Controller
 public class SupplierController implements Initializable {
@@ -119,7 +121,29 @@ public class SupplierController implements Initializable {
      */
     @FXML
     public void suppliersBtnSearchClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk wyszukiwania
+        String idFilter = idSearchField.getText().trim();
+        String nameFilter = nameSearchField.getText().trim();
+        String emailFilter = emailSearchField.getText().trim();
+        String countryFilter = countrySearchField.getText().trim();
+        String placeFilter = placeSearchField.getText().trim();
+        String streetFilter = streetSearchField.getText().trim();
+        String nipFilter = nipSearchField.getText().trim();
+        List<SupplierDTO> filteredSupplierList = supplierService.findAll();
+
+        if (!(idFilter.isEmpty() && nameFilter.isEmpty() && emailFilter.isEmpty() && emailFilter.isEmpty() &&
+                countryFilter.isEmpty() && placeFilter.isEmpty() && streetFilter.isEmpty() && nipFilter.isEmpty())) {
+            filteredSupplierList = filteredSupplierList.stream().filter(
+                    supplierDTO -> supplierDTO.getId().toString().contains(idFilter)
+                            && supplierDTO.getName().contains(nameFilter)
+                            && supplierDTO.getEmail().contains(emailFilter)
+                            && supplierDTO.getCountry().contains(countryFilter)
+                            && supplierDTO.getPlace().contains(placeFilter)
+                            && supplierDTO.getStreet().contains(streetFilter)
+                            && supplierDTO.getNip().contains(nipFilter)
+            ).collect(Collectors.toList());
+        }
+        suppliersTable.getItems().clear();
+        suppliers.setAll(filteredSupplierList);
     }
 
     /**

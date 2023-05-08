@@ -38,8 +38,10 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Controller
 public class OrderController implements Initializable {
@@ -215,7 +217,27 @@ public class OrderController implements Initializable {
      */
     @FXML
     public void ordersBtnSearchClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk wyszukiwania
+        String idFilter = idSearchField.getText().trim();
+        String customerIdFilter = orderIdSearchField.getText().trim();
+        String dateFilter = dateSearchField.getText().trim();
+        String valueFilter = valueSearchField.getText().trim();
+        String discountFilter = discountSearchField.getText().trim();
+        String stateFilter = stateSearchField.getText().trim();
+        List<OrderDTO> filteredOrdersList = orderService.findAll();
+
+        if (!(idFilter.isEmpty() && customerIdFilter.isEmpty() && dateFilter.isEmpty() && valueFilter.isEmpty() &&
+                discountFilter.isEmpty() && stateFilter.isEmpty())) {
+            filteredOrdersList = filteredOrdersList.stream().filter(
+                    orderDTO -> orderDTO.getId().toString().contains(idFilter)
+                            && orderDTO.getCustomerId().toString().contains(customerIdFilter)
+                            && orderDTO.getDate().contains(dateFilter)
+                            && orderDTO.getValue().toString().contains(valueFilter)
+                            && orderDTO.getDiscount().toString().contains(discountFilter)
+                            && orderDTO.getState().contains(stateFilter)
+            ).collect(Collectors.toList());
+            ordersTable.getItems().clear();
+            orders.setAll(filteredOrdersList);
+        }
     }
 
     /**

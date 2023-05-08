@@ -35,8 +35,10 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController implements Initializable {
@@ -57,7 +59,7 @@ public class UserController implements Initializable {
     @FXML
     private TableColumn<UserDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField, passwordSearchField, isAdminSearchField, generatingReportsSearchField, grantingDiscountsSearchField;
+    private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField;
     @Autowired
     private UserService userService;
     @Autowired
@@ -137,7 +139,24 @@ public class UserController implements Initializable {
      */
     @FXML
     public void usersBtnSearchClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk wyszukiwania
+        String idFilter = idSearchField.getText().trim();
+        String nameFilter = nameSearchField.getText().trim();
+        String surnameFilter = surnameSearchField.getText().trim();
+        String phoneNumberFilter = phoneNumberSearchField.getText().trim();
+        String emailFilter = emailSearchField.getText().trim();
+        List<UserDTO> filteredUsersList = userService.findAll();
+
+        if (!(nameFilter.isEmpty() && surnameFilter.isEmpty() && phoneNumberFilter.isEmpty() && emailFilter.isEmpty() && idFilter.isEmpty())) {
+            filteredUsersList = filteredUsersList.stream().filter(
+                    userDTO -> userDTO.getName().contains(nameFilter)
+                            && userDTO.getSurname().contains(surnameFilter)
+                            && userDTO.getEmail().contains(emailFilter)
+                            && userDTO.getPhoneNumber().contains(phoneNumberFilter)
+                            && userDTO.getId().toString().contains(idFilter)
+            ).collect(Collectors.toList());
+        }
+        usersTable.getItems().clear();
+        users.setAll(filteredUsersList);
     }
 
     /**
