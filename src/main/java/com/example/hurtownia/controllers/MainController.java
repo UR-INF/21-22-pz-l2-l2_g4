@@ -162,13 +162,12 @@ public class MainController implements Initializable {
     public void btnLogInClicked(MouseEvent event) {
         try {
             loginService.logIn(loginTextField.getText(), passwordField.getText());
+            userNameLabel.setText(loginService.getCurrentUserName());
+            checkPermissions(loginService.getCurrentUser());
+            loginPane.setVisible(false);
         } catch (Exception e) {
             loginErrorLabel.setText("Błędne dane logowania.");
         }
-
-        userNameLabel.setText(loginService.getCurrentUserName());
-        checkPermissions(loginService.getCurrentUser());
-        loginPane.setVisible(false);
     }
 
     /**
