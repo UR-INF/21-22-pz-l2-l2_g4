@@ -64,7 +64,7 @@ public class MainController implements Initializable {
     @FXML
     private SupplierController supplierTabContentController;
     @FXML
-    private Text clockLabel, userNameLabel;
+    private Text clockLabel, userNameLabel, loginErrorLabel;;
     @FXML
     private TextField loginTextField;
     @FXML
@@ -89,8 +89,7 @@ public class MainController implements Initializable {
                 .build();
         try {
             userService.create(userCreateRequest);
-        } catch (OperationNotSupportedException e) {
-            throw new RuntimeException(e);
+        } catch (UnsupportedOperationException e) {
         }
 
         new Thread(this::runClock).start();
@@ -161,10 +160,13 @@ public class MainController implements Initializable {
      */
     @FXML
     public void btnLogInClicked(MouseEvent event) {
-        if (loginService.logIn(loginTextField.getText(), passwordField.getText())) {
+        try {
+            loginService.logIn(loginTextField.getText(), passwordField.getText());
             userNameLabel.setText(loginService.getCurrentUserName());
             checkPermissions(loginService.getCurrentUser());
             loginPane.setVisible(false);
+        } catch (Exception e) {
+            loginErrorLabel.setText("Błędne dane logowania.");
         }
     }
 
@@ -179,6 +181,7 @@ public class MainController implements Initializable {
         resetPermissions();
         passwordField.setText("");
         loginTextField.setText("");
+        loginErrorLabel.setText("");
         loginPane.setVisible(true);
     }
 

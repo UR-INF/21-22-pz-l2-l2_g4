@@ -9,5 +9,5 @@ public interface UserMapper {
 
     UserDTO mapToDto(User user);
 
-    List<UserDTO> mapToDto(List<User> users);
+    List<UserDTO> mapListToDto(List<User> users);
 }

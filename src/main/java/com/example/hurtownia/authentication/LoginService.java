@@ -24,7 +24,7 @@ public class LoginService {
      * @param password
      * @return true/false
      */
-    public boolean logIn(String login, String password) {
+    public boolean logIn(String login, String password) throws Exception {
         currentUser = userService.login(login, password);
         return currentUser != null;
     }
@@ -44,6 +44,13 @@ public class LoginService {
      */
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Ustawia bieżacego użytkownika.
+     */
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     /**
