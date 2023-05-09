@@ -35,8 +35,10 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Controller
 public class OrderItemController implements Initializable {
@@ -117,7 +119,27 @@ public class OrderItemController implements Initializable {
      */
     @FXML
     public void orderItemsBtnSearchClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk wyszukiwania
+        String idFilter = idSearchField.getText().trim();
+        String orderIdFilter = orderIdSearchField.getText().trim();
+        String productIdFilter = productIdSearchField.getText().trim();
+        String itemPriceFilter = itemPriceSearchField.getText().trim();
+        String pricePerUnitFilter = pricePerUnitSearchField.getText().trim();
+        String numberFilter = numberSearchField.getText().trim();
+        List<OrderItemDTO> filteredOrderItemsList = orderItemService.findAll();
+
+        if (!(idFilter.isEmpty() && orderIdFilter.isEmpty() && productIdFilter.isEmpty() && itemPriceFilter.isEmpty() &&
+                pricePerUnitFilter.isEmpty() && numberFilter.isEmpty())) {
+            filteredOrderItemsList = filteredOrderItemsList.stream().filter(
+                    orderItemDTO -> orderItemDTO.getId().toString().contains(idFilter)
+                            && orderItemDTO.getOrderId().toString().contains(orderIdFilter)
+                            && orderItemDTO.getProductId().toString().contains(productIdFilter)
+                            && orderItemDTO.getItemPrice().toString().contains(itemPriceFilter)
+                            && orderItemDTO.getPricePerUnit().toString().contains(pricePerUnitFilter)
+                            && orderItemDTO.getAmount().toString().contains(numberFilter)
+            ).collect(Collectors.toList());
+        }
+        orderItemTable.getItems().clear();
+        orderItems.setAll(filteredOrderItemsList);
     }
 
     /**

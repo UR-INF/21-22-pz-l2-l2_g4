@@ -36,8 +36,10 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 @Controller
 public class CustomerController implements Initializable {
@@ -132,7 +134,36 @@ public class CustomerController implements Initializable {
      */
     @FXML
     public void customersBtnSearchClicked(MouseEvent event) {
-        //TODO: obsłużyć przycisk wyszukiwania
+        String idFilter = idSearchField.getText().trim();
+        String nameFilter = nameSearchField.getText().trim();
+        String surnameFilter = surnameSearchField.getText().trim();
+        String placeFilter = placeSearchField.getText().trim();
+        String streetFilter = streetSearchField.getText().trim();
+        String buildingNumberFilter = buildingNumberSearchField.getText().trim();
+        String apartmentNumberFilter = apartmentNumberSearchField.getText().trim();
+        String emailFilter = emailSearchField.getText().trim();
+        String phoneNumberFilter = phoneNumberSearchField.getText().trim();
+        String peselFilter = peselSearchField.getText().trim();
+        List<CustomerDTO> filteredCustomersList = customerService.findAll();
+
+        if (!(idFilter.isEmpty() && nameFilter.isEmpty() && surnameFilter.isEmpty() && placeFilter.isEmpty() &&
+                streetFilter.isEmpty() && buildingNumberFilter.isEmpty() && apartmentNumberFilter.isEmpty() &&
+                emailFilter.isEmpty() && phoneNumberFilter.isEmpty() && peselFilter.isEmpty())) {
+            filteredCustomersList = filteredCustomersList.stream().filter(
+                    customerDTO -> customerDTO.getId().toString().contains(idFilter)
+                            && customerDTO.getName().contains(nameFilter)
+                            && customerDTO.getSurname().contains(surnameFilter)
+                            && customerDTO.getPlace().contains(placeFilter)
+                            && customerDTO.getStreet().contains(streetFilter)
+                            && customerDTO.getBuildingNumber().toString().contains(buildingNumberFilter)
+                            && customerDTO.getApartmentNumber().toString().contains(apartmentNumberFilter)
+                            && customerDTO.getEmail().contains(emailFilter)
+                            && customerDTO.getPhoneNumber().contains(phoneNumberFilter)
+                            && customerDTO.getPesel().contains(peselFilter)
+            ).collect(Collectors.toList());
+        }
+        customersTable.getItems().clear();
+        customers.setAll(filteredCustomersList);
     }
 
     /**
