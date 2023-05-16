@@ -231,6 +231,17 @@ public class MainController implements Initializable {
      * @param event
      */
     public void btnImportCSVClicked(MouseEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/importCSV-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage newStage = new Stage();
+            newStage.setTitle("Import CSV");
+            newStage.setScene(new Scene(root));
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
