@@ -29,6 +29,10 @@ public class Start extends Application {
         fxmlLoader.setControllerFactory(applicationContext::getBean);
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add("CSS/mainCSS.css");
+
+
+
         stage.setTitle("Hurtownia");
         stage.setScene(scene);
         stage.show();
