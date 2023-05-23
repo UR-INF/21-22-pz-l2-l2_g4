@@ -15,16 +15,22 @@ import com.example.hurtownia.domain.user.User;
 import com.example.hurtownia.domain.user.UserService;
 import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.naming.OperationNotSupportedException;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -53,6 +59,8 @@ public class MainController implements Initializable {
     public TabPane tabPane;
     @FXML
     public Tab customerTab, orderTab, userTab;
+    public Button importCSVBtn;
+    public Button optionsBtn;
     @FXML
     private OrderController orderTabContentController;
     @FXML
@@ -72,8 +80,13 @@ public class MainController implements Initializable {
     @FXML
     private AnchorPane loginPane;
 
+    @FXML
+    private CheckBox darkModeCheckBox;
+
     @Autowired
     private LoginService loginService;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,6 +106,22 @@ public class MainController implements Initializable {
         }
 
         new Thread(this::runClock).start();
+
+
+//
+//
+//        /**
+//         * Odpowiedzialna za tryb ciemny poprzez checkBoxa
+//         */
+//        darkModeCheckBox.setOnAction(event -> {
+//            if (darkModeCheckBox.isSelected()) {
+//                userTab.getStyleClass().add("dark-theme");
+//            } else {
+//                userTab.getStyleClass().remove("dark-theme");
+//            }
+//        });
+//
+
     }
 
     /**
@@ -194,5 +223,45 @@ public class MainController implements Initializable {
     public void btnExitClicked(MouseEvent event) {
         loginService.logOut();
         Platform.exit();
+    }
+
+    /**
+     * Obsługuje przycisk wyświetlenia okna importu CSV
+     *
+     * @param event
+     */
+    public void btnImportCSVClicked(MouseEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/importCSV-view.fxml"));
+            Parent root = fxmlLoader.load();
+            ImportCSVController importCSVController = (ImportCSVController) fxmlLoader.getController();
+            importCSVController.setController(this);
+            Stage newStage = new Stage();
+            newStage.setTitle("Import CSV");
+            newStage.setScene(new Scene(root));
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Obsługuje przycisk wyświetlenia okna opcji
+     *
+     * @param event
+     */
+    @FXML
+    public void btnOptionsClicked(MouseEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/options-view.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage newStage = new Stage();
+            newStage.setTitle("Opcje");
+            newStage.setScene(new Scene(root));
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

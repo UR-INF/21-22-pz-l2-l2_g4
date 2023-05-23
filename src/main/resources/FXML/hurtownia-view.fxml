@@ -15,11 +15,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.MainController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1550.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.MainController">
     <BorderPane>
         <bottom>
             <AnchorPane prefHeight="69.0" prefWidth="1550.0" style="-fx-background-color: #427aa1;" BorderPane.alignment="CENTER">
-                <Text fill="WHITE" layoutX="847.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zalogowano jako:">
+                <Text fill="WHITE" layoutX="585.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zalogowano jako:">
                     <font>
                         <Font name="Arial" size="18.0" />
                     </font>
@@ -32,7 +32,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Text fill="WHITE" layoutX="378.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hurtownia budowlana, wersja: 0.2">
+                <Text fill="WHITE" layoutX="263.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hurtownia budowlana, wersja: 0.3">
                     <font>
                         <Font name="Arial" size="18.0" />
                     </font>
@@ -50,11 +50,27 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Text fx:id="userNameLabel" fill="WHITE" layoutX="998.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nazwa użytkownika">
+                <Text fx:id="userNameLabel" fill="WHITE" layoutX="736.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="nazwa użytkownika">
                     <font>
                         <Font name="Arial" size="18.0" />
                     </font>
                 </Text>
+            <Button fx:id="optionsBtn" layoutX="1100.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#btnOptionsClicked" prefHeight="30.0" prefWidth="118.0" style="-fx-background-color: #EBF2FA;" text="Opcje" textAlignment="CENTER" textFill="#427aa1">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="importCSVBtn" layoutX="950.0" layoutY="15.0" mnemonicParsing="false" onMouseClicked="#btnImportCSVClicked" prefHeight="30.0" prefWidth="118.0" style="-fx-background-color: #EBF2FA;" text="Import CSV" textAlignment="CENTER" textFill="#427aa1">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             </AnchorPane>
         </bottom>
         <center>
@@ -83,7 +99,7 @@
             </TabPane>
         </center>
     </BorderPane>
-    <AnchorPane fx:id="loginPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1562.0" style="visibility: true; -fx-background-color: white;">
+    <AnchorPane fx:id="loginPane" style="visibility: true; -fx-background-color: white;">
         <PasswordField fx:id="passwordField" layoutX="925.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" />
         <TextField fx:id="loginTextField" layoutX="925.0" layoutY="316.0" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" />
         <Label layoutX="755.0" layoutY="311.0" text="Email" textFill="#427aa1">
@@ -104,7 +120,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
         </Button>
-        <AnchorPane layoutX="4.0" prefHeight="800.0" prefWidth="570.0" style="-fx-background-color: #427aa1;">
+        <AnchorPane layoutX="-54.0" layoutY="-94.0" prefHeight="900.0" prefWidth="570.0" style="-fx-background-color: #427aa1;">
             <Text fill="WHITE" layoutX="158.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hurtownia">
                 <font>
                     <Font size="60.0" />
