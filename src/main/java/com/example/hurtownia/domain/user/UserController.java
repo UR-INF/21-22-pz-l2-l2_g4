@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.user;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import com.example.hurtownia.domain.user.request.UserUpdateRequest;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -113,6 +114,14 @@ public class UserController implements Initializable {
             Boolean isAdmin = isAdminCheckBox.isSelected();
             Boolean generatingReports = generatingReportsCheckBox.isSelected();
             Boolean grantingDiscounts = grantingDiscountsCheckBox.isSelected();
+            if (!TextFieldsValidators.validateEmail(email)) {
+                informationArea.appendText("\n Podaj email w poprawnym formacie");
+                return;
+            }
+            if (!TextFieldsValidators.validatePhoneNumber(phoneNumber)) {
+                informationArea.appendText("\n Podaj numer telefonu w poprawnym formacie");
+                return;
+            }
             UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                     .name(name)
                     .surname(surname)
@@ -241,6 +250,10 @@ public class UserController implements Initializable {
         phoneNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validatePhoneNumber(newValue)) {
+                    informationArea.appendText("\nPodaj numer telefonu w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
                     try {
@@ -258,6 +271,10 @@ public class UserController implements Initializable {
         emailColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validateEmail(newValue)) {
+                    informationArea.appendText("\nPodaj email w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
                     try {

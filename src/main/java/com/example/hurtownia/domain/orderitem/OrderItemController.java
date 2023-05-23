@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.orderitem;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -96,6 +97,10 @@ public class OrderItemController implements Initializable {
      */
     @FXML
     public void orderItemsBtnAddClicked(MouseEvent event) {
+        if (!TextFieldsValidators.validateInteger(numberTextField.getText())) {
+            informationArea.appendText("\n Podaj liczbę sztuk w poprawnym formacie");
+            return;
+        }
         try {
             Long orderId = Long.valueOf(orderIdTextField.getText());
             Long productId = Long.valueOf(productIdTextField.getText());
@@ -224,6 +229,10 @@ public class OrderItemController implements Initializable {
         amountColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.intValue() < 0) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItemUpdateRequest orderItemUpdateRequest = new OrderItemUpdateRequest();
                     try {

@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.customer;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.customer.request.CustomerCreateRequest;
 import com.example.hurtownia.domain.customer.request.CustomerUpdateRequest;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -99,6 +100,14 @@ public class CustomerController implements Initializable {
      */
     @FXML
     public void customersBtnAddClicked(MouseEvent event) {
+        if (!TextFieldsValidators.validateInteger(buildingNumberTextField.getText())) {
+            informationArea.appendText("\n Podaj poprawny numer budynku");
+            return;
+        }
+        if (!TextFieldsValidators.validateInteger(apartmentNumberTextField.getText())) {
+            informationArea.appendText("\n Podaj poprawny numer mieszkania");
+            return;
+        }
         try {
             String name = nameTextField.getText();
             String surname = surnameTextField.getText();
@@ -109,6 +118,18 @@ public class CustomerController implements Initializable {
             String street = streetTextField.getText();
             Integer buildingNumber = Integer.valueOf(buildingNumberTextField.getText());
             Integer apartmentNumber = Integer.valueOf(apartmentNumberTextField.getText());
+            if (!TextFieldsValidators.validateEmail(email)) {
+                informationArea.appendText("\n Podaj email w poprawnym formacie");
+                return;
+            }
+            if (!TextFieldsValidators.validatePhoneNumber(phoneNumber)) {
+                informationArea.appendText("\n Podaj numer telefonu w poprawnym formacie");
+                return;
+            }
+            if (!TextFieldsValidators.validatePesel(pesel)) {
+                informationArea.appendText("\n Podaj pesel w poprawnym formacie");
+                return;
+            }
             CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
                     .name(name)
                     .surname(surname)
@@ -283,6 +304,10 @@ public class CustomerController implements Initializable {
         buildingNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.intValue() < 0) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {
@@ -300,6 +325,10 @@ public class CustomerController implements Initializable {
         apartmentNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.intValue() < 0) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {
@@ -317,6 +346,10 @@ public class CustomerController implements Initializable {
         emailColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validateEmail(newValue)) {
+                    informationArea.appendText("\nPodaj email w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {
@@ -334,6 +367,10 @@ public class CustomerController implements Initializable {
         phoneNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validatePhoneNumber(newValue)) {
+                    informationArea.appendText("\nPodaj numer telefonu w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {
@@ -351,6 +388,10 @@ public class CustomerController implements Initializable {
         peselColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validatePesel(newValue)) {
+                    informationArea.appendText("\nPodaj pesel w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {

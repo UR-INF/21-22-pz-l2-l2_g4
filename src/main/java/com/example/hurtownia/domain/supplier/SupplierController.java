@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.supplier;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.supplier.request.SupplierCreateRequest;
 import com.example.hurtownia.domain.supplier.request.SupplierUpdateRequest;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -99,6 +100,14 @@ public class SupplierController implements Initializable {
             String place = placeTextField.getText();
             String street = streetTextField.getText();
             String nip = nipTextField.getText();
+            if (!TextFieldsValidators.validateEmail(email)) {
+                informationArea.appendText("\n Podaj email w poprawnym formacie");
+                return;
+            }
+            if (!TextFieldsValidators.validateNip(nip)) {
+                informationArea.appendText("\n Podaj nip w poprawnym formacie");
+                return;
+            }
             SupplierCreateRequest supplierCreateRequest = SupplierCreateRequest.builder()
                     .name(name)
                     .email(email)
@@ -208,6 +217,10 @@ public class SupplierController implements Initializable {
         nipColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validateNip(newValue)) {
+                    informationArea.appendText("\nPodaj nip w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
@@ -225,6 +238,10 @@ public class SupplierController implements Initializable {
         emailColumn.setCellFactory(cell -> new TextFieldTableCell<>(converter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validateEmail(newValue)) {
+                    informationArea.appendText("\nPodaj email w poprawnym formacie");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     SupplierUpdateRequest supplierUpdateRequest = new SupplierUpdateRequest();
                     try {
