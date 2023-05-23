@@ -234,6 +234,8 @@ public class MainController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/importCSV-view.fxml"));
             Parent root = fxmlLoader.load();
+            ImportCSVController importCSVController = (ImportCSVController) fxmlLoader.getController();
+            importCSVController.setController(this);
             Stage newStage = new Stage();
             newStage.setTitle("Import CSV");
             newStage.setScene(new Scene(root));
