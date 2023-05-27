@@ -52,17 +52,17 @@ public class CustomerController implements Initializable {
     @FXML
     private TextArea informationArea;
     @FXML
-    private TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField;
+    private TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField, zipCodeTextField;
     @FXML
     private TableView<CustomerDTO> customersTable;
     @FXML
     private TableColumn<CustomerDTO, Number> idColumn, buildingNumberColumn, apartmentNumberColumn;
     @FXML
-    private TableColumn<CustomerDTO, String> emailColumn, nameColumn, placeColumn, surnameColumn, phoneNumberColumn, peselColumn, streetColumn;
+    private TableColumn<CustomerDTO, String> emailColumn, nameColumn, placeColumn, surnameColumn, phoneNumberColumn, peselColumn, streetColumn, zipCodeColumn;
     @FXML
     private TableColumn<CustomerDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField;
+    private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField, zipCodeSearchField;
     @FXML
     private Button generateReportBtn;
 
@@ -107,6 +107,7 @@ public class CustomerController implements Initializable {
             String email = emailTextField.getText();
             String place = placeTextField.getText();
             String street = streetTextField.getText();
+            String zipCode = zipCodeTextField.getText();
             Integer buildingNumber = Integer.valueOf(buildingNumberTextField.getText());
             Integer apartmentNumber = Integer.valueOf(apartmentNumberTextField.getText());
             CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
@@ -117,6 +118,7 @@ public class CustomerController implements Initializable {
                     .email(email)
                     .place(place)
                     .street(street)
+                    .zipCode(zipCode)
                     .buildingNumber(buildingNumber)
                     .apartmentNumber(apartmentNumber)
                     .build();
@@ -144,11 +146,12 @@ public class CustomerController implements Initializable {
         String emailFilter = emailSearchField.getText().trim();
         String phoneNumberFilter = phoneNumberSearchField.getText().trim();
         String peselFilter = peselSearchField.getText().trim();
+        String zipCodeFilter = zipCodeSearchField.getText().trim();
         List<CustomerDTO> filteredCustomersList = customerService.findAll();
 
         if (!(idFilter.isEmpty() && nameFilter.isEmpty() && surnameFilter.isEmpty() && placeFilter.isEmpty() &&
                 streetFilter.isEmpty() && buildingNumberFilter.isEmpty() && apartmentNumberFilter.isEmpty() &&
-                emailFilter.isEmpty() && phoneNumberFilter.isEmpty() && peselFilter.isEmpty())) {
+                emailFilter.isEmpty() && phoneNumberFilter.isEmpty() && peselFilter.isEmpty() && zipCodeFilter.isEmpty())) {
             filteredCustomersList = filteredCustomersList.stream().filter(
                     customerDTO -> customerDTO.getId().toString().contains(idFilter)
                             && customerDTO.getName().contains(nameFilter)
@@ -160,6 +163,7 @@ public class CustomerController implements Initializable {
                             && customerDTO.getEmail().contains(emailFilter)
                             && customerDTO.getPhoneNumber().contains(phoneNumberFilter)
                             && customerDTO.getPesel().contains(peselFilter)
+                            && customerDTO.getZipCode().contains(zipCodeFilter)
             ).collect(Collectors.toList());
         }
         customersTable.getItems().clear();
@@ -203,6 +207,7 @@ public class CustomerController implements Initializable {
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         surnameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSurname()));
         placeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPlace()));
+        zipCodeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getZipCode()));
         streetColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStreet()));
         buildingNumberColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getBuildingNumber()));
         apartmentNumberColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getApartmentNumber()));
@@ -254,6 +259,23 @@ public class CustomerController implements Initializable {
                     try {
                         BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
                         customerUpdateRequest.setPlace(newValue);
+                        customerService.update(customerUpdateRequest);
+                        informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
+                    } catch (Exception e) {
+                        informationArea.appendText("\nNie udało się edytować klienta o id " + customerUpdateRequest.getId());
+                    }
+                }
+                super.commitEdit(newValue);
+            }
+        });
+        zipCodeColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
+            @Override
+            public void commitEdit(String newValue) {
+                if (!Objects.equals(newValue, getItem())) {
+                    CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
+                    try {
+                        BeanUtils.copyProperties(customerUpdateRequest, customersTable.getSelectionModel().getSelectedItem());
+                        customerUpdateRequest.setZipCode(newValue);
                         customerService.update(customerUpdateRequest);
                         informationArea.appendText("\nPomyślnie edytowano klienta o id " + customerUpdateRequest.getId());
                     } catch (Exception e) {

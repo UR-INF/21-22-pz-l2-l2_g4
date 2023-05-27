@@ -130,12 +130,13 @@ public class ImportCSVController implements Initializable {
                         .email(record[1])
                         .name(record[2])
                         .surname(record[3])
-                        .place(record[4])
-                        .apartmentNumber(Integer.parseInt(record[5]))
-                        .buildingNumber(Integer.parseInt(record[6]))
-                        .phoneNumber(record[7])
-                        .street(record[8])
-                        .pesel(record[9]).build();
+                        .zipCode(record[4])
+                        .place(record[5])
+                        .apartmentNumber(Integer.parseInt(record[6]))
+                        .buildingNumber(Integer.parseInt(record[7]))
+                        .phoneNumber(record[8])
+                        .street(record[9])
+                        .pesel(record[10]).build();
 
                 mainController.customerService.create(customerCreateRequest);
 

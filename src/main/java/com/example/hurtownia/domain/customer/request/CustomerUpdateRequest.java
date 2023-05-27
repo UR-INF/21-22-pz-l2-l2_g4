@@ -19,6 +19,7 @@ public class CustomerUpdateRequest {
     private String email;
     private String place;
     private String street;
+    private String zipCode;
     private Integer apartmentNumber;
     private Integer buildingNumber;
 }

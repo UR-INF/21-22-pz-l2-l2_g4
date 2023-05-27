@@ -25,9 +25,9 @@ public class CustomerReport extends AbstractReport {
     public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);
 
-        float columnWidth[] = {10f, 20f, 50f, 50f, 50f, 50f, 50f, 60f, 50f, 50f, 50f};
+        float columnWidth[] = {10f, 20f, 50f, 50f, 50f, 50f, 50f, 60f, 50f, 50f, 50f, 50f};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Lp.", "Id", "Imię", "Nazwisko", "Miejscowość", "Ulica", "Nr budynku", "Nr mieszkania", "Email", "Nr telefonu", "PESEL"};
+        String[] tableHeader = {"Lp.", "Id", "Imię", "Nazwisko", "Kod pocztowy", "Miejscowość", "Ulica", "Nr budynku", "Nr mieszkania", "Email", "Nr telefonu", "PESEL"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
@@ -39,6 +39,7 @@ public class CustomerReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph(tableHeader[8]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[9]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[10]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[11]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
         int n = 1;
         for (CustomerDTO datum : data) {
@@ -46,6 +47,7 @@ public class CustomerReport extends AbstractReport {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getId())).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getName()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getSurname()).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(datum.getZipCode()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getPlace()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getStreet()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(String.valueOf(datum.getBuildingNumber())).addStyle(styleTableContent)));

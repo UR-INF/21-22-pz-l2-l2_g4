@@ -49,6 +49,10 @@ public class Customer implements Serializable {
     private String place;
 
     @NonNull
+    @Column(name = "kodPocztowy")
+    private String zipCode;
+
+    @NonNull
     @Column(name = "ulica")
     private String street;
 

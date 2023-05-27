@@ -81,6 +81,7 @@ class OrderServiceTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)

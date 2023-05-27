@@ -19,6 +19,7 @@ public class InvoiceData {
     private String name;
     private String surname;
     private String place;
+    private String zipCode;
     private String street;
     private Integer apartmentNumber;
     private Integer buildingNumber;

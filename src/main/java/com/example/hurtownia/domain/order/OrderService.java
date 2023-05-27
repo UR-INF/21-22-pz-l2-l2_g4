@@ -117,6 +117,7 @@ public class OrderService {
                 .name(order.getCustomer().getName())
                 .surname(order.getCustomer().getSurname())
                 .place(order.getCustomer().getPlace())
+                .zipCode(order.getCustomer().getZipCode())
                 .street(order.getCustomer().getStreet())
                 .apartmentNumber(order.getCustomer().getApartmentNumber())
                 .buildingNumber(order.getCustomer().getBuildingNumber())

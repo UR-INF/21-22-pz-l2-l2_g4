@@ -37,10 +37,10 @@ public class InvoiceReport extends AbstractReport {
         table.addCell(new Cell().add(new Paragraph("NABYWCA:").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph(invoiceData.getName() + " " + invoiceData.getSurname()).addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph("ADRES:").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
-        table.addCell(new Cell().add(new Paragraph("Testowa 123\nKraków").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph("Testowa 123\n30-300 Kraków").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph("ADRES:").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
-        table.addCell(new Cell().add(new Paragraph(invoiceData.getStreet() + " " + invoiceData.getBuildingNumber() + " mieszk. " + invoiceData.getApartmentNumber() + "\n"
-                + invoiceData.getPlace()).addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
+        table.addCell(new Cell().add(new Paragraph(invoiceData.getStreet() + " " + invoiceData.getBuildingNumber() + "/" + invoiceData.getApartmentNumber() + "\n"
+                + invoiceData.getZipCode() + " " + invoiceData.getPlace()).addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph("NIP:").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph("12345678912").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT)).setBorder(Border.NO_BORDER));
         table.addCell(new Cell().add(new Paragraph("NUMER TELEFONU:").addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.RIGHT)).setBorder(Border.NO_BORDER));
