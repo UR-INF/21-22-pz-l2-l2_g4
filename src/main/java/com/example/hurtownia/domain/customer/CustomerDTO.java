@@ -3,6 +3,9 @@ package com.example.hurtownia.domain.customer;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Obiekt DTO dla obiektu customer.
+ */
 @Getter
 @Setter
 @ToString
@@ -10,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class CustomerDTO {
-
     private Long id;
     private String name;
     private String surname;

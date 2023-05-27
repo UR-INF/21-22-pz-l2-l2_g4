@@ -6,13 +6,15 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Obiekt DTO dla obiektu product.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ProductDTO {
-
     private Long id;
     private Long supplierId;
     private String name;

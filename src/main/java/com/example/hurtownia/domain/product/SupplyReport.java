@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
+/**
+ * Zawiera metodę generującą raport dostawy.
+ */
 @Component
 public class SupplyReport extends AbstractReport {
 
@@ -23,6 +26,14 @@ public class SupplyReport extends AbstractReport {
         this.data = data;
     }
 
+    /**
+     * Generuje raport dostawy.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł raportu
+     * @throws FileNotFoundException
+     * @throws MalformedURLException
+     */
     @Override
     public void generateReport(String path, String title) throws FileNotFoundException, MalformedURLException {
         generateReportHeader(path, title);

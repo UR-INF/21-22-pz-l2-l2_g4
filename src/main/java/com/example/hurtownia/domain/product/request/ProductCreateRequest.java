@@ -6,13 +6,15 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje create request dla obiektu product.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ProductCreateRequest {
-
     private Long supplierId;
     private String name;
     private String unitOfMeasurement;

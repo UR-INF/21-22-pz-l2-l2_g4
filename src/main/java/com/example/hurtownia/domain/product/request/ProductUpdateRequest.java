@@ -6,13 +6,15 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje update request dla obiektu product.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class ProductUpdateRequest {
-
     private Long id;
     private Long supplierId;
     private String name;

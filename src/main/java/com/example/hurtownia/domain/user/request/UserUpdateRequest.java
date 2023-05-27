@@ -6,13 +6,15 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje update request dla obiektu user.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class UserUpdateRequest {
-
     private Long id;
     private String name;
     private String surname;

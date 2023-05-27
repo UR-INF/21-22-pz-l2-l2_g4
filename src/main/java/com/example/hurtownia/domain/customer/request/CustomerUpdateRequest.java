@@ -3,6 +3,9 @@ package com.example.hurtownia.domain.customer.request;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje update request dla obiektu customer.
+ */
 @Getter
 @Setter
 @ToString
@@ -10,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class CustomerUpdateRequest {
-
     private Long id;
     private String name;
     private String surname;

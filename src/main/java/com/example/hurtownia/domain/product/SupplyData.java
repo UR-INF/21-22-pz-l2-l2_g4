@@ -6,13 +6,15 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje dane niezbędne do wygenerowania raportu dostawy.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class SupplyData {
-
     private String supplierName;
     private String productCode;
     private String productUnitOfMeasurement;

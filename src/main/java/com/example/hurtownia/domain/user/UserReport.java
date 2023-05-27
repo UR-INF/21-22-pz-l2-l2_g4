@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Zawiera metodę generującą raport z tabeli użytkowników.
+ */
 @Component
 public class UserReport extends AbstractReport {
 
@@ -21,6 +24,13 @@ public class UserReport extends AbstractReport {
         this.data = data;
     }
 
+    /**
+     * Generuje raport z tabeli użytkowników.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł raportu
+     * @throws IOException
+     */
     @Override
     public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);

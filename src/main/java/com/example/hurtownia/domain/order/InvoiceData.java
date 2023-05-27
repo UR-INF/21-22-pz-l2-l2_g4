@@ -9,13 +9,15 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/**
+ * Reprezentuje dane niezbędne do wygenerowania faktury.
+ */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class InvoiceData {
-
     private String name;
     private String surname;
     private String place;

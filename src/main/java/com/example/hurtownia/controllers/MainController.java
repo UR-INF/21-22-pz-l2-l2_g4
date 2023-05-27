@@ -42,7 +42,6 @@ import java.util.ResourceBundle;
  */
 @Controller
 public class MainController implements Initializable {
-
     @Autowired
     public CustomerService customerService;
     @Autowired
@@ -59,7 +58,9 @@ public class MainController implements Initializable {
     public TabPane tabPane;
     @FXML
     public Tab customerTab, orderTab, userTab;
+    @FXML
     public Button importCSVBtn;
+    @FXML
     public Button optionsBtn;
     @FXML
     private OrderController orderTabContentController;
@@ -79,14 +80,10 @@ public class MainController implements Initializable {
     private PasswordField passwordField;
     @FXML
     private AnchorPane loginPane;
-
     @FXML
     private CheckBox darkModeCheckBox;
-
     @Autowired
     private LoginService loginService;
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -102,14 +99,10 @@ public class MainController implements Initializable {
                 .build();
         try {
             userService.create(userCreateRequest);
-        } catch (UnsupportedOperationException e) {
-        }
+        } catch (UnsupportedOperationException e) {}
 
         new Thread(this::runClock).start();
 
-
-//
-//
 //        /**
 //         * Odpowiedzialna za tryb ciemny poprzez checkBoxa
 //         */
@@ -120,8 +113,6 @@ public class MainController implements Initializable {
 //                userTab.getStyleClass().remove("dark-theme");
 //            }
 //        });
-//
-
     }
 
     /**
@@ -226,7 +217,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Obsługuje przycisk wyświetlenia okna importu CSV
+     * Obsługuje przycisk wyświetlenia okna importu plików CSV.
      *
      * @param event
      */
@@ -243,11 +234,10 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * Obsługuje przycisk wyświetlenia okna opcji
+     * Obsługuje przycisk wyświetlenia okna opcji.
      *
      * @param event
      */

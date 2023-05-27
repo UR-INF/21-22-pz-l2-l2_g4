@@ -100,6 +100,12 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    /**
+     * Zwraca dane niezbedne do wygenerowania raportu dostawy.
+     *
+     * @param ids lista identyfikatorów produktów wybranych do dostawy
+     * @return
+     */
     public List<SupplyData> getSupplyData(List<Long> ids) {
         return ids.stream()
                 .map(id -> {

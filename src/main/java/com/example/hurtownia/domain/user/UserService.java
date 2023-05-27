@@ -110,8 +110,10 @@ public class UserService {
     public User update(UserUpdateRequest userUpdateRequest) {
         User user = findById(userUpdateRequest.getId());
 
-        if (findByEmail(userUpdateRequest.getEmail()) != null) {
-            throw new UnsupportedOperationException();
+        if (!userUpdateRequest.getEmail().equals(user.getEmail())) {
+            if (findByEmail(userUpdateRequest.getEmail()) != null) {
+                throw new UnsupportedOperationException();
+            }
         }
 
         String password = passwordEncoder.encode(userUpdateRequest.getPassword());

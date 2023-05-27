@@ -47,6 +47,12 @@ public class OrderItemService {
         return orderItemRepository.findAllByOrderId(id);
     }
 
+    /**
+     * Pobiera element zamówienia o konkretnym id.
+     *
+     * @param id identyfikator zamówienia
+     * @return element zamówienia
+     */
     public OrderItem findById(Long id) {
         return orderItemRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(id, "Nie znaleziono elementu zamówienia"));
     }

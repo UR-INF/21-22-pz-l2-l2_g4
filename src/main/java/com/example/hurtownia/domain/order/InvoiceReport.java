@@ -15,6 +15,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+/**
+ * Zawiera metodę generującą fakturę z zamówienia.
+ */
 @Component
 public class InvoiceReport extends AbstractReport {
 
@@ -26,6 +29,14 @@ public class InvoiceReport extends AbstractReport {
         this.invoiceData = invoiceData;
     }
 
+    /**
+     * Generuje fakturę z zamówienia.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł faktury
+     * @throws FileNotFoundException
+     * @throws MalformedURLException
+     */
     @Override
     public void generateReport(String path, String title) throws FileNotFoundException, MalformedURLException {
         generateReportHeader(path, title);

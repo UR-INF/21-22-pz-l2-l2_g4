@@ -40,9 +40,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Użytkownicy'.
+ */
 @Controller
 public class UserController implements Initializable {
-
     public static ObservableList<UserDTO> users = FXCollections.observableArrayList();
     public Button generateReportBtn;
     public TextField isAdaminSearchField;

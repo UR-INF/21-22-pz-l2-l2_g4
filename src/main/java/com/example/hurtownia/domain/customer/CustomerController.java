@@ -41,9 +41,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Zarządzanie użytkownikami'.
+ */
 @Controller
 public class CustomerController implements Initializable {
-
     public static ObservableList<CustomerDTO> customers = FXCollections.observableArrayList();
     @Autowired
     public CustomerService customerService;
@@ -73,10 +75,16 @@ public class CustomerController implements Initializable {
         setTable();
     }
 
+    /**
+     * Dezaktywuje przycisk generowania raportów.
+     */
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
     }
 
+    /**
+     * Aktywuje przycisk generowania raportów.
+     */
     public void enableGeneratingReports() {
         generateReportBtn.setDisable(false);
     }
