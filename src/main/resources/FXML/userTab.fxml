@@ -11,105 +11,87 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" stylesheets="@../CSS/mainCSS.css"
-            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.hurtownia.domain.user.UserController">
-    <TableView fx:id="usersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1188.0"
-               styleClass="table" tableMenuButtonVisible="true">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.user.UserController">
+    <TableView fx:id="usersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
         <columns>
-            <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" text="Id"/>
-            <TableColumn fx:id="nameColumn" prefWidth="144.7999267578125" text="Imię"/>
-            <TableColumn fx:id="surnameColumn" prefWidth="133.60003662109375" text="Nazwisko"/>
-            <TableColumn fx:id="phoneNumberColumn" prefWidth="148.0" text="Numer telefonu"/>
-            <TableColumn fx:id="emailColumn" prefWidth="122.39996337890625" text="E-mail"/>
-            <TableColumn fx:id="passwordColumn" prefWidth="99.20001220703125" text="Hasło"/>
-            <TableColumn fx:id="isAdminColumn" prefWidth="96.0" text="Admin"/>
-            <TableColumn fx:id="generatingReportsColumn" prefWidth="150.0" text="Generowanie raportów"/>
-            <TableColumn fx:id="grantingDiscountsColumn" prefWidth="140.0" text="Udzielanie rabatów"/>
-            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="86.4000244140625"
-                         style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń"/>
+            <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" text="Id" />
+            <TableColumn fx:id="nameColumn" prefWidth="144.7999267578125" text="Imię" />
+            <TableColumn fx:id="surnameColumn" prefWidth="133.60003662109375" text="Nazwisko" />
+            <TableColumn fx:id="phoneNumberColumn" prefWidth="148.0" text="Numer telefonu" />
+            <TableColumn fx:id="emailColumn" prefWidth="122.39996337890625" text="E-mail" />
+            <TableColumn fx:id="passwordColumn" prefWidth="99.20001220703125" text="Hasło" />
+            <TableColumn fx:id="isAdminColumn" prefWidth="96.0" text="Admin" />
+            <TableColumn fx:id="generatingReportsColumn" prefWidth="150.0" text="Generowanie raportów" />
+            <TableColumn fx:id="grantingDiscountsColumn" prefWidth="140.0" text="Udzielanie rabatów" />
+            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="86.4000244140625" style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń" />
         </columns>
     </TableView>
-    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="710.0" prefWidth="407.0"
-                style="-fx-background-color: #e3e3e3;">
+    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="710.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
         <Text layoutX="167.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj użytkownika">
             <font>
-                <Font size="18.0"/>
+                <Font size="18.0" />
             </font>
         </Text>
-        <TextField fx:id="phoneNumberTextField" layoutX="220.0" layoutY="220.0"/>
-        <Text layoutX="110.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazwisko"/>
-        <TextField fx:id="nameTextField" layoutX="220.0" layoutY="140.0"/>
-        <Text layoutX="110.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Imie"/>
-        <TextField fx:id="emailTextField" layoutX="220.0" layoutY="260.0"/>
-        <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numer telefonu"/>
-        <TextField fx:id="passwordTextField" layoutX="220.0" layoutY="300.0"/>
-        <Text layoutX="110.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adres e-mail"/>
-        <Text layoutX="110.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasło"/>
-        <Button layoutX="115.0" layoutY="442.0" mnemonicParsing="false" onMouseClicked="#usersBtnAddClicked"
-                prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;"
-                text="Dodaj">
+        <TextField fx:id="phoneNumberTextField" layoutX="220.0" layoutY="220.0" />
+        <Text layoutX="110.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nazwisko" />
+        <TextField fx:id="nameTextField" layoutX="220.0" layoutY="140.0" />
+        <Text layoutX="110.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Imie" />
+        <TextField fx:id="emailTextField" layoutX="220.0" layoutY="260.0" />
+        <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Numer telefonu" />
+        <TextField fx:id="passwordTextField" layoutX="220.0" layoutY="300.0" />
+        <Text layoutX="110.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adres e-mail" />
+        <Text layoutX="110.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hasło" />
+        <Button layoutX="115.0" layoutY="442.0" mnemonicParsing="false" onMouseClicked="#usersBtnAddClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
             <font>
-                <Font size="16.0"/>
+                <Font size="16.0" />
             </font>
             <cursor>
-                <Cursor fx:constant="HAND"/>
+                <Cursor fx:constant="HAND" />
             </cursor>
         </Button>
-        <Text fill="#427aa1" layoutX="169.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0"
-              text="Użytkownicy">
+        <Text fill="#427aa1" layoutX="169.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Użytkownicy">
             <font>
-                <Font name="Arial Bold" size="24.0"/>
+                <Font name="Arial Bold" size="24.0" />
             </font>
         </Text>
-        <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:"/>
-        <TextField fx:id="surnameTextField" layoutX="220.0" layoutY="182.0"/>
-        <CheckBox fx:id="grantingDiscountsCheckBox" layoutX="220.0" layoutY="375.0" mnemonicParsing="false"
-                  text="Udzielanie rabatu"/>
-        <CheckBox fx:id="isAdminCheckBox" layoutX="220.0" layoutY="403.0" mnemonicParsing="false"
-                  text="Administrator"/>
-        <CheckBox fx:id="generatingReportsCheckBox" layoutX="220.0" layoutY="348.0" mnemonicParsing="false"
-                  text="Generowanie raportów"/>
-        <TextArea fx:id="informationArea" layoutX="111.0" layoutY="613.0" prefHeight="68.0" prefWidth="268.0"
-                  AnchorPane.leftAnchor="110.0"/>
+        <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:" />
+        <TextField fx:id="surnameTextField" layoutX="220.0" layoutY="182.0" />
+        <CheckBox fx:id="grantingDiscountsCheckBox" layoutX="220.0" layoutY="375.0" mnemonicParsing="false" text="Udzielanie rabatu" />
+        <CheckBox fx:id="isAdminCheckBox" layoutX="220.0" layoutY="403.0" mnemonicParsing="false" text="Administrator" />
+        <CheckBox fx:id="generatingReportsCheckBox" layoutX="220.0" layoutY="348.0" mnemonicParsing="false" text="Generowanie raportów" />
+        <TextArea fx:id="informationArea" layoutX="111.0" layoutY="613.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
     </AnchorPane>
-    <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="50.0"/>
-    <TextField fx:id="nameSearchField" layoutX="380.0" layoutY="100.0" prefHeight="26.0" prefWidth="142.0"/>
-    <TextField fx:id="surnameSearchField" layoutX="522.0" layoutY="100.0" prefHeight="26.0" prefWidth="136.0"/>
-    <TextField fx:id="phoneNumberSearchField" layoutX="658.0" layoutY="100.0" prefHeight="26.0" prefWidth="151.0"/>
-    <TextField fx:id="emailSearchField" layoutX="808.0" layoutY="100.0" prefHeight="26.0" prefWidth="122.0"/>
-    <TextField fx:id="passwordSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0"/>
-    <TextField fx:id="isAdminSearchField" layoutX="1030.0" layoutY="100.0" prefHeight="26.0" prefWidth="96.0"/>
-    <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnSearchClicked"
-            prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
+    <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="50.0" />
+    <TextField fx:id="nameSearchField" layoutX="380.0" layoutY="100.0" prefHeight="26.0" prefWidth="142.0" />
+    <TextField fx:id="surnameSearchField" layoutX="522.0" layoutY="100.0" prefHeight="26.0" prefWidth="136.0" />
+    <TextField fx:id="phoneNumberSearchField" layoutX="658.0" layoutY="100.0" prefHeight="26.0" prefWidth="151.0" />
+    <TextField fx:id="emailSearchField" layoutX="808.0" layoutY="100.0" prefHeight="26.0" prefWidth="122.0" />
+    <TextField fx:id="passwordSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0" />
+    <TextField fx:id="isAdminSearchField" layoutX="1030.0" layoutY="100.0" prefHeight="26.0" prefWidth="96.0" />
+    <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnSearchClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
         <cursor>
-            <Cursor fx:constant="HAND"/>
+            <Cursor fx:constant="HAND" />
         </cursor>
     </Button>
-    <Button layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnShowClicked"
-            prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;"
-            text="Pokaż wszystko">
+    <Button layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnShowClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
         <cursor>
-            <Cursor fx:constant="HAND"/>
+            <Cursor fx:constant="HAND" />
         </cursor>
     </Button>
-    <Button fx:id="generateReportBtn" layoutX="780.0" layoutY="30.0" mnemonicParsing="false"
-            onMouseClicked="#usersBtnReportClicked" prefHeight="38.0" prefWidth="150.0"
-            style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
+    <Button fx:id="generateReportBtn" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnReportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
         <font>
-            <Font size="16.0"/>
+            <Font size="16.0" />
         </font>
         <cursor>
-            <Cursor fx:constant="HAND"/>
+            <Cursor fx:constant="HAND" />
         </cursor>
     </Button>
-    <TextField fx:id="isAdaminSearchField" layoutX="1126.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0"/>
-    <TextField fx:id="grantingDiscountsSearchField" layoutX="1276.0" layoutY="100.0" prefHeight="26.0"
-               prefWidth="140.0"/>
+    <TextField fx:id="isAdaminSearchField" layoutX="1126.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
+    <TextField fx:id="grantingDiscountsSearchField" layoutX="1276.0" layoutY="100.0" prefHeight="26.0" prefWidth="140.0" />
 </AnchorPane>

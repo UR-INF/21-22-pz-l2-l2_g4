@@ -1,15 +1,13 @@
 package com.example.hurtownia.domain.supplier.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class SupplierCreateRequest {
 
@@ -19,4 +17,6 @@ public class SupplierCreateRequest {
     private String street;
     private String name;
     private String nip;
+
+
 }
