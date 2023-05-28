@@ -36,14 +36,6 @@ class LoginServiceTest {
     }
 
     @Test
-    void logIn() {
-    }
-
-    @Test
-    void logOut() {
-    }
-
-    @Test
     void getCurrentUser() {
         assertThat(loginService.getCurrentUser()).isEqualTo(currentUser);
     }
