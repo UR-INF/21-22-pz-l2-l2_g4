@@ -98,6 +98,10 @@ class SupplierServiceTest {
     }
 
     @Test
+    void delete() {
+    }
+
+    @Test
     void create() {
         when(supplierRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         assertThat(supplierService.create(supplierCreateRequest))

@@ -127,6 +127,10 @@ class UserServiceTest {
     }
 
     @Test
+    void delete() {
+    }
+
+    @Test
     void create() {
         when(userRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         assertThat(userService.create(userCreateRequest))

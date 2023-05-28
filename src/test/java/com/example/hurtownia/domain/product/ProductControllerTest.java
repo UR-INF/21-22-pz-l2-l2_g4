@@ -47,4 +47,32 @@ class ProductControllerTest extends ApplicationTest {
         tableView.setItems(items);
         FxAssert.verifyThat(tableView, node -> node.getItems().size() == 1);
     }
+
+    @Test
+    void disableGeneratingReports() {
+    }
+
+    @Test
+    void enableGeneratingReports() {
+    }
+
+    @Test
+    void productsBtnShowClicked() {
+    }
+
+    @Test
+    void productsBtnAddClicked() {
+    }
+
+    @Test
+    void productsBtnSearchClicked() {
+    }
+
+    @Test
+    void productsBtnReportClicked() {
+    }
+
+    @Test
+    void productsBtnSupplyReportClicked() {
+    }
 }

@@ -43,4 +43,28 @@ class OrderItemControllerTest extends ApplicationTest {
         tableView.setItems(items);
         FxAssert.verifyThat(tableView, node -> node.getItems().size() == 1);
     }
+
+    @Test
+    void disableGeneratingReports() {
+    }
+
+    @Test
+    void enableGeneratingReports() {
+    }
+
+    @Test
+    void orderItemsBtnShowClicked() {
+    }
+
+    @Test
+    void orderItemsBtnAddClicked() {
+    }
+
+    @Test
+    void orderItemsBtnSearchClicked() {
+    }
+
+    @Test
+    void orderItemsBtnReportClicked() {
+    }
 }

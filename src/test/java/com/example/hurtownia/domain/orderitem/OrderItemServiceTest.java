@@ -155,6 +155,10 @@ class OrderItemServiceTest {
     }
 
     @Test
+    void delete() {
+    }
+
+    @Test
     void create() {
         when(orderService.findById(any())).thenReturn(order);
         when(productService.findById(any())).thenReturn(product);

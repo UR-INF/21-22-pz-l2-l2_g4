@@ -147,6 +147,10 @@ class OrderServiceTest {
     }
 
     @Test
+    void delete() {
+    }
+
+    @Test
     void create() {
         when(customerService.findById(any())).thenReturn(customer);
         when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));

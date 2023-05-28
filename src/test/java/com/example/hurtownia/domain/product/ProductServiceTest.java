@@ -125,6 +125,10 @@ class ProductServiceTest {
     }
 
     @Test
+    void delete() {
+    }
+
+    @Test
     void create() {
         when(supplierService.findById(any())).thenReturn(supplier);
         when(productRepository.save(any())).thenAnswer(i -> i.getArgument(0));
