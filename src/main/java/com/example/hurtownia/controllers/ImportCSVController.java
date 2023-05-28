@@ -18,9 +18,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,8 +34,7 @@ import java.util.ResourceBundle;
  */
 @Controller
 public class ImportCSVController implements Initializable {
-    @Autowired
-    SupplierService supplierService;
+    public File selectedFile;
     @FXML
     private AnchorPane ap;
     @FXML
@@ -41,7 +42,6 @@ public class ImportCSVController implements Initializable {
     @FXML
     private ComboBox<String> tableComboBox;
     private Stage stage;
-    private File selectedFile;
     private MainController mainController;
 
     @Override
@@ -63,30 +63,42 @@ public class ImportCSVController implements Initializable {
      */
     public void handleImportBtnClick(ActionEvent actionEvent) {
         stage = (Stage) ap.getScene().getWindow();
-        System.out.println(selectedFile != null);
         if (selectedFile != null) {
-            switch (tableComboBox.getSelectionModel().getSelectedItem()) {
-                case "dostawcy" -> importSuppliers();
-                case "produkty" -> importProducts();
-                case "użytkownicy" -> importUsers();
-                case "elementy zamówienia" -> importOrderItems();
-                case "klienci" -> importCustomers();
-                case "zamówienia" -> importOrders();
-            }
+            try {
+                switch (tableComboBox.getSelectionModel().getSelectedItem()) {
+                    case "dostawcy" -> importSuppliers();
+                    case "produkty" -> importProducts();
+                    case "użytkownicy" -> importUsers();
+                    case "elementy zamówienia" -> importOrderItems();
+                    case "klienci" -> importCustomers();
+                    case "zamówienia" -> importOrders();
+                }
 
-            stage.close();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("SUCCESS");
-            alert.setHeaderText("SUCCESS");
-            alert.setContentText("Pomyślnie zaimportowano plik o nazwie " + selectedFile.getName());
-            alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("SUCCESS");
+                alert.setHeaderText("SUCCESS");
+                alert.setContentText("Pomyślnie zaimportowano plik o nazwie " + selectedFile.getName());
+                alert.showAndWait();
+
+                stage.close();
+            } catch (IOException
+                     | CsvValidationException
+                     | IndexOutOfBoundsException
+                     | UnsupportedOperationException
+                     | ObjectNotFoundException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setHeaderText("ERROR");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            }
         }
     }
 
     /**
      * Parsuje plik csv z danymi dostawców.
      */
-    private void importSuppliers() {
+    public void importSuppliers() throws CsvValidationException, IOException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
@@ -104,19 +116,19 @@ public class ImportCSVController implements Initializable {
                 mainController.supplierService.create(supplierCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o dostawcach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
     /**
      * Parsuje plik csv z danymi klientów.
      */
-    private void importCustomers() {
+    public void importCustomers() throws CsvValidationException, IOException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
@@ -138,20 +150,24 @@ public class ImportCSVController implements Initializable {
                 mainController.customerService.create(customerCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
     /**
      * Parsuje plik csv z danymi produktów.
      */
-    private void importProducts() {
+    public void importProducts() throws CsvValidationException, IOException {
         try {
+            if (mainController.supplierService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o dostawcach przed zaimportowaniem danych o produktach.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
@@ -171,19 +187,21 @@ public class ImportCSVController implements Initializable {
                 mainController.productService.create(productCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o produktach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono dostawcy o danym id.");
         }
     }
 
     /**
      * Parsuje plik csv z danymi użytkowników.
      */
-    private void importUsers() {
+    public void importUsers() throws CsvValidationException, IOException, IndexOutOfBoundsException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
@@ -203,20 +221,29 @@ public class ImportCSVController implements Initializable {
                 mainController.userService.create(userCreateRequest);
             }
             reader.close();
-        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (UnsupportedOperationException e) {
+            throw new UnsupportedOperationException("Operacja niedozwolona.");
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
     /**
      * Parsuje plik csv z danymi elementów zamówień.
      */
-    private void importOrderItems() {
+    public void importOrderItems() throws CsvValidationException, IOException {
         try {
+            if (mainController.orderService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o zamówieniach przed zaimportowaniem danych o elementach zamówień.");
+            }
+            if (mainController.productService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o produktach przed zaimportowaniem danych o elementach zamówień.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
@@ -230,20 +257,26 @@ public class ImportCSVController implements Initializable {
                 mainController.orderItemService.create(orderItemCreateRequest);
             }
             reader.close();
-        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono obiektu o danym id.");
         }
     }
 
     /**
      * Parsuje plik csv z danymi zamówień.
      */
-    private void importOrders() {
+    public void importOrders() throws CsvValidationException, IOException {
         try {
+            if (mainController.customerService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o klientach przed zaimportowaniem danych o zamówieniach.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
@@ -258,17 +291,23 @@ public class ImportCSVController implements Initializable {
                 mainController.orderService.create(orderCreateRequest);
             }
             reader.close();
-        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono klienta o danym id.");
         }
     }
 
     public void setController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public MainController getMainController() {
+        return mainController;
     }
 }
 

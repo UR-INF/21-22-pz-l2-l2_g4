@@ -46,20 +46,4 @@ class UserControllerTest extends ApplicationTest {
         tableView.setItems(items);
         FxAssert.verifyThat(tableView, node -> node.getItems().size() == 1);
     }
-
-    @Test
-    void usersBtnShowClicked() {
-    }
-
-    @Test
-    void usersBtnAddClicked() {
-    }
-
-    @Test
-    void usersBtnSearchClicked() {
-    }
-
-    @Test
-    void usersBtnReportClicked() {
-    }
 }

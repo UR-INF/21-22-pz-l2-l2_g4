@@ -114,10 +114,6 @@ class CustomerServiceTest {
     }
 
     @Test
-    void delete() {
-    }
-
-    @Test
     void create() {
         when(customerRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         assertThat(customerService.create(customerCreateRequest))
