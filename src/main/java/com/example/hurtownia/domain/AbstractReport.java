@@ -25,8 +25,10 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Klasa abstrakcyjna dla klas generujących raporty.
+ */
 public abstract class AbstractReport {
-
     protected PdfFont fontBold;
     protected PdfFont fontNormal;
     protected Style styleTableHeader;
@@ -47,8 +49,23 @@ public abstract class AbstractReport {
         styleTitle = new Style().setFont(fontBold).setFontSize(12);
     }
 
+    /**
+     * Metoda abstrakcyjna generowania raportu.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł raportu
+     * @throws IOException
+     */
     public abstract void generateReport(String path, String title) throws IOException;
 
+    /**
+     * Generuje nagłówek dokumentu.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł dokumentu
+     * @throws FileNotFoundException
+     * @throws MalformedURLException
+     */
     protected void generateReportHeader(String path, String title) throws FileNotFoundException, MalformedURLException {
         PdfWriter pdfWriter = new PdfWriter(path, new WriterProperties().setPdfVersion(PdfVersion.PDF_2_0));
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);

@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ap2" prefHeight="407.0" prefWidth="416.0" style="-fx-border-color: #427aa1; -fx-border-width: 4;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.OptionsController">
+<AnchorPane fx:id="ap2" prefHeight="407.0" prefWidth="416.0" style="-fx-border-color: #427aa1; -fx-border-width: 4;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.OptionsController">
     <Label layoutX="40.0" layoutY="77.0" text="Tryb ciemny">
         <font>
       <Font size="16.0" />
@@ -30,7 +30,7 @@
                <Font size="16.0" />
            </font>
         </Text>
-        <Text layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Java 9 231a 2&#10;Fraweworki: Hibernate 14 2&#10;Wszystkie prawa zastrzeżone " />
-        <Text layoutX="14.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twórcy:   Tomasz Pisaniak, Kondrad Pelc,&#10;&#9;&#9;Paweł Niziołek, Michał Moskal,&#10;&#9;&#9;Patryk Mokrzycki, Sebastian Leń " wrappingWidth="252.90821838378906" />
+        <Text layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Java 17&#10;Spring Boot 2.7.11&#10;Wszelkie prawa zastrzeżone " />
+        <Text layoutX="14.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twórcy:   Tomasz Pitak, Kondrad Pelc,&#10;&#9;&#9;Paweł Niziołek, Michał Moskal,&#10;&#9;&#9;Patryk Mokrzycki, Sebastian Leń " wrappingWidth="252.90821838378906" />
     </AnchorPane>
 </AnchorPane>

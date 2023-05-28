@@ -16,13 +16,12 @@ public class LoginService {
     private User currentUser;
 
     /**
-     * Procedura logowania dla wersji użytkowej aplikacji.
-     * Ustawiany jest aktualny użytkownik
-     * Zwracane jest true w przypadku powodzenia, natomiast false w przyapdku błędnych danych logowania.
+     * Obsługa procedury logowania.
      *
-     * @param login
-     * @param password
-     * @return true/false
+     * @param login login użytkownika
+     * @param password hasło użytkownika
+     * @return true - jeśli logowanie przebiegło pomyślnie;
+     * false - jeśli wystąpiły błędy
      */
     public boolean logIn(String login, String password) throws Exception {
         currentUser = userService.login(login, password);
@@ -31,16 +30,15 @@ public class LoginService {
 
     /**
      * Obsługa procedury wylogowania.
-     * Bieżący użytkownik ustawiany jest jako null
      */
     public void logOut() {
         currentUser = null;
     }
 
     /**
-     * Zwracany jest bieżący użytkownik
+     * Zwraca aktualnie zalogowanego użytkownika.
      *
-     * @return isAdmin
+     * @return aktualnie zalogowany użytkownik
      */
     public User getCurrentUser() {
         return currentUser;
@@ -54,9 +52,9 @@ public class LoginService {
     }
 
     /**
-     * Zwraca imię i nazwisko bieżącego użytkownika
+     * Zwraca imię i nazwisko aktualnie zalogowanego użytkownika.
      *
-     * @return Imie i nazwisko
+     * @return imię i nazwisko aktualnie zalogowanego użytkownika
      */
     public String getCurrentUserName() {
         return currentUser.getName() + " " + currentUser.getSurname();

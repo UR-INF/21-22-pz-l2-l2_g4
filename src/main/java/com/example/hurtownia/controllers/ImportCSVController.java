@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Kontroler okna importu danych z plików CSV.
+ */
 @Controller
 public class ImportCSVController implements Initializable {
     @Autowired
@@ -39,9 +42,7 @@ public class ImportCSVController implements Initializable {
     private ComboBox<String> tableComboBox;
     private Stage stage;
     private File selectedFile;
-
     private MainController mainController;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,8 +52,6 @@ public class ImportCSVController implements Initializable {
     /**
      * Obsługuje przycisk wyboru pliku do importu.
      */
-
-
     public void handleChangeFileBtnClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         selectedFile = fileChooser.showOpenDialog(null);
@@ -62,7 +61,6 @@ public class ImportCSVController implements Initializable {
     /**
      * Obsługuje przycisk importu.
      */
-
     public void handleImportBtnClick(ActionEvent actionEvent) {
         stage = (Stage) ap.getScene().getWindow();
         System.out.println(selectedFile != null);
@@ -75,6 +73,7 @@ public class ImportCSVController implements Initializable {
                 case "klienci" -> importCustomers();
                 case "zamówienia" -> importOrders();
             }
+
             stage.close();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("SUCCESS");
@@ -92,6 +91,7 @@ public class ImportCSVController implements Initializable {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 SupplierCreateRequest supplierCreateRequest = SupplierCreateRequest.builder()
                         .name(record[1])
@@ -102,13 +102,6 @@ public class ImportCSVController implements Initializable {
                         .nip(record[6]).build();
 
                 mainController.supplierService.create(supplierCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6]);
             }
             reader.close();
         } catch (IOException | CsvValidationException e) {
@@ -120,34 +113,29 @@ public class ImportCSVController implements Initializable {
         }
     }
 
+    /**
+     * Parsuje plik csv z danymi klientów.
+     */
     private void importCustomers() {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
                         .email(record[1])
                         .name(record[2])
                         .surname(record[3])
-                        .place(record[4])
-                        .apartmentNumber(Integer.parseInt(record[5]))
-                        .buildingNumber(Integer.parseInt(record[6]))
-                        .phoneNumber(record[7])
-                        .street(record[8])
-                        .pesel(record[9]).build();
+                        .zipCode(record[4])
+                        .place(record[5])
+                        .apartmentNumber(Integer.parseInt(record[6]))
+                        .buildingNumber(Integer.parseInt(record[7]))
+                        .phoneNumber(record[8])
+                        .street(record[9])
+                        .pesel(record[10]).build();
 
                 mainController.customerService.create(customerCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8] + " " +
-                        record[9]);
             }
             reader.close();
         } catch (IOException | CsvValidationException e) {
@@ -159,12 +147,15 @@ public class ImportCSVController implements Initializable {
         }
     }
 
-
+    /**
+     * Parsuje plik csv z danymi produktów.
+     */
     private void importProducts() {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 ProductCreateRequest productCreateRequest = ProductCreateRequest.builder()
                         .code(record[1])
@@ -178,16 +169,6 @@ public class ImportCSVController implements Initializable {
                         .supplierId(Long.parseLong(record[9])).build();
 
                 mainController.productService.create(productCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8] + " " +
-                        record[9]);
             }
             reader.close();
         } catch (IOException | CsvValidationException e) {
@@ -199,12 +180,15 @@ public class ImportCSVController implements Initializable {
         }
     }
 
-
+    /**
+     * Parsuje plik csv z danymi użytkowników.
+     */
     private void importUsers() {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                         .name(record[1])
@@ -215,24 +199,11 @@ public class ImportCSVController implements Initializable {
                         .phoneNumber(record[6])
                         .generatingReports(Boolean.parseBoolean(record[7]))
                         .grantingDiscounts(Boolean.parseBoolean(record[8])).build();
-                try {
-                    mainController.userService.create(userCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać użytkownika");
-                }
 
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8]);
+                mainController.userService.create(userCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
+        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText("ERROR");
@@ -241,31 +212,25 @@ public class ImportCSVController implements Initializable {
         }
     }
 
-
+    /**
+     * Parsuje plik csv z danymi elementów zamówień.
+     */
     private void importOrderItems() {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 OrderItemCreateRequest orderItemCreateRequest = OrderItemCreateRequest.builder()
                         .amount(Integer.parseInt(record[1]))
                         .productId(Long.parseLong(record[2]))
                         .orderId(Long.parseLong(record[3])).build();
 
-                try {
-                    mainController.orderItemService.create(orderItemCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać elementu zamówienia");
-                }
-
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3]);
+                mainController.orderItemService.create(orderItemCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
+        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText("ERROR");
@@ -274,33 +239,26 @@ public class ImportCSVController implements Initializable {
         }
     }
 
+    /**
+     * Parsuje plik csv z danymi zamówień.
+     */
     private void importOrders() {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()
                         .date(record[1])
                         .customerId(Long.parseLong(record[2]))
                         .discount(Double.parseDouble(record[3]))
                         .state(record[4]).build();
-                //idZamowienia,data,idKlienta,procentRabatu,statusZamowienia
 
-                try {
-                    mainController.orderService.create(orderCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać zamówienia");
-                }
-
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4]);
+                mainController.orderService.create(orderCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
+        } catch (IOException | UnsupportedOperationException | CsvValidationException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("ERROR");
             alert.setHeaderText("ERROR");
@@ -309,11 +267,8 @@ public class ImportCSVController implements Initializable {
         }
     }
 
-
     public void setController(MainController mainController) {
         this.mainController = mainController;
     }
-
-
 }
 

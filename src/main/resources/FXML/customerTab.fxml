@@ -10,23 +10,24 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" style="-fx-background-color: #fff;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.customer.CustomerController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" style="-fx-background-color: #fff;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.customer.CustomerController">
     <TableView fx:id="customersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1186.0" style="-fx-text-fill: #ffffff;" styleClass="table" tableMenuButtonVisible="true">
         <columns>
             <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" text="Id" />
             <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Imię" />
-            <TableColumn fx:id="surnameColumn" prefWidth="150.0" text="Nazwisko" />
-            <TableColumn fx:id="placeColumn" prefWidth="150.0" text="Miejscowość" />
-            <TableColumn fx:id="streetColumn" prefWidth="150.0" text="Ulica" />
-            <TableColumn fx:id="buildingNumberColumn" prefWidth="85.0" text="Nr. budynku" />
-            <TableColumn fx:id="apartmentNumberColumn" prefWidth="115.0" text="Nr. mieszkania" />
+            <TableColumn fx:id="surnameColumn" prefWidth="109.60000610351562" text="Nazwisko" />
+         <TableColumn fx:id="zipCodeColumn" prefWidth="90.4000244140625" text="Kod pocztowy" />
+            <TableColumn fx:id="placeColumn" prefWidth="124.800048828125" text="Miejscowość" />
+            <TableColumn fx:id="streetColumn" prefWidth="124.0" text="Ulica" />
+            <TableColumn fx:id="buildingNumberColumn" prefWidth="84.79998779296875" text="Nr. budynku" />
+            <TableColumn fx:id="apartmentNumberColumn" prefWidth="114.40008544921875" text="Nr. mieszkania" />
             <TableColumn fx:id="emailColumn" prefWidth="104.800048828125" text="E-mail" />
-            <TableColumn fx:id="phoneNumberColumn" prefWidth="98.0" text="Nr. telefonu" />
-            <TableColumn fx:id="peselColumn" prefWidth="95.2000732421875" text="PESEL" />
-            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="71.199951171875" style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń" />
+            <TableColumn fx:id="phoneNumberColumn" prefWidth="98.4000244140625" text="Nr. telefonu" />
+            <TableColumn fx:id="peselColumn" prefWidth="93.60009765625" text="PESEL" />
+            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="68.7999267578125" style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń" />
         </columns>
     </TableView>
-    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" styleClass="tabL">
+    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
         <Text layoutX="187.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj klienta">
             <font>
                 <Font size="18.0" />
@@ -46,7 +47,7 @@
         <Text layoutX="110.0" layoutY="400.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adres e-mail" />
         <TextField fx:id="emailTextField" layoutX="220.0" layoutY="380.0" />
         <TextField fx:id="phoneNumberTextField" layoutX="220.0" layoutY="420.0" />
-        <Button layoutX="110.0" layoutY="510.0" mnemonicParsing="false" onMouseClicked="#customersBtnAddClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
+        <Button layoutX="109.0" layoutY="539.0" mnemonicParsing="false" onMouseClicked="#customersBtnAddClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
             <font>
                 <Font size="16.0" />
             </font>
@@ -65,13 +66,15 @@
         <Text layoutX="110.0" layoutY="480.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pesel" />
         <TextField fx:id="peselTextField" layoutX="220.0" layoutY="460.0" />
         <TextArea fx:id="informationArea" layoutX="110.0" layoutY="614.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
+      <Text layoutX="110.0" layoutY="517.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kod pocztowy" wrappingWidth="86.10351562500006" />
+      <TextField fx:id="zipCodeTextField" layoutX="220.0" layoutY="499.0" />
     </AnchorPane>
     <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="50.0" />
     <TextField fx:id="nameSearchField" layoutX="380.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0" />
-    <TextField fx:id="surnameSearchField" layoutX="480.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
-    <TextField fx:id="placeSearchField" layoutX="630.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
-    <TextField fx:id="streetSearchField" layoutX="780.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
-    <TextField fx:id="buildingNumberSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="85.0" />
+    <TextField fx:id="surnameSearchField" layoutX="480.0" layoutY="100.0" prefHeight="26.0" prefWidth="108.0" />
+    <TextField fx:id="placeSearchField" layoutX="683.0" layoutY="100.0" prefHeight="26.0" prefWidth="122.0" />
+    <TextField fx:id="streetSearchField" layoutX="805.0" layoutY="100.0" prefHeight="26.0" prefWidth="129.0" />
+    <TextField fx:id="buildingNumberSearchField" layoutX="932.0" layoutY="100.0" prefHeight="26.0" prefWidth="84.0" />
     <TextField fx:id="apartmentNumberSearchField" layoutX="1016.0" layoutY="100.0" prefHeight="26.0" prefWidth="115.0" />
     <TextField fx:id="emailSearchField" layoutX="1131.0" layoutY="100.0" prefHeight="26.0" prefWidth="108.0" />
     <TextField fx:id="phoneNumberSearchField" layoutX="1239.0" layoutY="100.0" prefHeight="26.0" prefWidth="98.0" />
@@ -100,4 +103,5 @@
         </cursor>
     </Button>
     <TextField fx:id="peselSearchField" layoutX="1337.0" layoutY="100.0" prefHeight="26.0" prefWidth="95.0" />
+   <TextField fx:id="zipCodeSearchField" layoutX="588.0" layoutY="100.0" prefHeight="26.0" prefWidth="95.0" />
 </AnchorPane>

@@ -75,6 +75,7 @@ public class CustomerService {
                 .phoneNumber(customerCreateRequest.getPhoneNumber())
                 .email(customerCreateRequest.getEmail())
                 .place(customerCreateRequest.getPlace())
+                .zipCode(customerCreateRequest.getZipCode())
                 .street(customerCreateRequest.getStreet())
                 .buildingNumber(customerCreateRequest.getBuildingNumber())
                 .apartmentNumber(customerCreateRequest.getApartmentNumber())
@@ -96,6 +97,7 @@ public class CustomerService {
         customer.setEmail(customerUpdateRequest.getEmail());
         customer.setPlace(customerUpdateRequest.getPlace());
         customer.setStreet(customerUpdateRequest.getStreet());
+        customer.setZipCode(customerUpdateRequest.getZipCode());
         customer.setBuildingNumber(customerUpdateRequest.getBuildingNumber());
         customer.setApartmentNumber(customerUpdateRequest.getApartmentNumber());
         return customerRepository.save(customer);

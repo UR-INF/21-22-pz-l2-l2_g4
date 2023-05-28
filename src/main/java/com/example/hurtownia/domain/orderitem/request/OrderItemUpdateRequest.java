@@ -3,6 +3,9 @@ package com.example.hurtownia.domain.orderitem.request;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje update request dla obiektu orderItem.
+ */
 @Getter
 @Setter
 @ToString
@@ -10,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class OrderItemUpdateRequest {
-
     private Long id;
     private Long orderId;
     private Long productId;

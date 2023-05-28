@@ -43,9 +43,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Zamówienia'.
+ */
 @Controller
 public class OrderController implements Initializable {
-
     public static ObservableList<OrderDTO> orders = FXCollections.observableArrayList();
     private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     @Autowired
@@ -78,16 +80,25 @@ public class OrderController implements Initializable {
         setTable();
     }
 
+    /**
+     * Dezaktywuje możliwość nadawania rabatów.
+     */
     public void disableGrantingDiscounds() {
         ordersTable.getColumns().get(4).setEditable(false);
         discountTextField.setDisable(true);
     }
 
+    /**
+     * Aktywuje możliwość nadawania rabatów.
+     */
     public void enableGrantingDiscounds() {
         ordersTable.getColumns().get(4).setEditable(true);
         discountTextField.setDisable(false);
     }
 
+    /**
+     * Dezaktywuje możliwość generowania raportów.
+     */
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
         invoiceColumn.setCellFactory(new Callback<>() {
@@ -118,6 +129,9 @@ public class OrderController implements Initializable {
         });
     }
 
+    /**
+     * Aktywuje możliwość generowania raportów.
+     */
     public void enableGeneratingReports() {
         generateReportBtn.setDisable(false);
         invoiceColumn.setCellFactory(new Callback<>() {

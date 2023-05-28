@@ -32,9 +32,9 @@ class CustomerReportTest {
     @BeforeEach
     void setUp() {
         List<CustomerDTO> data = List.of(
-                new CustomerDTO(1L, "Customer", "Surname", "2345678978", "32873782", "email@com.pl", "Place", "Street", 1, 1),
-                new CustomerDTO(2L, "Customer2", "Surname2", "23356743211", "132456321", "email2@com.pl", "Place2", "Street2", 2, 20),
-                new CustomerDTO(3L, "Customer3", "Surname3", "56935489733", "569854758", "email3@com.pl", "Place3", "Street3", 3, 30)
+                new CustomerDTO(1L, "Customer", "Surname", "2345678978", "32873782", "email@com.pl", "Place", "30-300", "Street", 1, 1),
+                new CustomerDTO(2L, "Customer2", "Surname2", "23356743211", "132456321", "email2@com.pl", "Place2", "30-300", "Street2", 2, 20),
+                new CustomerDTO(3L, "Customer3", "Surname3", "56935489733", "569854758", "email3@com.pl", "Place3", "30-300", "Street3", 3, 30)
         );
         customerReport.setData(data);
 
