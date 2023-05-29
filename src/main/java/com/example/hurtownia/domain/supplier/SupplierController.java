@@ -119,7 +119,7 @@ public class SupplierController implements Initializable {
                 return;
             }
             if (!TextFieldsValidators.validateNip(nip)) {
-                informationArea.appendText("\n Podaj nip w poprawnym formacie");
+                informationArea.appendText("\n Podaj nip w poprawnym formacie (10 cyfr)");
                 return;
             }
             SupplierCreateRequest supplierCreateRequest = SupplierCreateRequest.builder()
@@ -232,7 +232,7 @@ public class SupplierController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!TextFieldsValidators.validateNip(newValue)) {
-                    informationArea.appendText("\nPodaj nip w poprawnym formacie");
+                    informationArea.appendText("\nPodaj nip w poprawnym formacie (10 cyfr)");
                     return;
                 }
                 if (!Objects.equals(newValue, getItem())) {

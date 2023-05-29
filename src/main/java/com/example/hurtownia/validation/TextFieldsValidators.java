@@ -68,4 +68,15 @@ public class TextFieldsValidators {
         }
     }
 
+    /**
+     * Funckja waliduje kod pocztowy
+     * @param postalCode
+     * @return wartość typu boolean, w zależności czy kod jest poprawny
+     */
+    public static boolean validatePostalCode(String postalCode) {
+        String postalCodePattern = "\\d{2}-\\d{3}";
+
+        return postalCode.matches(postalCodePattern);
+    }
+
 }

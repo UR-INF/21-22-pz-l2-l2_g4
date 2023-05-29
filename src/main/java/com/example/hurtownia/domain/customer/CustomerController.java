@@ -132,11 +132,15 @@ public class CustomerController implements Initializable {
                 return;
             }
             if (!TextFieldsValidators.validatePhoneNumber(phoneNumber)) {
-                informationArea.appendText("\n Podaj numer telefonu w poprawnym formacie");
+                informationArea.appendText("\n Podaj numer telefonu w poprawnym formacie (9 cyfr)");
                 return;
             }
             if (!TextFieldsValidators.validatePesel(pesel)) {
-                informationArea.appendText("\n Podaj pesel w poprawnym formacie");
+                informationArea.appendText("\n Podaj pesel w poprawnym formacie (11 cyfr)");
+                return;
+            }
+            if (!TextFieldsValidators.validatePostalCode(zipCode)) {
+                informationArea.appendText("\n Podaj kod pocztowy w poprawnym formacie (xx-xxx)");
                 return;
             }
             CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
@@ -300,6 +304,10 @@ public class CustomerController implements Initializable {
         zipCodeColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {
+                if (!TextFieldsValidators.validatePostalCode(newValue)) {
+                    informationArea.appendText("\nPodaj kod pocztowy w poprawnym formacie (xx-xxx)");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     CustomerUpdateRequest customerUpdateRequest = new CustomerUpdateRequest();
                     try {
@@ -398,7 +406,7 @@ public class CustomerController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!TextFieldsValidators.validatePhoneNumber(newValue)) {
-                    informationArea.appendText("\nPodaj numer telefonu w poprawnym formacie");
+                    informationArea.appendText("\nPodaj numer telefonu w poprawnym formacie (9 cyfr)");
                     return;
                 }
                 if (!Objects.equals(newValue, getItem())) {
@@ -419,7 +427,7 @@ public class CustomerController implements Initializable {
             @Override
             public void commitEdit(String newValue) {
                 if (!TextFieldsValidators.validatePesel(newValue)) {
-                    informationArea.appendText("\nPodaj pesel w poprawnym formacie");
+                    informationArea.appendText("\nPodaj pesel w poprawnym formacie (11 cyfr)");
                     return;
                 }
                 if (!Objects.equals(newValue, getItem())) {
