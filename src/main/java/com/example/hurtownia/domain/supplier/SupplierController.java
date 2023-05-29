@@ -40,6 +40,9 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Dostawcy'.
+ */
 @Controller
 public class SupplierController implements Initializable {
 
@@ -72,14 +75,25 @@ public class SupplierController implements Initializable {
         setTable();
     }
 
+    /**
+     * Dezaktywuje przycisk generowania raportu.
+     */
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
     }
 
+    /**
+     * Aktywuje przycisk generowania raportu.
+     */
     public void enableGeneratingReports() {
         generateReportBtn.setDisable(false);
     }
 
+    /**
+     * Obsługuje przycisk wyświetlenia wszystkich dostawców.
+     *
+     * @param event
+     */
     @FXML
     public void suppliersBtnShowClicked(MouseEvent event) {
         suppliersTable.getItems().clear();

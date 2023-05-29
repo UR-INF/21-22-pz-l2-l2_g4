@@ -22,7 +22,6 @@ import java.util.ResourceBundle;
  */
 @Controller
 public class ReportController implements Initializable {
-
     @FXML
     private AnchorPane ap;
     @FXML
@@ -41,7 +40,7 @@ public class ReportController implements Initializable {
     }
 
     /**
-     * Obsługuje przycisk wyboru lokalizacji.
+     * Obsługuje przycisk wyboru lokalizacji zapisu dokumentu.
      */
     @FXML
     public void handleChangeDirectoryBtnClick() {
@@ -51,7 +50,7 @@ public class ReportController implements Initializable {
     }
 
     /**
-     * Obsługuje przycisk zapisu.
+     * Obsługuje przycisk zapisu dokumentu.
      */
     @FXML
     public void handleSaveBtnClick() {

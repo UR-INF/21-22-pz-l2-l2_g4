@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Zawiera metodę generującą raport z tabeli elementów zamówienia.
+ */
 @Component
 public class OrderItemReport extends AbstractReport {
 
@@ -21,6 +24,13 @@ public class OrderItemReport extends AbstractReport {
         this.data = data;
     }
 
+    /**
+     * Generuje raport z tabeli elementów zamówień.
+     *
+     * @param path ścieżka zapisu
+     * @param title tytuł raportu
+     * @throws IOException
+     */
     @Override
     public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);

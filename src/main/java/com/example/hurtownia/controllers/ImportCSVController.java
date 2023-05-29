@@ -18,19 +18,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Kontroler okna importu danych z plików CSV.
+ */
 @Controller
 public class ImportCSVController implements Initializable {
-    @Autowired
-    SupplierService supplierService;
+    public File selectedFile;
     @FXML
     private AnchorPane ap;
     @FXML
@@ -38,10 +42,7 @@ public class ImportCSVController implements Initializable {
     @FXML
     private ComboBox<String> tableComboBox;
     private Stage stage;
-    private File selectedFile;
-
     private MainController mainController;
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,8 +52,6 @@ public class ImportCSVController implements Initializable {
     /**
      * Obsługuje przycisk wyboru pliku do importu.
      */
-
-
     public void handleChangeFileBtnClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         selectedFile = fileChooser.showOpenDialog(null);
@@ -62,36 +61,49 @@ public class ImportCSVController implements Initializable {
     /**
      * Obsługuje przycisk importu.
      */
-
     public void handleImportBtnClick(ActionEvent actionEvent) {
         stage = (Stage) ap.getScene().getWindow();
-        System.out.println(selectedFile != null);
         if (selectedFile != null) {
-            switch (tableComboBox.getSelectionModel().getSelectedItem()) {
-                case "dostawcy" -> importSuppliers();
-                case "produkty" -> importProducts();
-                case "użytkownicy" -> importUsers();
-                case "elementy zamówienia" -> importOrderItems();
-                case "klienci" -> importCustomers();
-                case "zamówienia" -> importOrders();
+            try {
+                switch (tableComboBox.getSelectionModel().getSelectedItem()) {
+                    case "dostawcy" -> importSuppliers();
+                    case "produkty" -> importProducts();
+                    case "użytkownicy" -> importUsers();
+                    case "elementy zamówienia" -> importOrderItems();
+                    case "klienci" -> importCustomers();
+                    case "zamówienia" -> importOrders();
+                }
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("SUCCESS");
+                alert.setHeaderText("SUCCESS");
+                alert.setContentText("Pomyślnie zaimportowano plik o nazwie " + selectedFile.getName());
+                alert.showAndWait();
+
+                stage.close();
+            } catch (IOException
+                     | CsvValidationException
+                     | IndexOutOfBoundsException
+                     | UnsupportedOperationException
+                     | ObjectNotFoundException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setHeaderText("ERROR");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
             }
-            stage.close();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("SUCCESS");
-            alert.setHeaderText("SUCCESS");
-            alert.setContentText("Pomyślnie zaimportowano plik o nazwie " + selectedFile.getName());
-            alert.showAndWait();
         }
     }
 
     /**
      * Parsuje plik csv z danymi dostawców.
      */
-    private void importSuppliers() {
+    public void importSuppliers() throws CsvValidationException, IOException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 SupplierCreateRequest supplierCreateRequest = SupplierCreateRequest.builder()
                         .name(record[1])
@@ -102,69 +114,64 @@ public class ImportCSVController implements Initializable {
                         .nip(record[6]).build();
 
                 mainController.supplierService.create(supplierCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6]);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o dostawcach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
-    private void importCustomers() {
+    /**
+     * Parsuje plik csv z danymi klientów.
+     */
+    public void importCustomers() throws CsvValidationException, IOException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 CustomerCreateRequest customerCreateRequest = CustomerCreateRequest.builder()
                         .email(record[1])
                         .name(record[2])
                         .surname(record[3])
-                        .place(record[4])
-                        .apartmentNumber(Integer.parseInt(record[5]))
-                        .buildingNumber(Integer.parseInt(record[6]))
-                        .phoneNumber(record[7])
-                        .street(record[8])
-                        .pesel(record[9]).build();
+                        .zipCode(record[4])
+                        .place(record[5])
+                        .apartmentNumber(Integer.parseInt(record[6]))
+                        .buildingNumber(Integer.parseInt(record[7]))
+                        .phoneNumber(record[8])
+                        .street(record[9])
+                        .pesel(record[10]).build();
 
                 mainController.customerService.create(customerCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8] + " " +
-                        record[9]);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
-
-    private void importProducts() {
+    /**
+     * Parsuje plik csv z danymi produktów.
+     */
+    public void importProducts() throws CsvValidationException, IOException {
         try {
+            if (mainController.supplierService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o dostawcach przed zaimportowaniem danych o produktach.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 ProductCreateRequest productCreateRequest = ProductCreateRequest.builder()
                         .code(record[1])
@@ -178,33 +185,28 @@ public class ImportCSVController implements Initializable {
                         .supplierId(Long.parseLong(record[9])).build();
 
                 mainController.productService.create(productCreateRequest);
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8] + " " +
-                        record[9]);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o produktach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono dostawcy o danym id.");
         }
     }
 
-
-    private void importUsers() {
+    /**
+     * Parsuje plik csv z danymi użytkowników.
+     */
+    public void importUsers() throws CsvValidationException, IOException, IndexOutOfBoundsException {
         try {
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 UserCreateRequest userCreateRequest = UserCreateRequest.builder()
                         .name(record[1])
@@ -215,105 +217,97 @@ public class ImportCSVController implements Initializable {
                         .phoneNumber(record[6])
                         .generatingReports(Boolean.parseBoolean(record[7]))
                         .grantingDiscounts(Boolean.parseBoolean(record[8])).build();
-                try {
-                    mainController.userService.create(userCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać użytkownika");
-                }
 
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4] + " " +
-                        record[5] + " " +
-                        record[6] + " " +
-                        record[7] + " " +
-                        record[8]);
+                mainController.userService.create(userCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (UnsupportedOperationException e) {
+            throw new UnsupportedOperationException("Operacja niedozwolona.");
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
         }
     }
 
-
-    private void importOrderItems() {
+    /**
+     * Parsuje plik csv z danymi elementów zamówień.
+     */
+    public void importOrderItems() throws CsvValidationException, IOException {
         try {
+            if (mainController.orderService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o zamówieniach przed zaimportowaniem danych o elementach zamówień.");
+            }
+            if (mainController.productService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o produktach przed zaimportowaniem danych o elementach zamówień.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 OrderItemCreateRequest orderItemCreateRequest = OrderItemCreateRequest.builder()
                         .amount(Integer.parseInt(record[1]))
                         .productId(Long.parseLong(record[2]))
                         .orderId(Long.parseLong(record[3])).build();
 
-                try {
-                    mainController.orderItemService.create(orderItemCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać elementu zamówienia");
-                }
-
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3]);
+                mainController.orderItemService.create(orderItemCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono obiektu o danym id.");
         }
     }
 
-    private void importOrders() {
+    /**
+     * Parsuje plik csv z danymi zamówień.
+     */
+    public void importOrders() throws CsvValidationException, IOException {
         try {
+            if (mainController.customerService.findAll().isEmpty()) {
+                throw new UnsupportedOperationException("Zaimportuj dane o klientach przed zaimportowaniem danych o zamówieniach.");
+            }
+
             CSVReader reader = new CSVReader(new FileReader(selectedFile));
             String[] record = null;
             reader.readNext();
+
             while ((record = reader.readNext()) != null) {
                 OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()
                         .date(record[1])
                         .customerId(Long.parseLong(record[2]))
                         .discount(Double.parseDouble(record[3]))
                         .state(record[4]).build();
-                //idZamowienia,data,idKlienta,procentRabatu,statusZamowienia
 
-                try {
-                    mainController.orderService.create(orderCreateRequest);
-                } catch (UnsupportedOperationException e) {
-                    System.out.println("Nie udało się dodać zamówienia");
-                }
-
-
-                System.out.println(record[1] + " " +
-                        record[2] + " " +
-                        record[3] + " " +
-                        record[4]);
+                mainController.orderService.create(orderCreateRequest);
             }
             reader.close();
-        } catch (IOException | CsvValidationException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setHeaderText("ERROR");
-            alert.setContentText("Błąd.");
-            alert.showAndWait();
+        } catch (CsvValidationException e) {
+            throw new CsvValidationException("Błąd podczas parsowania pliku z danymi o klientach.");
+        } catch (IOException e) {
+            throw new IOException("Błąd podczas odczytu pliku.");
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Zła struktura pliku.");
+        } catch (ObjectNotFoundException e) {
+            throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono klienta o danym id.");
         }
     }
-
 
     public void setController(MainController mainController) {
         this.mainController = mainController;
     }
 
-
+    public MainController getMainController() {
+        return mainController;
+    }
 }
 

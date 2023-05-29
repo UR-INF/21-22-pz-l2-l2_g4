@@ -45,9 +45,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Produkty'.
+ */
 @Controller
 public class ProductController implements Initializable {
-
     public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
     @Autowired
     private SupplyReport supplyReport;
@@ -85,6 +87,9 @@ public class ProductController implements Initializable {
         setTable();
     }
 
+    /**
+     * Dezaktywuje możliwość generowania raportów.
+     */
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
         generateSupplyReportBtn.setDisable(true);
@@ -112,6 +117,9 @@ public class ProductController implements Initializable {
         });
     }
 
+    /**
+     * Aktywuje możliwość generowania raportów.
+     */
     public void enableGeneratingReports() {
         generateReportBtn.setDisable(false);
         generateSupplyReportBtn.setDisable(false);
@@ -299,6 +307,9 @@ public class ProductController implements Initializable {
         }
     }
 
+    /**
+     * Inicjalizuje tabelę.
+     */
     private void setTable() {
         idColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getId()));
         supplierIdColumn.setCellValueFactory(cellData -> new SimpleLongProperty(cellData.getValue().getSupplierId()));

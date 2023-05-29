@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * Klasa odpowiedzialna za uruchomienie aplikacji.
+ * Klasa odpowiedzialna za załadowanie widoku aplikacji.
  */
 public class Start extends Application {
 
@@ -22,6 +22,12 @@ public class Start extends Application {
         applicationContext = new SpringApplicationBuilder(HurtowniaApplication.class).run();
     }
 
+    /**
+     * Ładuje główny widok aplikacji.
+     *
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         applicationContext.publishEvent(new StageReadyEvent(stage));
@@ -30,9 +36,6 @@ public class Start extends Application {
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add("CSS/mainCSS.css");
-
-
-
         stage.setTitle("Hurtownia");
         stage.setScene(scene);
         stage.show();
@@ -43,6 +46,9 @@ public class Start extends Application {
         });
     }
 
+    /**
+     * Zamyka aplikację.
+     */
     @Override
     public void stop() {
         applicationContext.close();

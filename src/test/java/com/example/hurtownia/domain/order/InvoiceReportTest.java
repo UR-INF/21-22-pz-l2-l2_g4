@@ -64,6 +64,7 @@ class InvoiceReportTest {
                 .surname("Surname")
                 .pesel("21973812L")
                 .email("email@com.pl")
+                .zipCode("30-300")
                 .place("Place")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)

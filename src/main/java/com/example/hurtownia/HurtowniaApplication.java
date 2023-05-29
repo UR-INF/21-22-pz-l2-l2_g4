@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+/**
+ * Klasa odpowiedzialna za uruchomienie aplikacji.
+ */
 @EnableJpaRepositories
 @EnableAutoConfiguration
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})

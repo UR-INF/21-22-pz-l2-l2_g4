@@ -41,9 +41,11 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroller zakładki 'Elementy zamówienia'.
+ */
 @Controller
 public class OrderItemController implements Initializable {
-
     public static ObservableList<OrderItemDTO> orderItems = FXCollections.observableArrayList();
     @Autowired
     private OrderItemService orderItemService;
@@ -71,10 +73,16 @@ public class OrderItemController implements Initializable {
         setTable();
     }
 
+    /**
+     * Dezaktywuje przycisk generowania raportu.
+     */
     public void disableGeneratingReports() {
         generateReportBtn.setDisable(true);
     }
 
+    /**
+     * Aktywuje przycisk generowania raportu.
+     */
     public void enableGeneratingReports() {
         generateReportBtn.setDisable(false);
     }

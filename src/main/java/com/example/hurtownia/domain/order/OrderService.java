@@ -117,6 +117,7 @@ public class OrderService {
                 .name(order.getCustomer().getName())
                 .surname(order.getCustomer().getSurname())
                 .place(order.getCustomer().getPlace())
+                .zipCode(order.getCustomer().getZipCode())
                 .street(order.getCustomer().getStreet())
                 .apartmentNumber(order.getCustomer().getApartmentNumber())
                 .buildingNumber(order.getCustomer().getBuildingNumber())
@@ -130,6 +131,13 @@ public class OrderService {
         return invoiceData;
     }
 
+    /**
+     * Oblicza wartość zamówienia po zniżce.
+     *
+     * @param order zamówienie
+     * @param orderItems lista elementów zamówienia
+     * @return
+     */
     private String calculateValueAfterDiscount(Order order, List<OrderItem> orderItems) {
         double value = calculateValue(orderItems);
         double valueAfterDiscount = value - (value * order.getDiscount());

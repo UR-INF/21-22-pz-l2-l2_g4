@@ -110,7 +110,7 @@ public class UserService {
     public User update(UserUpdateRequest userUpdateRequest) {
         User user = findById(userUpdateRequest.getId());
 
-        if (findByEmail(userUpdateRequest.getEmail()) != null) {
+        if (!userUpdateRequest.getEmail().equals(user.getEmail()) && findByEmail(userUpdateRequest.getEmail()) != null) {
             throw new UnsupportedOperationException();
         }
 

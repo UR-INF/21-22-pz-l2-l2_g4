@@ -81,6 +81,7 @@ class OrderItemServiceTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)
@@ -151,10 +152,6 @@ class OrderItemServiceTest {
 
         when(orderItemRepository.findById(any())).thenReturn(Optional.of(orderItem));
         assertThat(orderItemService.findById(any())).isEqualTo(orderItem);
-    }
-
-    @Test
-    void delete() {
     }
 
     @Test

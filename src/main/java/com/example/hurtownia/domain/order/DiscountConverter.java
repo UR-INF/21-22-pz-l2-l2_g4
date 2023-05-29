@@ -1,10 +1,16 @@
 package com.example.hurtownia.domain.order;
 
 /**
- * Konwerter rabatu pomiędzy wartością liczbową, procentową i kodem.
+ * Konwerter rabatu pomiędzy wartością liczbową, procentową i kodem rabatowym.
  */
 public class DiscountConverter {
 
+    /**
+     * Konwertuje wartość liczbową na wartość procentową.
+     *
+     * @param value
+     * @return procent rabatu
+     */
     public static String fromNumericToPercentage(double value) {
         return switch (String.valueOf(value)) {
             case "0.1" -> "-10%";
@@ -13,6 +19,12 @@ public class DiscountConverter {
         };
     }
 
+    /**
+     * Konwertuje wartość liczbową na kod.
+     *
+     * @param value
+     * @return kod rabatu
+     */
     public static String fromNumericToCode(double value) {
         return switch (String.valueOf(value)) {
             case "0.1" -> "KOD1";
@@ -21,6 +33,12 @@ public class DiscountConverter {
         };
     }
 
+    /**
+     * Konwertuje wartość procentową na kod.
+     *
+     * @param value
+     * @return kod rabatu
+     */
     public static String fromPercentageToCode(String value) {
         return switch (value) {
             case "-10%" -> "KOD1";
@@ -29,6 +47,12 @@ public class DiscountConverter {
         };
     }
 
+    /**
+     * Konwertuje wartość procentową na wartość liczbową.
+     *
+     * @param value
+     * @return wartość liczbowa kodu
+     */
     public static Double fromPercentageToNumeric(String value) {
         return switch (value) {
             case "-10%" -> 0.1;
@@ -37,6 +61,12 @@ public class DiscountConverter {
         };
     }
 
+    /**
+     * Konwertuje wartość kod rabatu na wartość procentową.
+     *
+     * @param value
+     * @return procent rabatu
+     */
     public static String fromCodeToPercentage(String value) {
         return switch (value) {
             case "KOD1" -> "-10%";
@@ -45,6 +75,12 @@ public class DiscountConverter {
         };
     }
 
+    /**
+     * Konwertuje kod rabatu na wartość liczbową.
+     *
+     * @param value
+     * @return wartość liczbowa kodu
+     */
     public static Double fromCodeToNumeric(String value) {
         return switch (value) {
             case "KOD1" -> 0.1;

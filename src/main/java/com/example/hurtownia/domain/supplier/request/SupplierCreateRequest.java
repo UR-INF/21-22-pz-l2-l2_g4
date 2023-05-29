@@ -3,6 +3,9 @@ package com.example.hurtownia.domain.supplier.request;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Reprezentuje create request dla obiektu supplier.
+ */
 @Getter
 @Setter
 @ToString
@@ -10,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class SupplierCreateRequest {
-
     private String email;
     private String country;
     private String place;

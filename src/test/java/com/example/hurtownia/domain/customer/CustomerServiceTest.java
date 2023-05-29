@@ -45,6 +45,7 @@ class CustomerServiceTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)
@@ -58,6 +59,7 @@ class CustomerServiceTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)
@@ -70,6 +72,7 @@ class CustomerServiceTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)
@@ -83,6 +86,7 @@ class CustomerServiceTest {
                 .pesel("31973812L")
                 .email("email2@com.pl")
                 .place("Place2")
+                .zipCode("30-300")
                 .phoneNumber("12873782")
                 .apartmentNumber(2)
                 .buildingNumber(2)
@@ -110,10 +114,6 @@ class CustomerServiceTest {
     }
 
     @Test
-    void delete() {
-    }
-
-    @Test
     void create() {
         when(customerRepository.save(any())).thenAnswer(i -> i.getArgument(0));
         assertThat(customerService.create(customerCreateRequest))
@@ -124,6 +124,7 @@ class CustomerServiceTest {
                     assertThat(newCustomer.getPhoneNumber()).isEqualTo(customerCreateRequest.getPhoneNumber());
                     assertThat(newCustomer.getEmail()).isEqualTo(customerCreateRequest.getEmail());
                     assertThat(newCustomer.getPlace()).isEqualTo(customerCreateRequest.getPlace());
+                    assertThat(newCustomer.getZipCode()).isEqualTo(customerCreateRequest.getZipCode());
                     assertThat(newCustomer.getStreet()).isEqualTo(customerCreateRequest.getStreet());
                     assertThat(newCustomer.getApartmentNumber()).isEqualTo(customerCreateRequest.getApartmentNumber());
                     assertThat(newCustomer.getBuildingNumber()).isEqualTo(customerCreateRequest.getBuildingNumber());
@@ -142,6 +143,7 @@ class CustomerServiceTest {
                     assertThat(newCustomer.getPhoneNumber()).isEqualTo(customerUpdateRequest.getPhoneNumber());
                     assertThat(newCustomer.getEmail()).isEqualTo(customerUpdateRequest.getEmail());
                     assertThat(newCustomer.getPlace()).isEqualTo(customerUpdateRequest.getPlace());
+                    assertThat(newCustomer.getZipCode()).isEqualTo(customerUpdateRequest.getZipCode());
                     assertThat(newCustomer.getStreet()).isEqualTo(customerUpdateRequest.getStreet());
                     assertThat(newCustomer.getApartmentNumber()).isEqualTo(customerUpdateRequest.getApartmentNumber());
                     assertThat(newCustomer.getBuildingNumber()).isEqualTo(customerUpdateRequest.getBuildingNumber());

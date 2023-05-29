@@ -33,6 +33,7 @@ class CustomerControllerTest extends ApplicationTest {
                 .pesel("21973812L")
                 .email("email@com.pl")
                 .place("Place")
+                .zipCode("30-300")
                 .phoneNumber("32873782")
                 .apartmentNumber(1)
                 .buildingNumber(1)
@@ -46,29 +47,5 @@ class CustomerControllerTest extends ApplicationTest {
         TableView<CustomerDTO> tableView = lookup(".table-view").queryTableView();
         tableView.setItems(items);
         FxAssert.verifyThat(tableView, node -> node.getItems().size() == 1);
-    }
-
-    @Test
-    void disableGeneratingReports() {
-    }
-
-    @Test
-    void enableGeneratingReports() {
-    }
-
-    @Test
-    void customersBtnShowClicked() {
-    }
-
-    @Test
-    void customersBtnAddClicked() {
-    }
-
-    @Test
-    void customersBtnSearchClicked() {
-    }
-
-    @Test
-    void customersBtnReportClicked() {
     }
 }
