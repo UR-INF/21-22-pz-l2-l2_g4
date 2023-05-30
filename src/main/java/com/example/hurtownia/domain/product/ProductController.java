@@ -4,6 +4,7 @@ import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.domain.supplier.SupplierService;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
@@ -166,6 +167,18 @@ public class ProductController implements Initializable {
      */
     @FXML
     public void productsBtnAddClicked(MouseEvent event) {
+        if (!TextFieldsValidators.validateDouble(priceTextField.getText())) {
+            informationArea.appendText("\n Podaj cenę w poprawnym formacie");
+            return;
+        }
+        if (!TextFieldsValidators.validateInteger(numberTextField.getText())) {
+            informationArea.appendText("\n Podaj liczbę sztuk w poprawnym formacie");
+            return;
+        }
+        if (!TextFieldsValidators.validateInteger(maxNumberTextField.getText())) {
+            informationArea.appendText("\n Podaj maksymalną liczbę sztuk w poprawnym formacie");
+            return;
+        }
         try {
             Long supplierId = Long.valueOf(supplierIdTextField.getText());
             String name = nameTextField.getText();
@@ -368,6 +381,10 @@ public class ProductController implements Initializable {
         priceColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.doubleValue() < 0.00) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
                     try {
@@ -385,6 +402,10 @@ public class ProductController implements Initializable {
         numberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.intValue() < 0) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
                     try {
@@ -455,6 +476,10 @@ public class ProductController implements Initializable {
         maxNumberColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
+                if (newValue.intValue() < 0) {
+                    informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
                     try {
