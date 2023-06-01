@@ -22,8 +22,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +64,12 @@ public class MainController implements Initializable {
     public Tab customerTab, orderTab, userTab;
     public Button importCSVBtn;
     public Button optionsBtn;
+    public Button loginButton;
+    public StackPane ap1;
     @FXML
     private OrderController orderTabContentController;
     @FXML
-    private CustomerController customerTabContentController;
+    public CustomerController customerTabContentController;
     @FXML
     private OrderItemController orderItemTabContentController;
     @FXML
@@ -78,14 +83,10 @@ public class MainController implements Initializable {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private AnchorPane loginPane;
-
-    @FXML
-    private CheckBox darkModeCheckBox;
+    public AnchorPane loginPane;
 
     @Autowired
     private LoginService loginService;
-
 
 
     @Override
@@ -106,21 +107,6 @@ public class MainController implements Initializable {
         }
 
         new Thread(this::runClock).start();
-
-
-//
-//
-//        /**
-//         * Odpowiedzialna za tryb ciemny poprzez checkBoxa
-//         */
-//        darkModeCheckBox.setOnAction(event -> {
-//            if (darkModeCheckBox.isSelected()) {
-//                userTab.getStyleClass().add("dark-theme");
-//            } else {
-//                userTab.getStyleClass().remove("dark-theme");
-//            }
-//        });
-//
 
     }
 
@@ -243,6 +229,8 @@ public class MainController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/options-view.fxml"));
             Parent root = fxmlLoader.load();
+            OptionsController optionsController = fxmlLoader.getController();
+            optionsController.setMainController(this);
             Stage newStage = new Stage();
             newStage.setTitle("Opcje");
             newStage.setScene(new Scene(root));
@@ -250,5 +238,20 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    /**
+     * Obsługuje klawisz TAB
+     *
+     * @param event
+     */
+    public void handleKeyPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.TAB) {
+                passwordField.requestFocus();
+                event.consume();
+
+        }
+    }
+    public Scene getStage(){
+        return loginButton.getScene();
     }
 }

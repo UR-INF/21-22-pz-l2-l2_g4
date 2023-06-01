@@ -50,7 +50,7 @@ public class CustomerController implements Initializable {
     @Autowired
     public CustomerReport customerReport;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
     private TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField;
     @FXML

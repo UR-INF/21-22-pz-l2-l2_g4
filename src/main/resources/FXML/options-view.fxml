@@ -2,7 +2,6 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -14,16 +13,16 @@
       <Font size="16.0" />
         </font>
     </Label>
-    <Button fx:id="saveCSVBtn" layoutX="184.0" layoutY="122.0" onAction="#handleSaveBtnClick" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" text="Zapisz">
+    <Button fx:id="saveOptionsBtn" layoutX="184.0" layoutY="122.0" onAction="#handleSaveBtnClick" prefHeight="30.0" prefWidth="200.0" style="-fx-border-color: #427aa1;" text="Zapisz">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></Button>
-    <Text fill="#427aa1" layoutX="177.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Opcje">
+    <Text fill="#427ba1" layoutX="177.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Txl" text="Opcje">
         <font>
           <Font size="24.0" />
         </font>
     </Text>
-   <CheckBox fx:id="checkBoxCSS" layoutX="248.0" layoutY="77.0" mnemonicParsing="false" onAction="#ChangeCSS" />
+   <Button fx:id="darkModeButton" layoutX="248.0" layoutY="77.0" mnemonicParsing="false" onAction="#changeCSS" text="Włącz" />
     <AnchorPane layoutX="24.0" layoutY="176.0" prefHeight="216.0" prefWidth="363.0" style="-fx-background-color: 545454; -fx-border-width: 1; -fx-border-color: #427aa1;">
         <Text fill="#427aa1" layoutX="14.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wersja programu: 0.32a " wrappingWidth="188.8988037109375">
            <font>
@@ -33,4 +32,9 @@
         <Text layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Java 9 231a 2&#10;Fraweworki: Hibernate 14 2&#10;Wszystkie prawa zastrzeżone " />
         <Text layoutX="14.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twórcy:   Tomasz Pisaniak, Kondrad Pelc,&#10;&#9;&#9;Paweł Niziołek, Michał Moskal,&#10;&#9;&#9;Patryk Mokrzycki, Sebastian Leń " wrappingWidth="252.90821838378906" />
     </AnchorPane>
+   <Text layoutX="40.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Uwaga!&#10;Po zmianie trybu system automatycznie się wyloguje &#10;" wrappingWidth="155.89453125">
+      <font>
+         <Font size="10.0" />
+      </font>
+   </Text>
 </AnchorPane>

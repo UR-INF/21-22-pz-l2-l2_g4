@@ -21,3 +21,7 @@ Hsrc/main/java/com/example/hurtownia/domain/customer/CustomerService.java,8\f\8
 pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
 t
 Dsrc/main/java/com/example/hurtownia/authentication/LoginService.java,a\9\a9e1444393592f36f50c90421685eb31b402b607
+s
+Csrc/main/java/com/example/hurtownia/domain/user/UserController.java,2\7\27c1048bcd066b98fd762ab6a328e497aa2f8f8d
+u
+Esrc/main/java/com/example/hurtownia/controllers/ReportController.java,5\4\549069bb29f212728f3d4401108f4448869a08c3

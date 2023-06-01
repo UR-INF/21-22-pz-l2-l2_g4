@@ -1,5 +1,26 @@
-.tabL{
-    -fx-background-color: #535353;
-    -fx-border-width: 1;
+.root{
 
+    -fx-text-fill: #7F7B76;
+
+}
+#paneL{
+-fx-background-color: #e3e3e3;
+
+}
+.root{
+
+}
+.Txl {
+    -fx-text-fill: #525252;
+}
+.baner{
+-fx-background-color: #427aa1;
+}
+.belka{
+
+-fx-background-color: #427aa1;
+}
+.AnchorPane{
+
+-fx-background-color: #427aa1;
 }

@@ -1,0 +1,24 @@
+.root{
+      -fx-background-color: #7F7B76;
+}
+.paneL{
+
+}
+#paneL{
+
+-fx-background-color: red;
+
+}
+
+.Txl {
+    -fx-text-fill: #7F7B76;
+}
+
+.baner{
+-fx-background-color: #0f1b24;
+-fx-text-fill: #fff;
+}
+.belka{
+
+-fx-background-color: #0f1b24;
+}
