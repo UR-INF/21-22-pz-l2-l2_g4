@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.domain.supplier.SupplierService;
@@ -23,6 +24,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
 @Controller
 public class ProductController implements Initializable {
     public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
+    private final String[] units = {"m^2", "m^3", "m", "kg", "szt", "l"};
     @Autowired
     private SupplyReport supplyReport;
     @Autowired
@@ -58,7 +61,9 @@ public class ProductController implements Initializable {
     @FXML
     private TextArea informationArea;
     @FXML
-    private TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    private TextField priceTextField, supplierIdTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    @FXML
+    private ComboBox<String> unitComboBox;
     @FXML
     private TableView<ProductDTO> productsTable;
     @FXML
@@ -80,11 +85,14 @@ public class ProductController implements Initializable {
     @FXML
     private Button generateSupplyReportBtn;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+        unitComboBox.setItems(FXCollections.observableArrayList(units
+        ));
     }
 
     /**
@@ -182,7 +190,7 @@ public class ProductController implements Initializable {
         try {
             Long supplierId = Long.valueOf(supplierIdTextField.getText());
             String name = nameTextField.getText();
-            String unitOfMeasurement = unitTextField.getText();
+            String unitOfMeasurement = unitComboBox.getValue();
             Double price = Double.valueOf(priceTextField.getText());
             String country = countryTextField.getText();
             String code = codeTextField.getText();
@@ -422,23 +430,22 @@ public class ProductController implements Initializable {
                 super.commitEdit(newValue);
             }
         });
-        unitColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
+        unitColumn.setCellFactory(ComboBoxTableCell.forTableColumn(units));
+        unitColumn.setOnEditCommit(t -> {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
-                    try {
-                        BeanUtils.copyProperties(productUpdateRequest, productsTable.getSelectionModel().getSelectedItem());
-                        productUpdateRequest.setUnitOfMeasurement(newValue);
-                        productService.update(productUpdateRequest);
-                        informationArea.appendText("\nPomyślnie edytowano produkt o id " + productUpdateRequest.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować produktu o id " + productUpdateRequest.getId());
+                    if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                        try {
+                            BeanUtils.copyProperties(productUpdateRequest, productsTable.getSelectionModel().getSelectedItem());
+                            productUpdateRequest.setUnitOfMeasurement(t.getNewValue());
+                            productService.update(productUpdateRequest);
+                            informationArea.appendText("\nPomyślnie edytowano produkt o id " + productUpdateRequest.getId());
+                        } catch (Exception e) {
+                            informationArea.appendText("\nNie udało się edytować produktu o id " + productUpdateRequest.getId());
+                        }
                     }
                 }
-                super.commitEdit(newValue);
-            }
-        });
+
+        );
         countryColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {

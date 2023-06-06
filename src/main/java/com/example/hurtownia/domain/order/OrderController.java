@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.order;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
+import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -57,7 +58,9 @@ public class OrderController implements Initializable {
     @Autowired
     private InvoiceReport invoiceReport;
     @FXML
-    private TextField customerIdTextField, dateTextField, discountTextField;
+    private TextField customerIdTextField, discountTextField;
+    @FXML
+    private DatePicker dateTextField;
     @FXML
     private TextArea informationArea;
     @FXML
@@ -204,12 +207,16 @@ public class OrderController implements Initializable {
      */
     @FXML
     public void ordersBtnAddClicked(MouseEvent event) {
+        if(!TextFieldsValidators.validateDate(dateTextField.getValue())){
+            informationArea.appendText("\nPodaj datę późniejszą niż rok 2000, a wcześniejszą, lub równą dacie dzisiejszej");
+            return;
+        }
         try {
             Double discount;
             if (discountTextField.getText() == null) discount = 0.0;
             else discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
             Long customerId = Long.valueOf(customerIdTextField.getText());
-            String date = dateTextField.getText();
+            String date = dateTextField.getValue().toString();
             String state = orderStates[0];
             OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()
                     .customerId(customerId)
