@@ -4,7 +4,6 @@ import com.example.hurtownia.domain.customer.request.CustomerCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
-import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.domain.supplier.request.SupplierCreateRequest;
 import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import com.opencsv.CSVReader;
@@ -19,10 +18,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

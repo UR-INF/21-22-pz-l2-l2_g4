@@ -56,11 +56,11 @@ public class ProductController implements Initializable {
     @Autowired
     public ProductReport productReport;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    public TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
     @FXML
-    private TableView<ProductDTO> productsTable;
+    public TableView<ProductDTO> productsTable;
     @FXML
     private TableColumn<ProductDTO, Number> priceColumn, idColumn, supplierIdColumn, numberColumn, maxNumberColumn;
     @FXML
@@ -70,7 +70,7 @@ public class ProductController implements Initializable {
     @FXML
     private TableColumn<ProductDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
+    public TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -83,6 +83,7 @@ public class ProductController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }

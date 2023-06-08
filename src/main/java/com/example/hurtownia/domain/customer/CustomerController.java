@@ -53,11 +53,11 @@ public class CustomerController implements Initializable {
     @Autowired
     public CustomerReport customerReport;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField, zipCodeTextField;
+    public TextField emailTextField, nameTextField, placeTextField, surnameTextField, buildingNumberTextField, apartmentNumberTextField, phoneNumberTextField, peselTextField, streetTextField, zipCodeTextField;
     @FXML
-    private TableView<CustomerDTO> customersTable;
+    public TableView<CustomerDTO> customersTable;
     @FXML
     private TableColumn<CustomerDTO, Number> idColumn, buildingNumberColumn, apartmentNumberColumn;
     @FXML
@@ -65,13 +65,14 @@ public class CustomerController implements Initializable {
     @FXML
     private TableColumn<CustomerDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField, zipCodeSearchField;
+    public TextField idSearchField, nameSearchField, surnameSearchField, placeSearchField, streetSearchField, buildingNumberSearchField, apartmentNumberSearchField, emailSearchField, phoneNumberSearchField, peselSearchField, zipCodeSearchField;
     @FXML
     private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }
