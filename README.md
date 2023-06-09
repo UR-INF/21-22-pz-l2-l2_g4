@@ -10,16 +10,14 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 <b>Sebastian Leń</b> - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.  
 <b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków wraz oraz ich implementacja w SceneBuilder JavaFX.  
 <b>Patryk Mokrzycki</b> - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.  
- 
-Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
 
 
 ## Opis programu / systemu
 Aplikacja desktopowa powinna umożliwiać zarządzanie zasobami bazy danych hurtowni materiałów budowlanych. 
 
 W aplikacji wyróżnione będą dwie role: 
-•	administrator – posiadający dostęp do wszystkich funkcji systemu,
-•	pracownik – mający ograniczony dostęp do funkcji systemu w zależności od przydzielonych uprawnień.
+-	administrator – posiadający dostęp do wszystkich funkcji systemu,
+-	pracownik – mający ograniczony dostęp do funkcji systemu w zależności od przydzielonych uprawnień.
 
 System powinien w łatwy sposób umożliwiać pracownikom wykonywanie operacji dodawania, przeglądania, edytowania i usuwania informacji w lokalnej bazie danych oraz generowania niezbędnych raportów, w tym generowania faktury z zamówienia oraz generowanie raportu dostawy. Aplikacja powinna obsługiwać system udzielania rabatów.
 
@@ -59,23 +57,27 @@ Wymagania niefunkcjonalne
 Główne narzędzie administratorów systemu umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania systemem i zasobami bazy danych, w tym dodawanie, edycja, usuwanie użytkowników, nadawanie i usuwanie uprawnień.
 
 2.	Panel pracownika
+
 Główne narzędzie pracowników umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania zasobami bazy danych. Dostępne funkcje panelu zależne są od uprawnień użytkownika.
 
 3.	Panel importu danych
+
 Umożliwia import danych z plików CSV. Pliki powinny posiadać ściśle określoną strukturę.
 
 4.	Panel opcji
+
 Pozwala na dynamiczną zmianę parametrów połączenia z bazą danych.
 
 5.	Panel logowania
+
 Umożliwia zalogowanie do systemu.
 
 
 ## Przepływ informacji w środowisku systemu 
 System implementuje wzorzec Controller-Service-Repository, w którym:
-•	Controller – komponenty z adnotacjami @Component, warstwa odpowiedzialna za zarządzanie interfejsem użytkownika zaprojektowanym w technologii JavaFX,
-•	Service – komponenty z adnotacjami @Service, warstwa implementująca logikę biznesową,
-•	Repository – komponenty z adnotacjami @Repository, warstwa odpowiedzialna za pobieranie i utrwalanie danych.
+-	Controller – komponenty z adnotacjami @Component, warstwa odpowiedzialna za zarządzanie interfejsem użytkownika zaprojektowanym w technologii JavaFX,
+-	Service – komponenty z adnotacjami @Service, warstwa implementująca logikę biznesową,
+-	Repository – komponenty z adnotacjami @Repository, warstwa odpowiedzialna za pobieranie i utrwalanie danych.
 
 Ponadto system implementuje wzorzec DTO (Data Transfer Object). Obiekty DTO służą do przesyłania danych poza część aplikacji odpowiedzialną za logikę biznesową.
  
