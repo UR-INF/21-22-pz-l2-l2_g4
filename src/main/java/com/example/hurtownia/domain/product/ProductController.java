@@ -225,22 +225,26 @@ public class ProductController implements Initializable {
         String countryFilter = countrySearchField.getText().trim();
         String colorFilter = colorSearchField.getText().trim();
         String maxNumberFilter = maxNumberSearchField.getText().trim();
+        String stateFilter = stateSearchField.getText().trim();
         List<ProductDTO> filteredProductsList = productService.findAll();
 
         if (!(idFilter.isEmpty() && nameFilter.isEmpty() && supplierIdFilter.isEmpty() && codeFilter.isEmpty() &&
                 priceFilter.isEmpty() && numberFilter.isEmpty() && unitFilter.isEmpty() && countryFilter.isEmpty() &&
-                colorFilter.isEmpty() && maxNumberFilter.isEmpty())) {
+                colorFilter.isEmpty() && maxNumberFilter.isEmpty() && stateFilter.isEmpty())) {
             filteredProductsList = filteredProductsList.stream().filter(
-                    productDTO -> productDTO.getId().toString().contains(idFilter)
-                            && productDTO.getName().contains(nameFilter)
-                            && productDTO.getSupplierId().toString().contains(supplierIdFilter)
-                            && productDTO.getCode().contains(codeFilter)
-                            && productDTO.getPrice().toString().contains(priceFilter)
-                            && productDTO.getNumber().toString().contains(numberFilter)
-                            && productDTO.getUnitOfMeasurement().contains(unitFilter)
-                            && productDTO.getCountry().contains(countryFilter)
-                            && productDTO.getMaxNumber().toString().contains(maxNumberFilter)
-            ).collect(Collectors.toList());
+                    productDTO -> {
+                        String state = ProductState.calculateState(productDTO.getNumber(), productDTO.getMaxNumber());
+                        return productDTO.getId().toString().contains(idFilter)
+                                && productDTO.getName().contains(nameFilter)
+                                && productDTO.getSupplierId().toString().contains(supplierIdFilter)
+                                && productDTO.getCode().contains(codeFilter)
+                                && productDTO.getPrice().toString().contains(priceFilter)
+                                && productDTO.getNumber().toString().contains(numberFilter)
+                                && productDTO.getUnitOfMeasurement().contains(unitFilter)
+                                && productDTO.getCountry().contains(countryFilter)
+                                && productDTO.getMaxNumber().toString().contains(maxNumberFilter)
+                                && state.contains(stateFilter);
+                    }).collect(Collectors.toList());
         }
         productsTable.getItems().clear();
         products.setAll(filteredProductsList);
