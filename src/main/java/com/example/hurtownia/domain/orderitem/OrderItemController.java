@@ -52,23 +52,24 @@ public class OrderItemController implements Initializable {
     @Autowired
     public OrderItemReport orderItemReport;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField productIdTextField, orderIdTextField, numberTextField;
+    public TextField productIdTextField, orderIdTextField, numberTextField;
     @FXML
-    private TableView<OrderItemDTO> orderItemTable;
+    public TableView<OrderItemDTO> orderItemTable;
     @FXML
     private TableColumn<OrderItemDTO, Number> itemPriceColumn, pricePerUnitColumn, idColumn, productIdColumn, orderIdColumn, amountColumn;
     @FXML
     private TableColumn<OrderItemDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
+    public TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
     @FXML
     private Button generateReportBtn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         productIdTextField.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }

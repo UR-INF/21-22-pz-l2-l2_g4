@@ -48,11 +48,11 @@ public class SupplierController implements Initializable {
 
     public static ObservableList<SupplierDTO> suppliers = FXCollections.observableArrayList();
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField emailTextField, countryTextField, placeTextField, nameTextField, nipTextField, streetTextField;
+    public TextField emailTextField, countryTextField, placeTextField, nameTextField, nipTextField, streetTextField;
     @FXML
-    private TableView<SupplierDTO> suppliersTable;
+    public TableView<SupplierDTO> suppliersTable;
     @FXML
     private TableColumn<SupplierDTO, Number> idColumn;
     @FXML
@@ -60,7 +60,7 @@ public class SupplierController implements Initializable {
     @FXML
     private TableColumn<SupplierDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
+    public TextField idSearchField, nameSearchField, nipSearchField, emailSearchField, placeSearchField, streetSearchField, countrySearchField;
     @Autowired
     private SupplierService supplierService;
     @Autowired
@@ -71,6 +71,7 @@ public class SupplierController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         suppliersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }

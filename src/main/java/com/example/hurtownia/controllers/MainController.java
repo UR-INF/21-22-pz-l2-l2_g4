@@ -1,5 +1,6 @@
 package com.example.hurtownia.controllers;
 
+import com.example.hurtownia.Start;
 import com.example.hurtownia.authentication.LoginService;
 import com.example.hurtownia.domain.customer.CustomerController;
 import com.example.hurtownia.domain.customer.CustomerService;
@@ -12,10 +13,10 @@ import com.example.hurtownia.domain.product.ProductService;
 import com.example.hurtownia.domain.supplier.SupplierController;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.domain.user.User;
+import com.example.hurtownia.domain.user.UserController;
 import com.example.hurtownia.domain.user.UserService;
 import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,7 +30,6 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -63,6 +63,12 @@ public class MainController implements Initializable {
     @FXML
     public Button optionsBtn;
     @FXML
+    public AnchorPane loginPane;
+    @FXML
+    public Text userNameLabel;
+    @Autowired
+    public LoginService loginService;
+    @FXML
     private OrderController orderTabContentController;
     @FXML
     private CustomerController customerTabContentController;
@@ -73,46 +79,33 @@ public class MainController implements Initializable {
     @FXML
     private SupplierController supplierTabContentController;
     @FXML
-    private Text clockLabel, userNameLabel, loginErrorLabel;;
+    private UserController userTabContentController;
+    @FXML
+    private Text clockLabel, loginErrorLabel;
     @FXML
     private TextField loginTextField;
     @FXML
     private PasswordField passwordField;
-    @FXML
-    private AnchorPane loginPane;
-    @FXML
-    private CheckBox darkModeCheckBox;
-    @Autowired
-    private LoginService loginService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         UserCreateRequest userCreateRequest = UserCreateRequest.builder()
-                .name("name")
-                .surname("surname")
+                .name("Kierownik")
+                .surname("Magazynu")
                 .email("admin")
                 .password("admin")
-                .phoneNumber("phoneNumber")
+                .phoneNumber("123684597")
                 .isAdmin(Boolean.TRUE)
                 .generatingReports(Boolean.TRUE)
                 .grantingDiscounts(Boolean.TRUE)
                 .build();
+
         try {
             userService.create(userCreateRequest);
-        } catch (UnsupportedOperationException e) {}
+        } catch (UnsupportedOperationException ignored) {
+        }
 
         new Thread(this::runClock).start();
-
-//        /**
-//         * Odpowiedzialna za tryb ciemny poprzez checkBoxa
-//         */
-//        darkModeCheckBox.setOnAction(event -> {
-//            if (darkModeCheckBox.isSelected()) {
-//                userTab.getStyleClass().add("dark-theme");
-//            } else {
-//                userTab.getStyleClass().remove("dark-theme");
-//            }
-//        });
     }
 
     /**
@@ -139,11 +132,12 @@ public class MainController implements Initializable {
      *
      * @param user
      */
-    private void checkPermissions(User user) {
+    public void checkPermissions(User user) {
         if (Boolean.FALSE.equals(user.getIsAdmin())) {
             userTab.setDisable(true);
             SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
             selectionModel.select(customerTab);
+            optionsBtn.setDisable(true);
         }
         if (Boolean.FALSE.equals(user.getGrantingDiscounts())) {
             orderTabContentController.disableGrantingDiscounds();
@@ -161,6 +155,7 @@ public class MainController implements Initializable {
      * Odblokuwuje wszystkie funkcje aplikacji po wylogowaniu.
      */
     private void resetPermissions() {
+        optionsBtn.setDisable(false);
         userTab.setDisable(false);
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
         selectionModel.select(userTab);
@@ -185,6 +180,8 @@ public class MainController implements Initializable {
             userNameLabel.setText(loginService.getCurrentUserName());
             checkPermissions(loginService.getCurrentUser());
             loginPane.setVisible(false);
+            Start.user = loginService.getCurrentUser();
+            Start.rawUserPassword = passwordField.getText();
         } catch (Exception e) {
             loginErrorLabel.setText("Błędne dane logowania.");
         }
@@ -199,6 +196,7 @@ public class MainController implements Initializable {
     public void btnLogOutClicked(MouseEvent event) {
         loginService.logOut();
         resetPermissions();
+        clearData();
         passwordField.setText("");
         loginTextField.setText("");
         loginErrorLabel.setText("");
@@ -253,5 +251,119 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Czyści widoki po wylogowaniu.
+     */
+    private void clearData() {
+        customerTabContentController.informationArea.clear();
+        customerTabContentController.customersTable.getItems().clear();
+        customerTabContentController.customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        customerTabContentController.emailTextField.clear();
+        customerTabContentController.nameTextField.clear();
+        customerTabContentController.placeTextField.clear();
+        customerTabContentController.surnameTextField.clear();
+        customerTabContentController.buildingNumberTextField.clear();
+        customerTabContentController.apartmentNumberTextField.clear();
+        customerTabContentController.phoneNumberTextField.clear();
+        customerTabContentController.peselTextField.clear();
+        customerTabContentController.streetTextField.clear();
+        customerTabContentController.zipCodeTextField.clear();
+        customerTabContentController.idSearchField.clear();
+        customerTabContentController.nameSearchField.clear();
+        customerTabContentController.surnameSearchField.clear();
+        customerTabContentController.placeSearchField.clear();
+        customerTabContentController.streetSearchField.clear();
+        customerTabContentController.buildingNumberSearchField.clear();
+        customerTabContentController.apartmentNumberSearchField.clear();
+        customerTabContentController.emailSearchField.clear();
+        customerTabContentController.phoneNumberSearchField.clear();
+        customerTabContentController.peselSearchField.clear();
+        customerTabContentController.zipCodeSearchField.clear();
+
+        orderTabContentController.informationArea.clear();
+        orderTabContentController.ordersTable.getItems().clear();
+        orderTabContentController.ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        orderTabContentController.customerIdTextField.clear();
+        orderTabContentController.dateTextField.clear();
+        orderTabContentController.discountTextField.clear();
+        orderTabContentController.idSearchField.clear();
+        orderTabContentController.orderIdSearchField.clear();
+        orderTabContentController.dateSearchField.clear();
+        orderTabContentController.valueSearchField.clear();
+        orderTabContentController.discountSearchField.clear();
+        orderTabContentController.stateSearchField.clear();
+
+        orderItemTabContentController.informationArea.clear();
+        orderItemTabContentController.orderItemTable.getItems().clear();
+        orderItemTabContentController.orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        orderItemTabContentController.productIdTextField.clear();
+        orderItemTabContentController.orderIdTextField.clear();
+        orderItemTabContentController.numberTextField.clear();
+        orderItemTabContentController.idSearchField.clear();
+        orderItemTabContentController.orderIdSearchField.clear();
+        orderItemTabContentController.productIdSearchField.clear();
+        orderItemTabContentController.itemPriceSearchField.clear();
+        orderItemTabContentController.pricePerUnitSearchField.clear();
+        orderItemTabContentController.numberSearchField.clear();
+
+        productTabContentController.informationArea.clear();
+        productTabContentController.productsTable.getItems().clear();
+        productTabContentController.productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        productTabContentController.priceTextField.clear();
+        productTabContentController.supplierIdTextField.clear();
+        productTabContentController.numberTextField.clear();
+        productTabContentController.unitTextField.clear();
+        productTabContentController.codeTextField.clear();
+        productTabContentController.colorTextField.clear();
+        productTabContentController.countryTextField.clear();
+        productTabContentController.maxNumberTextField.clear();
+        productTabContentController.nameTextField.clear();
+        productTabContentController.idSearchField.clear();
+        productTabContentController.nameSearchField.clear();
+        productTabContentController.supplierIdSearchField.clear();
+        productTabContentController.codeSearchField.clear();
+        productTabContentController.priceSearchField.clear();
+        productTabContentController.numberSearchField.clear();
+        productTabContentController.unitSearchField.clear();
+        productTabContentController.countrySearchField.clear();
+        productTabContentController.colorSearchField.clear();
+        productTabContentController.maxNumberSearchField.clear();
+        productTabContentController.stateSearchField.clear();
+
+        supplierTabContentController.informationArea.clear();
+        supplierTabContentController.suppliersTable.getItems().clear();
+        supplierTabContentController.suppliersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        supplierTabContentController.emailTextField.clear();
+        supplierTabContentController.countryTextField.clear();
+        supplierTabContentController.placeTextField.clear();
+        supplierTabContentController.nameTextField.clear();
+        supplierTabContentController.nipTextField.clear();
+        supplierTabContentController.streetTextField.clear();
+        supplierTabContentController.idSearchField.clear();
+        supplierTabContentController.nameSearchField.clear();
+        supplierTabContentController.nipSearchField.clear();
+        supplierTabContentController.emailSearchField.clear();
+        supplierTabContentController.placeSearchField.clear();
+        supplierTabContentController.streetSearchField.clear();
+        supplierTabContentController.countrySearchField.clear();
+
+        userTabContentController.informationArea.clear();
+        userTabContentController.usersTable.getItems().clear();
+        userTabContentController.usersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        userTabContentController.emailTextField.clear();
+        userTabContentController.passwordTextField.clear();
+        userTabContentController.nameTextField.clear();
+        userTabContentController.surnameTextField.clear();
+        userTabContentController.phoneNumberTextField.clear();
+        userTabContentController.idSearchField.clear();
+        userTabContentController.nameSearchField.clear();
+        userTabContentController.surnameSearchField.clear();
+        userTabContentController.phoneNumberSearchField.clear();
+        userTabContentController.emailSearchField.clear();
+        userTabContentController.grantingDiscountsCheckBox.setSelected(false);
+        userTabContentController.generatingReportsCheckBox.setSelected(false);
+        userTabContentController.isAdminCheckBox.setSelected(false);
     }
 }

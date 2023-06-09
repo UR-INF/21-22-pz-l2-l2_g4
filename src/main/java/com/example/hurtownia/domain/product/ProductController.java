@@ -56,11 +56,11 @@ public class ProductController implements Initializable {
     @Autowired
     public ProductReport productReport;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    public TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
     @FXML
-    private TableView<ProductDTO> productsTable;
+    public TableView<ProductDTO> productsTable;
     @FXML
     private TableColumn<ProductDTO, Number> priceColumn, idColumn, supplierIdColumn, numberColumn, maxNumberColumn;
     @FXML
@@ -70,7 +70,7 @@ public class ProductController implements Initializable {
     @FXML
     private TableColumn<ProductDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
+    public TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -83,6 +83,7 @@ public class ProductController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }
@@ -224,22 +225,26 @@ public class ProductController implements Initializable {
         String countryFilter = countrySearchField.getText().trim();
         String colorFilter = colorSearchField.getText().trim();
         String maxNumberFilter = maxNumberSearchField.getText().trim();
+        String stateFilter = stateSearchField.getText().trim();
         List<ProductDTO> filteredProductsList = productService.findAll();
 
         if (!(idFilter.isEmpty() && nameFilter.isEmpty() && supplierIdFilter.isEmpty() && codeFilter.isEmpty() &&
                 priceFilter.isEmpty() && numberFilter.isEmpty() && unitFilter.isEmpty() && countryFilter.isEmpty() &&
-                colorFilter.isEmpty() && maxNumberFilter.isEmpty())) {
+                colorFilter.isEmpty() && maxNumberFilter.isEmpty() && stateFilter.isEmpty())) {
             filteredProductsList = filteredProductsList.stream().filter(
-                    productDTO -> productDTO.getId().toString().contains(idFilter)
-                            && productDTO.getName().contains(nameFilter)
-                            && productDTO.getSupplierId().toString().contains(supplierIdFilter)
-                            && productDTO.getCode().contains(codeFilter)
-                            && productDTO.getPrice().toString().contains(priceFilter)
-                            && productDTO.getNumber().toString().contains(numberFilter)
-                            && productDTO.getUnitOfMeasurement().contains(unitFilter)
-                            && productDTO.getCountry().contains(countryFilter)
-                            && productDTO.getMaxNumber().toString().contains(maxNumberFilter)
-            ).collect(Collectors.toList());
+                    productDTO -> {
+                        String state = ProductState.calculateState(productDTO.getNumber(), productDTO.getMaxNumber());
+                        return productDTO.getId().toString().contains(idFilter)
+                                && productDTO.getName().contains(nameFilter)
+                                && productDTO.getSupplierId().toString().contains(supplierIdFilter)
+                                && productDTO.getCode().contains(codeFilter)
+                                && productDTO.getPrice().toString().contains(priceFilter)
+                                && productDTO.getNumber().toString().contains(numberFilter)
+                                && productDTO.getUnitOfMeasurement().contains(unitFilter)
+                                && productDTO.getCountry().contains(countryFilter)
+                                && productDTO.getMaxNumber().toString().contains(maxNumberFilter)
+                                && state.contains(stateFilter);
+                    }).collect(Collectors.toList());
         }
         productsTable.getItems().clear();
         products.setAll(filteredProductsList);
