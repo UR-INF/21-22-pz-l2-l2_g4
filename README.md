@@ -30,24 +30,17 @@ Po uruchomieniu aplikacji pierwszym widokiem będzie panel logowania, gdzie moż
 Celem projektu jest zaprojektowanie i stworzenie opisanego powyżej systemu. Zakłada się dostarczenie gotowego produktu wraz z instalatorem, podręcznikiem użytkownika i dokumentacją techniczną.
 
 
-## Zakres projektu 
-Baza danych.
-Aplikacja dektopowa.
-Dokumentacja techniczna.
-Podręcznik użytkownika.
-
-
 ## Wymagania stawiane aplikacji / systemowi 
 Wymagania funkcjonalne
 1.	System powinien mieć kilka modułów
-•	Moduł administracji użytkownikami 
-•	Moduł generowania raportów
-•	Moduł konfiguracji
-•	Moduł zarządzania zasobami bazy danych
+-	Moduł administracji użytkownikami 
+-	Moduł generowania raportów
+-	Moduł konfiguracji
+-	Moduł zarządzania zasobami bazy danych
 2.	System powinien umożliwiać generowanie raportów PDF
-•	Faktura z zamówienia
-•	Raport dostawy
-•	Raport z przefiltrowanej tabeli (niski stan magazynowy, raporty statystyczne, itp.)
+-	Faktura z zamówienia
+-	Raport dostawy
+-	Raport z przefiltrowanej tabeli (niski stan magazynowy, raporty statystyczne, itp.)
 3.	System powinien współpracować z lokalną bazą danych
 4.	System powinien umożliwiać udzielanie kodów rabatowych
 5.	System powinien umożliwiać logowanie użytkowników
@@ -62,6 +55,7 @@ Wymagania niefunkcjonalne
 
 ## Panele / zakładki systemu, które będą oferowały potrzebne funkcjonalności 
 1.	Panel administratora
+
 Główne narzędzie administratorów systemu umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania systemem i zasobami bazy danych, w tym dodawanie, edycja, usuwanie użytkowników, nadawanie i usuwanie uprawnień.
 
 2.	Panel pracownika
