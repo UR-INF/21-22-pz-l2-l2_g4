@@ -88,14 +88,19 @@ Ponadto system implementuje wzorzec DTO (Data Transfer Object). Obiekty DTO słu
 1.	Administrator
 
 – zarządzanie systemem (zarządzanie użytkownikami i ich uprawnieniami) 
+
 – zarządzanie wszystkimi zasobami bazy danych
+
 – zmiana źródła danych
 
 2.	Pracownik 
 
 – zarządzanie wszystkimi zasobami bazy danych
+
 – w zależności od uprawnień:
+
    •	generowanie raportów - pozwala na generowanie raportów z przefiltrowanych widoków tabel, raportu dostawy oraz faktury z zamówienia
+   
    •	udzielanie rabatów - pozwala na udzielanie i modyfikację udzielonego rabatu
 
 
