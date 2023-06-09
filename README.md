@@ -99,9 +99,9 @@ Ponadto system implementuje wzorzec DTO (Data Transfer Object). Obiekty DTO słu
 
 – w zależności od uprawnień:
 
-   •	generowanie raportów - pozwala na generowanie raportów z przefiltrowanych widoków tabel, raportu dostawy oraz faktury z zamówienia
+&emsp;•	generowanie raportów - pozwala na generowanie raportów z przefiltrowanych widoków tabel, raportu dostawy oraz faktury z zamówienia
    
-   •	udzielanie rabatów - pozwala na udzielanie i modyfikację udzielonego rabatu
+&emsp;•	udzielanie rabatów - pozwala na udzielanie i modyfikację udzielonego rabatu
 
 
 ## Interesariusze 
