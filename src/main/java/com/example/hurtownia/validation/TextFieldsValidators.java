@@ -90,7 +90,7 @@ public class TextFieldsValidators {
     }
 
     public static boolean validateDate(LocalDate date) {
-        return (date.isBefore(LocalDate.now()) || date.equals(LocalDate.now()))&&date.isAfter(LocalDate.of(1999,1,1));
+        return date != null && (date.isBefore(LocalDate.now()) || date.equals(LocalDate.now())) && date.isAfter(LocalDate.of(1999, 1, 1));
     }
 
 }

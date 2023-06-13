@@ -15,7 +15,7 @@
             xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.hurtownia.domain.product.ProductController">
     <TableView fx:id="productsTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="554.0"
-               prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
+               prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="false">
         <columns>
             <TableColumn fx:id="idColumn" editable="false" prefWidth="44.79998779296875" text="Id"/>
             <TableColumn fx:id="supplierIdColumn" prefWidth="85.60003662109375" text="Id dostawcy"/>
@@ -73,7 +73,7 @@
         <TextField fx:id="countryTextField" layoutX="220.0" layoutY="343.0"/>
         <TextField fx:id="colorTextField" layoutX="220.0" layoutY="384.0"/>
         <TextField fx:id="maxNumberTextField" layoutX="220.0" layoutY="422.0"/>
-        <TextField fx:id="supplierIdTextField" layoutX="220.0" layoutY="462.0"/>
+        <ComboBox fx:id="supplierIdTextField" layoutX="220.0" layoutY="462.0"/>
         <TextArea fx:id="informationArea" layoutX="111.0" layoutY="618.0" prefHeight="68.0" prefWidth="268.0"
                   AnchorPane.leftAnchor="110.0"/>
     </AnchorPane>

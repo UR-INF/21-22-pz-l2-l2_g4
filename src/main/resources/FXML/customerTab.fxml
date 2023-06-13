@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" style="-fx-background-color: #fff;" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.customer.CustomerController">
-    <TableView fx:id="customersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1186.0" style="-fx-text-fill: #ffffff;" styleClass="table" tableMenuButtonVisible="true">
+    <TableView fx:id="customersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1186.0" style="-fx-text-fill: #ffffff;" styleClass="table" tableMenuButtonVisible="false">
         <columns>
             <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" text="Id" />
             <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Imię" />

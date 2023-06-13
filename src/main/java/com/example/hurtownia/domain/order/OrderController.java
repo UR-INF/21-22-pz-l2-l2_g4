@@ -1,6 +1,8 @@
 package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.customer.CustomerDTO;
+import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.validation.TextFieldsValidators;
@@ -39,6 +41,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -50,15 +53,20 @@ import java.util.stream.Collectors;
 @Controller
 public class OrderController implements Initializable {
     public static ObservableList<OrderDTO> orders = FXCollections.observableArrayList();
+    public static ObservableList<CustomerDTO> customers = FXCollections.observableArrayList();
     private final String[] orderStates = {"w przygotowaniu", "gotowe", "odebrane"};
     @Autowired
     public OrderService orderService;
+    @Autowired
+    public CustomerService customerService;
     @Autowired
     public OrderReport orderReport;
     @Autowired
     private InvoiceReport invoiceReport;
     @FXML
-    private TextField customerIdTextField, discountTextField;
+    private TextField discountTextField;
+    @FXML
+    private ComboBox<CustomerDTO> customerIdTextField;
     @FXML
     private DatePicker dateTextField;
     @FXML
@@ -78,10 +86,12 @@ public class OrderController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setComboBox();
         ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }
+
 
     /**
      * Dezaktywuje możliwość nadawania rabatów.
@@ -131,7 +141,53 @@ public class OrderController implements Initializable {
             }
         });
     }
+    public void setCustomers(){
+        customers.setAll(customerService.findAll());
+        List<CustomerDTO> sortedCustomers = customers.stream().sorted(Comparator.comparing(CustomerDTO::getName)).collect(Collectors.toList());
+        customers.clear();
+        customers.setAll(sortedCustomers);
+    }
+    public void setComboBox(){
+        customerIdTextField.setPrefWidth(150);
+        setCustomers();
+        customerIdTextField.setItems(customers);
+        customerIdTextField.setCellFactory(new Callback<ListView<CustomerDTO>, ListCell<CustomerDTO>>() {
+            @Override
+            public ListCell<CustomerDTO> call(ListView<CustomerDTO> param) {
+                return new ListCell<CustomerDTO>() {
+                    @Override
+                    protected void updateItem(CustomerDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName()+" "+item.getSurname() + " (ID: " + item.getId() + ")");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        customerIdTextField.setConverter(new StringConverter<CustomerDTO>() {
+            @Override
+            public String toString(CustomerDTO customer) {
+                if (customer != null) {
+                    return customer.getName()+" "+customer.getSurname() + " (ID: " + customer.getId() + ")";
+                } else {
+                    return null;
+                }
+            }
 
+            @Override
+            public CustomerDTO fromString(String string) {
+                // Nie jest używane w tym przykładzie
+                return null;
+            }
+        });
+        customerIdTextField.setOnMouseClicked(event ->{
+            setCustomers();
+            customerIdTextField.setItems(customers);
+        });
+    }
     /**
      * Aktywuje możliwość generowania raportów.
      */
@@ -207,7 +263,7 @@ public class OrderController implements Initializable {
      */
     @FXML
     public void ordersBtnAddClicked(MouseEvent event) {
-        if(!TextFieldsValidators.validateDate(dateTextField.getValue())){
+        if (!TextFieldsValidators.validateDate(dateTextField.getValue())) {
             informationArea.appendText("\nPodaj datę późniejszą niż rok 2000, a wcześniejszą, lub równą dacie dzisiejszej");
             return;
         }
@@ -215,7 +271,8 @@ public class OrderController implements Initializable {
             Double discount;
             if (discountTextField.getText() == null) discount = 0.0;
             else discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
-            Long customerId = Long.valueOf(customerIdTextField.getText());
+            System.out.println(customerIdTextField.getValue().getId());
+            Long customerId = customerIdTextField.getValue().getId();
             String date = dateTextField.getValue().toString();
             String state = orderStates[0];
             OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()

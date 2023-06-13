@@ -1,9 +1,9 @@
 package com.example.hurtownia.domain.product;
 
 import com.example.hurtownia.controllers.ReportController;
-import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
+import com.example.hurtownia.domain.supplier.SupplierDTO;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 @Controller
 public class ProductController implements Initializable {
     public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
+    public static ObservableList<SupplierDTO> suppliers = FXCollections.observableArrayList();
     private final String[] units = {"m^2", "m^3", "m", "kg", "szt", "l"};
     @Autowired
     private SupplyReport supplyReport;
@@ -61,7 +62,9 @@ public class ProductController implements Initializable {
     @FXML
     private TextArea informationArea;
     @FXML
-    private TextField priceTextField, supplierIdTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    private TextField priceTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    @FXML
+    private ComboBox<SupplierDTO> supplierIdTextField;
     @FXML
     private ComboBox<String> unitComboBox;
     @FXML
@@ -88,11 +91,54 @@ public class ProductController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setComboBox();
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
         unitComboBox.setItems(FXCollections.observableArrayList(units
         ));
+    }
+
+    public void setComboBox() {
+        supplierIdTextField.setPrefWidth(150);
+        suppliers.setAll(supplierService.findAll());
+        supplierIdTextField.setItems(FXCollections.observableArrayList(suppliers));
+        supplierIdTextField.setCellFactory(new Callback<ListView<SupplierDTO>, ListCell<SupplierDTO>>() {
+            @Override
+            public ListCell<SupplierDTO> call(ListView<SupplierDTO> param) {
+                return new ListCell<SupplierDTO>() {
+                    @Override
+                    protected void updateItem(SupplierDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName() + " (ID: " + item.getId() + ")");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        supplierIdTextField.setConverter(new StringConverter<SupplierDTO>() {
+            @Override
+            public String toString(SupplierDTO customer) {
+                if (customer != null) {
+                    return customer.getName() + " (ID: " + customer.getId() + ")";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public SupplierDTO fromString(String string) {
+                // Nie jest używane w tym przykładzie
+                return null;
+            }
+        });
+        supplierIdTextField.setOnMouseClicked(event -> {
+            suppliers.setAll(supplierService.findAll());
+            supplierIdTextField.setItems(suppliers);
+        });
     }
 
     /**
@@ -188,7 +234,7 @@ public class ProductController implements Initializable {
             return;
         }
         try {
-            Long supplierId = Long.valueOf(supplierIdTextField.getText());
+            Long supplierId = supplierIdTextField.getValue().getId();
             String name = nameTextField.getText();
             String unitOfMeasurement = unitComboBox.getValue();
             Double price = Double.valueOf(priceTextField.getText());
@@ -414,6 +460,10 @@ public class ProductController implements Initializable {
                     informationArea.appendText("\nPodaj nieujemną liczbę");
                     return;
                 }
+                if (newValue.intValue() > productsTable.getSelectionModel().getSelectedItem().getMaxNumber()) {
+                    informationArea.appendText("\nPodaj ilosc mniejsza niz maksymalna");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
                     try {
@@ -485,6 +535,10 @@ public class ProductController implements Initializable {
             public void commitEdit(Number newValue) {
                 if (newValue.intValue() < 0) {
                     informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
+                if (newValue.intValue() < productsTable.getSelectionModel().getSelectedItem().getNumber()) {
+                    informationArea.appendText("\nPodaj maksymalna liczbe wieksza niz obecny stan");
                     return;
                 }
                 if (!Objects.equals(newValue, getItem())) {

@@ -10,8 +10,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.orderitem.OrderItemController">
-    <TableView fx:id="orderItemTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="true">
+    <TableView fx:id="orderItemTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="556.0" prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="false">
         <columns>
             <TableColumn fx:id="idColumn" editable="false" prefWidth="150.0" text="Id" />
             <TableColumn fx:id="orderIdColumn" prefWidth="200.0" text="Id zamówienia" />
@@ -47,7 +48,7 @@
             </font>
         </Text>
         <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:" />
-        <TextField fx:id="orderIdTextField" layoutX="220.0" layoutY="182.0" />
+        <ComboBox fx:id="orderIdTextField" layoutX="220.0" layoutY="182.0" />
         <TextArea fx:id="informationArea" layoutX="114.0" layoutY="616.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
     </AnchorPane>
     <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
