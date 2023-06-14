@@ -4,7 +4,6 @@ import com.example.hurtownia.domain.user.request.UserCreateRequest;
 import com.example.hurtownia.domain.user.request.UserUpdateRequest;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -113,10 +112,8 @@ public class UserService {
         if (!userUpdateRequest.getEmail().equals(user.getEmail()) && findByEmail(userUpdateRequest.getEmail()) != null) {
             throw new UnsupportedOperationException();
         }
-        if (!user.getPassword().equals(userUpdateRequest.getPassword())) {
-            String password = passwordEncoder.encode(userUpdateRequest.getPassword());
-            user.setPassword(password);
-        }
+        String password = passwordEncoder.encode(userUpdateRequest.getPassword());
+        user.setPassword(password);
         user.setName(userUpdateRequest.getName());
         user.setSurname(userUpdateRequest.getSurname());
         user.setEmail(userUpdateRequest.getEmail());
