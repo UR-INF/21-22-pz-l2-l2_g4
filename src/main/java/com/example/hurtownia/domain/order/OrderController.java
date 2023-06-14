@@ -64,15 +64,15 @@ public class OrderController implements Initializable {
     @Autowired
     private InvoiceReport invoiceReport;
     @FXML
-    private TextField discountTextField;
+    public TextField discountTextField;
     @FXML
-    private ComboBox<CustomerDTO> customerComboBox;
+    public ComboBox<CustomerDTO> customerComboBox;
     @FXML
-    private DatePicker dateTextField;
+    public DatePicker dateTextField;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TableView<OrderDTO> ordersTable;
+    public TableView<OrderDTO> ordersTable;
     @FXML
     private TableColumn<OrderDTO, Number> valueColumn, customerIdColumn, idColumn;
     @FXML
@@ -80,7 +80,7 @@ public class OrderController implements Initializable {
     @FXML
     private TableColumn<OrderDTO, Void> invoiceColumn, deleteColumn;
     @FXML
-    private TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
+    public TextField idSearchField, orderIdSearchField, dateSearchField, valueSearchField, discountSearchField, stateSearchField;
     @FXML
     private Button generateReportBtn;
 

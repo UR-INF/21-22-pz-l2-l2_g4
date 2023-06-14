@@ -70,11 +70,11 @@ public class OrderItemController implements Initializable {
     @FXML
     public TextArea informationArea;
     @FXML
-    private TextField numberTextField;
+    public TextField numberTextField;
     @FXML
-    private ComboBox<OrderDTO> orderComboBox;
+    public ComboBox<OrderDTO> orderComboBox;
     @FXML
-    private ComboBox<ProductDTO> productComboBox;
+    public ComboBox<ProductDTO> productComboBox;
     @FXML
     public TableView<OrderItemDTO> orderItemTable;
     @FXML

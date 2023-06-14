@@ -62,11 +62,11 @@ public class ProductController implements Initializable {
     @FXML
     public TextArea informationArea;
     @FXML
-    private TextField priceTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    public TextField priceTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
     @FXML
-    private ComboBox<SupplierDTO> supplierComboBox;
+    public ComboBox<SupplierDTO> supplierComboBox;
     @FXML
-    private ComboBox<String> unitComboBox;
+    public ComboBox<String> unitComboBox;
     @FXML
     public TableView<ProductDTO> productsTable;
     @FXML
