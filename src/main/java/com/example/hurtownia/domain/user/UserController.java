@@ -49,13 +49,13 @@ public class UserController implements Initializable {
     public static ObservableList<UserDTO> users = FXCollections.observableArrayList();
     public Button generateReportBtn;
     @FXML
-    private CheckBox isAdminCheckBox, grantingDiscountsCheckBox, generatingReportsCheckBox;
+    public CheckBox isAdminCheckBox, grantingDiscountsCheckBox, generatingReportsCheckBox;
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
-    private TextField emailTextField, passwordTextField, nameTextField, surnameTextField, phoneNumberTextField;
+    public TextField emailTextField, passwordTextField, nameTextField, surnameTextField, phoneNumberTextField;
     @FXML
-    private TableView<UserDTO> usersTable;
+    public TableView<UserDTO> usersTable;
     @FXML
     private TableColumn<UserDTO, Number> idColumn;
     @FXML
@@ -63,7 +63,7 @@ public class UserController implements Initializable {
     @FXML
     private TableColumn<UserDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField;
+    public TextField idSearchField, nameSearchField, surnameSearchField, phoneNumberSearchField, emailSearchField;
     @Autowired
     private UserService userService;
     @Autowired
@@ -72,6 +72,7 @@ public class UserController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         usersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
 

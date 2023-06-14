@@ -4,11 +4,10 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" stylesheets="@../CSS/mainCSS.css"
-            xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.hurtownia.domain.product.ProductController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.product.ProductController">
     <TableView fx:id="productsTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="554.0"
-               prefWidth="1188.0" styleClass="table" tableMenuButtonVisible="false">
+               prefWidth="1188.0" tableMenuButtonVisible="true">
         <columns>
             <TableColumn fx:id="idColumn" editable="false" prefWidth="44.79998779296875" text="Id"/>
             <TableColumn fx:id="supplierIdColumn" prefWidth="85.60003662109375" text="Id dostawcy"/>

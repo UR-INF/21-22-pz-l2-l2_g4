@@ -7,8 +7,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-           prefWidth="1550.0" stylesheets="@../CSS/mainCSS.css" xmlns="http://javafx.com/javafx/19"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.controllers.MainController">
+           prefWidth="1550.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.hurtownia.controllers.MainController">
     <BorderPane>
         <bottom>
             <AnchorPane prefHeight="69.0" prefWidth="1550.0" style="-fx-background-color: #427aa1;"

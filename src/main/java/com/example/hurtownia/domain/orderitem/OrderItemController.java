@@ -68,7 +68,7 @@ public class OrderItemController implements Initializable {
     public ProductService productService;
 
     @FXML
-    private TextArea informationArea;
+    public TextArea informationArea;
     @FXML
     private TextField numberTextField;
     @FXML
@@ -76,13 +76,13 @@ public class OrderItemController implements Initializable {
     @FXML
     private ComboBox<ProductDTO> productComboBox;
     @FXML
-    private TableView<OrderItemDTO> orderItemTable;
+    public TableView<OrderItemDTO> orderItemTable;
     @FXML
     private TableColumn<OrderItemDTO, Number> itemPriceColumn, pricePerUnitColumn, idColumn, productIdColumn, orderIdColumn, amountColumn;
     @FXML
     private TableColumn<OrderItemDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
+    public TextField idSearchField, orderIdSearchField, productIdSearchField, itemPriceSearchField, pricePerUnitSearchField, numberSearchField;
     @FXML
     private Button generateReportBtn;
 
@@ -92,6 +92,7 @@ public class OrderItemController implements Initializable {
         setCustomerComboBox();
         setProductComboBox();
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         setTable();
     }
 
@@ -259,7 +260,6 @@ public class OrderItemController implements Initializable {
             orderItemService.create(orderItemCreateRequest);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
-            e.printStackTrace();
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
         }
     }

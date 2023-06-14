@@ -2,6 +2,7 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 
 # Dokumentacja projetu: **System do zarządzania zadaniami w hurtowni budowlanej**
 
+
 ## Zespoł projetowy:
 <b>Konrad Pelc</b> - Lider, Project Manager oraz Scrum Master, organizacja pracy zespołu, rozdzielenie zadań, organizacja spotkań sprintowych, dokumentacja Sprint i Manual.  
 <b>Tomasz Pitak</b> - Lider Techniczny. Odpowiedzialny za kod, logikę biznesową zarządzania uprawnieniami użytkowników, generowanie plików PDF, implementacja logiki CRUD w aplikacji.  
@@ -9,101 +10,107 @@ Programowanie zespołowe laboratorium _**2**_ grupa _**4**_
 <b>Sebastian Leń</b> - Developer oraz Tester. Diagramy UML oraz implementacja logiki CRUD w aplikacji.  
 <b>Paweł Niziołek</b> - Developer oraz Tester. Stworzenie przykładowych widoków wraz oraz ich implementacja w SceneBuilder JavaFX.  
 <b>Patryk Mokrzycki</b> - Developer oraz Bazy danych. Stworzenie bazy danych, diagramu ERD oraz wypełnienie bazy danych przykładowymi danymi, odpowiedzialność za skrypt do utworzenia struktury bazy danych.  
- 
-Wszyscy developerzy są zobowiązani do napisania testów jednostkowych JUnit dla zaimplementowanego przez siebie kodu aplikacji.
+
 
 ## Opis programu / systemu
-Aplikacja desktopowa hurtowni budowlanej umożliwająca obsługę i zarządzanie sprzedażą materiałów budowlanych.  
-Aplikacja zostanie napisana w języku Java 17 wraz z frameworkiem Spring Boot oraz Hibernate i z wykorzystaniem bazy danych MySQL.  
-Wymiary aplikacji to 800.0h x 1550.0w.  
-Przechowywanie danych wpisanych do aplikacji  powierzone jest bazie danych ściśle powiązanej z aplikacją graficznego interfejsu użytkownika (GUI).
+Aplikacja desktopowa powinna umożliwiać zarządzanie zasobami bazy danych hurtowni materiałów budowlanych. 
 
-W aplikacji rozróżniamy dwie role które w kodzie będą zapisane w klasie enum Role  
- - ADMIN
- - EMPLOYEE
+W aplikacji wyróżnione będą dwie role: 
+-	administrator – posiadający dostęp do wszystkich funkcji systemu,
+-	pracownik – mający ograniczony dostęp do funkcji systemu w zależności od przydzielonych uprawnień.
 
-Po uruchomieniu aplikacji początkowym panelem jest panel logowania w którym można się zalogować lub przejść do rejestracji nowego konta.  
+System powinien w łatwy sposób umożliwiać pracownikom wykonywanie operacji dodawania, przeglądania, edytowania i usuwania informacji w lokalnej bazie danych oraz generowania niezbędnych raportów, w tym generowania faktury z zamówienia oraz generowanie raportu dostawy. Aplikacja powinna obsługiwać system udzielania rabatów.
 
-<b>Dla wszystkich ról:</b>  
-Uwierzytelniony(zalogowany) użytkownik przechodzi następnie do panelu głównego aplikacji. Zawiera on z prawej strony listę dostępnych tabel wraz z polami służącymi do dodawania wiersza do tabeli. Lewa część panelu głównego zawiera strukturę bazy danych wraz z wypełnionymi danymi wierszami danej tabeli (np. tabeli produkty). Nad wyświetlaną tabelą znajdować się będą przyciski oraz pola do wyszukiwania, aktualizacji oraz usuwania danych.  
-
-Stosunek długości listy tabel do struktury obecnie wyświetlanej tabeli powinien wynosić 30:70.  
-
-<b>Dla roli ADMIN:</b>  
-Powyżej panelu głównego znajdują się dwie zakładki - Panel główny oraz Zarządzanie uprawnieniami.  
-W zakładce 'Zarządzanie uprawnieniami' Administrator ma możliwość nadania oraz odebrania uprawnień poszczególnym użytkownikom wybieranym z rozwijanej listy. Nadanie oraz odebranie uprawnienia polega na zmianie roli wybranego przez Administratora użytkownika oraz zaznaczeniu/odznaczeniu poszczególnych checkbox'ów np. Uprawnienie do generowania raportów, uprawnienie do nadawania rabatów.  
-
-<b>Uprawnienia:</b>  
-<b>Uprawnienie do generowania raportów</b>  
-Poniżej struktury bazy danych znajduje się przycisk "Drukuj", po jego naciśnięciu i wpisaniu tytułu raportu zostanie wygenerowany plik PDF z aktualnego widoku danej tabeli (możliwość zastosowania konkretnych filtrów przed wygenerowaniem raportu).
-
-<b>Uprawnienie do używania kodów rabatowych</b>  
-Poniżej struktury bazy danych znajdują się dwa pola z etykietą "Kod rabatowy", należą do nich pola "ID zamówienia" - któremu chcemy dodać kod rabatowy oraz pole "Kod rabatowy" - do którego należy wpisać kod rabatowy. Należy uwzględnić wykorzystanie maksymalnie jednego kodu rabatowego dla każdego zamówienia. Udzielenie kodu rabatowego będzie możliwe tylko dla użytkowników z takim uprawnieniem.  
-
-<b>Uprawnienie do zamawiania materiałów przez hurtownię</b>  
-Realizacja zamówień do hurtowni (zakup materiałów przez hurtownię) możliwa jest dla użytkowników z rolą ADMIN. Wykonywana zostaje poprzez zaznaczenie (np. Checkboxów) odpowiednich produktów w tabeli Produkty, wpisanie ilości którą hurtownia chce zamówić oraz naciśnięcie przycisku generującego plik. W wygenerowanym pliku znajdą się wskazane przez pracownika produkty wraz z ilością pożądaną przez hurtownię.  
-
-Ceny każdego produktu będą zapisywane w kolumnie:  
-<b>Cena</b> – typu double w zaokrągleniu do dwóch miejsc po przecinku  
-Wszystkie ceny pokazywane będą w walucie Polskich Złotych (PLN, zł).
-
-Przewidujemy również możliwość nadawania kodów rabatowych przez użytkowników z rolą ADMIN lub z rolą EMPLOYEE mających upoważnienie do używania kodów rabatowych.  
-Kod rabatowy używany będzie w tabeli zamówienia i będzie zmieniał cenę konkretnego zamówienia o przypisany do kodu rabatowego procent zniżki.  
-
-Kwota złożonego do realizacji zamówienia (zapisanego w tabeli Zamówienia oraz Elementy zamówienia), nie może ulec zmianie poprzez zmianę bieżącej ceny produktu. Zmiana kwoty złożonego zamówienia jest możliwa tylko poprzez użycie kodów rabatowych.  
+Po uruchomieniu aplikacji pierwszym widokiem będzie panel logowania, gdzie można się zalogować korzystając z wbudowanego konta administratora lub korzystając z konta utworzonego przez administratora systemu.
+ 
 
 ## Cel projektu 
-Umożliwienie obsługi i zarządzania sprzedażą materiałów budowlanych wraz z umożliwieniem generowania raportów.
+Celem projektu jest zaprojektowanie i stworzenie opisanego powyżej systemu. Zakłada się dostarczenie gotowego produktu wraz z instalatorem, podręcznikiem użytkownika i dokumentacją techniczną.
 
-## Zakres projektu 
-Baza danych.
-Aplikacja dektopowa.
-Dokumentacja techniczna.
-Podręcznik użytkownika.
 
 ## Wymagania stawiane aplikacji / systemowi 
-- System będzie zawierał panel logowania
-- System powinien mieć kilka modułów 
-  - Moduł administracji użytkownikami (role) 
-  - Moduł raportów 
-  - Moduł konfiguracji?
-  - Moduł zarządzania 
-- System powinien umożliwiać dodawanie/aktualizację/usuwanie oraz odczytywanie danych znajdujących się w bazie danych
-- System powinien wyświetlać stan magazynowy danego produkty wraz z jego szczegółowymi danymi
-- System powinien umożliwiać wykorzystywanie kodów rabatowych
-- System powinien umożliwiać generowanie raportów PDF
-- System powinien współpracować z bazą danych
+Wymagania funkcjonalne
+1.	System powinien mieć kilka modułów
+-	Moduł administracji użytkownikami 
+-	Moduł generowania raportów
+-	Moduł konfiguracji
+-	Moduł zarządzania zasobami bazy danych
+2.	System powinien umożliwiać generowanie raportów PDF
+-	Faktura z zamówienia
+-	Raport dostawy
+-	Raport z przefiltrowanej tabeli (niski stan magazynowy, raporty statystyczne, itp.)
+3.	System powinien współpracować z lokalną bazą danych
+4.	System powinien umożliwiać udzielanie kodów rabatowych
+5.	System powinien umożliwiać logowanie użytkowników
+
+Wymagania niefunkcjonalne
+1.	System ma być dostępny w systemie 24/7/365.
+2.	Brak limitu ilości użytkowników korzystających jednocześnie z aplikacji.
+3.	Czas odpowiedzi aplikacji powinien być akceptowalny.
+4.	Aplikacja nie powinna obciążać zasobów sprzętowych urządzenia.
+5.	Aplikację powinna cechować wspólna kolorystyka.
+
 
 ## Panele / zakładki systemu, które będą oferowały potrzebne funkcjonalności 
-- Panel główny 
-  - Dostępny dla ról ADMIN oraz EMPLOYEE
-  - Operacje CRUD dla tabel Produkty, Zamówienia, Elementy Zamówienia w aplikacji. 
-- Panel zarządzania użytkownikami
-  - Tylko dla użytkowników z rolą ADMIN
-  - Możliwość zmiany roli oraz uprawnień użytkownikowi wybranemu z listy
+1.	Panel administratora
 
-## Typy wymaganych dokumentów w projekcie oraz dostęp do nich 
-- Raporty PDF 
-  - Generowany z aktualnego widoku danej tabeli (możliwość zastosowania konkretnych filtrów przed wygenerowaniem raportu).
+Główne narzędzie administratorów systemu umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania systemem i zasobami bazy danych, w tym dodawanie, edycja, usuwanie użytkowników, nadawanie i usuwanie uprawnień.
+
+2.	Panel pracownika
+
+Główne narzędzie pracowników umożliwiające wykonanie wszystkich czynności potrzebnych do zarządzania zasobami bazy danych. Dostępne funkcje panelu zależne są od uprawnień użytkownika.
+
+3.	Panel importu danych
+
+Umożliwia import danych z plików CSV. Pliki powinny posiadać ściśle określoną strukturę.
+
+4.	Panel opcji
+
+Pozwala na dynamiczną zmianę parametrów połączenia z bazą danych.
+
+5.	Panel logowania
+
+Umożliwia zalogowanie do systemu.
+
 
 ## Przepływ informacji w środowisku systemu 
-Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie danych będą możliwe do wykonania z poziomu GUI aplikacji. 
+System implementuje wzorzec Controller-Service-Repository, w którym:
+-	Controller – komponenty z adnotacjami @Component, warstwa odpowiedzialna za zarządzanie interfejsem użytkownika zaprojektowanym w technologii JavaFX,
+-	Service – komponenty z adnotacjami @Service, warstwa implementująca logikę biznesową,
+-	Repository – komponenty z adnotacjami @Repository, warstwa odpowiedzialna za pobieranie i utrwalanie danych.
+
+Ponadto system implementuje wzorzec DTO (Data Transfer Object). Obiekty DTO służą do przesyłania danych poza część aplikacji odpowiedzialną za logikę biznesową.
+ 
+![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/3507f6d7-c95c-406a-b0a2-2348836ff34f)
+
 
 ## Użytkownicy aplikacji i ich uprawnienia 
-- Administrator (Administrator Systemu/Kierownik/Dyrektor)
-  - Zarządzanie uprawnieniami użytkowników 
-  - Możliwości CRUD w aplikacji - Odczytywanie zawartości głównego panelu oraz zmiany zawartości tabel (tworzenie, aktualizacja oraz usuwanie wierszy w tabelach)
-	
-- Pracownik 
-  - Możliwości CRUD w aplikacji - Odczytywanie zawartości głównego panelu oraz zmiany zawartości tabel (tworzenie, aktualizacja oraz usuwanie wierszy w tabelach)
+1.	Administrator
+
+– zarządzanie systemem (zarządzanie użytkownikami i ich uprawnieniami) 
+
+– zarządzanie wszystkimi zasobami bazy danych
+
+– zmiana źródła danych
+
+2.	Pracownik 
+
+– zarządzanie wszystkimi zasobami bazy danych
+
+– w zależności od uprawnień:
+
+&emsp;•	generowanie raportów - pozwala na generowanie raportów z przefiltrowanych widoków tabel, raportu dostawy oraz faktury z zamówienia
+   
+&emsp;•	udzielanie rabatów - pozwala na udzielanie i modyfikację udzielonego rabatu
+
 
 ## Interesariusze 
-- Interesariusze wewnętrzni 
-  - Zarząd hurtowni
-  - Administrator systemu
-  - Pracownicy
-- Interesariusze zewnętrzni 
-  - Brak interesariuszy zewnętrznych
+Interesariusze wewnętrzni
+1.	Członkowie zespołu projektowego
+2.	Product Owner
+Interesariusze zewnętrzni
+1.	Użytkownicy systemu
+
 
 ## Diagramy UML
 - ###### [Diagram przypadków użycia]
@@ -117,44 +124,46 @@ Scentralizowany oparty na bazie danych MySQL. Wszystkie operacje CRUD w bazie da
 - ###### [Diagram stanów]
 ![5](https://user-images.githubusercontent.com/103111656/226665593-7dbcd5af-0370-4242-a8e9-0c9b9acf9989.PNG)
 ![6](https://user-images.githubusercontent.com/103111656/226665652-69c3ddc6-5c97-453b-9a84-fafd79d0c4ce.PNG)
-- ###### [Diagram klas dla pakietu order]
-![order_class_diagram](https://user-images.githubusercontent.com/101945722/232893294-cec11f9e-75a9-4899-b8b7-eb93d9019903.PNG)
+- ###### [Diagram klas dla pakietu customer]
+- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/ef951505-6461-47c2-ac2b-6d076d4532c1)
 
 
 ## Baza danych
-
 
 ###### Diagram ERD
 ![ERD](https://user-images.githubusercontent.com/101945722/229322756-70a6d276-24de-4883-bf04-e3916451418a.PNG)
 
 
-
-
 ###### Skrypt do utworzenia struktury bazy danych
+Aplikacja utworzy domyślną bazę danych o nazwie ‘hurtownia’ podczas pierwszego uruchomienia.
+Dane konfiguracyjne domyślnej bazy danych:
+·	Nazwa hosta: localhost/127.0.0.1
+·	Port: 3306
+·	Nazwa bazy danych: hurtownia
+·	Nazwa użytkownika: root
+·	Hasło:
 
 
 ###### Opis bazy danych
-Każdy wiersz w tabeli ma swój indywidulany numer identyfikacyjny (ID) oraz nadany przez producenta towaru numer seryjny. Dzięki wykorzystaniu numeru seryjnego unikniemy problemu z rozróżnieniem np. Czerwonej i zielonej cegły lub odmiany paneli podłogowych. W tabelach nie będą znajdowały się zdjęcia, jedyną możliwością rozróżnienia podobnych produktów będzie weryfikacja numeru seryjnego.  
+Tabela ‘Uzytkownik’ zawiera informacje dotyczące kont użytkowników. Hasło przechowywane jest w postaci zaszyfrowanej. Pole ‘isAdmin’ pozwala określić typ użytkownika a pola ‘generowanieRaportów’ i ‘udzielanieRabatów’ przydzielone uprawnienia. 
 
-Tabela 'Produkt' zawiera kolumny 'Ilosc' oraz 'MaxIlosc', ktore zawierają informacje o tym, jak dużo danego produktu jest na stanie hurtowni oraz jak dużo tego produktu hurtownia jest w stanie pomieścić. Na postawie tych danych, określane będzie zapotrzebowanie magazynu na dostawę danego produktu. Informacja w interfejsie graficznym będzie zawierała jeden ze stanów 'Wysoki', 'Umiarkowany', 'Niski' albo 'Brak' w zależności od procentowego wypełnienia miejsca przeznaczonego na dany produkt.  
+Tabela ‘Klient’ zawiera informacje na temat klientów składających zamówienia.
 
-Tabela 'Zamówienia' zawiera kolumnę 'stanZamówienia' która określa jednym ze statusów 'W przygotowaniu', 'Przygotowane', 'Wysłane' albo 'Zakończone' etap realizacji zamówienia. Oprócz tego zawiera kolumnę procentRabatu, gdzie będzie określone jak duży rabat dostał dany klient.  
+Tabela ‘Dostawca’ zawiera informacje na temat dostawców towarów do hurtownii.
 
-Tabela 'dostawca' zawiera informacje odnośnie dostawców, którzy dostarczają towary do hurtowni.
+Tabela ‘Produkt’ zawiera informacje na temat produktów oferowanych przez hurtownię. Kolumny ‘ilosc’ oraz ‘maxIlosc’, które zawierają informacje o tym, jaki jest stan magazynowy produktu. Na podstawie tych danych określane będzie zapotrzebowanie magazynu na dostawę danego produktu. Na podstawie odpowiednich obliczeń w aplikacji zostanie wyświetlona informacja o stanie magazynowym danego produktu, tj. wysoki, umiarkowany lub niski.
 
-Tabela 'uzytkownik' zawiera informacje dotyczące kont użytkowników. Dodatkowo parametr w kolumnie 'isAdmin' określa dostęp do funkcji, jakie ma dany użytkownik.
+Tabela ‘Zamowienie’ zawiera informacje na temat zamówień. Kolumna ‘stanZamowienia’ określa jeden z możliwych stanów: w przygotowaniu, gotowe, odebrane. Kolumna ‘rabat’ informuje o tym, czy został udzielony rabat i w jakiej wysokości.
 
-Tabela 'element_zamowienia' zawiera pola 'cena' oraz 'cena za jednostke'. Wartosci te po złożonym zamówieniu nie będą się aktualizowały z aktualną ceną produktu. Jest to funkcjonalność, która pozwoli nam sprawdzić ceny w danym zamówieniu przed podwyżką/zmianą cen (nie będą one aktualizowane).
+Tabela ‘ElementZamowienia’ zawiera informacje na temat elementów zamówień. Kolumna ‘cenaZaJednostke’ określa cenę danego produktu w momencie złożenia zamówienia.
+
 
 ## Wykorzystane technologie 
-- Język Java 17
-  - Spring Boot
-  - JavaFX
-  - Hibernate
-  - SceneBuilder
-- Baza danych MySQL
-- Inne z opisem
+1.	Java (17)
+2.	JavaFX (17)
+3.	Spring Boot (2.7.11)
+4.	IText (7.2.3)
+5.	Baza danych MySQL (8.0.32) 
+
 
 ## Pliki instalacyjne wraz z opisem instalacji i konfiguracji wraz pierwszego uruchomienia
-
-Branche, Lombok, Nazewnictwo, Pluginy

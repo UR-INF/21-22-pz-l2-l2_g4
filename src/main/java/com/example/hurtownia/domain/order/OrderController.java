@@ -88,6 +88,7 @@ public class OrderController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setComboBox();
         ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
+        informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }
