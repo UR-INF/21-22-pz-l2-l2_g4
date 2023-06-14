@@ -69,8 +69,6 @@
     <TextField fx:id="surnameSearchField" layoutX="522.0" layoutY="100.0" prefHeight="26.0" prefWidth="136.0"/>
     <TextField fx:id="phoneNumberSearchField" layoutX="658.0" layoutY="100.0" prefHeight="26.0" prefWidth="151.0"/>
     <TextField fx:id="emailSearchField" layoutX="808.0" layoutY="100.0" prefHeight="26.0" prefWidth="122.0"/>
-    <TextField fx:id="passwordSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0"/>
-    <TextField fx:id="isAdminSearchField" layoutX="1030.0" layoutY="100.0" prefHeight="26.0" prefWidth="96.0"/>
     <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#usersBtnSearchClicked"
             prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
         <font>
@@ -100,7 +98,4 @@
             <Cursor fx:constant="HAND"/>
         </cursor>
     </Button>
-    <TextField fx:id="isAdaminSearchField" layoutX="1126.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0"/>
-    <TextField fx:id="grantingDiscountsSearchField" layoutX="1276.0" layoutY="100.0" prefHeight="26.0"
-               prefWidth="140.0"/>
 </AnchorPane>

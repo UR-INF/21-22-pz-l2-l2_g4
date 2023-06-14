@@ -78,7 +78,7 @@ public class ProductController implements Initializable {
     @FXML
     private TableColumn<ProductDTO, Void> deleteColumn;
     @FXML
-    private TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField, stateSearchField;
+    private TextField idSearchField, nameSearchField, supplierIdSearchField, codeSearchField, priceSearchField, numberSearchField, unitSearchField, countrySearchField, colorSearchField, maxNumberSearchField;
     @Autowired
     private ProductService productService;
     @Autowired

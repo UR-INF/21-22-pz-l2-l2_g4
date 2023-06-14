@@ -48,7 +48,6 @@ import java.util.stream.Collectors;
 public class UserController implements Initializable {
     public static ObservableList<UserDTO> users = FXCollections.observableArrayList();
     public Button generateReportBtn;
-    public TextField isAdaminSearchField;
     @FXML
     private CheckBox isAdminCheckBox, grantingDiscountsCheckBox, generatingReportsCheckBox;
     @FXML
