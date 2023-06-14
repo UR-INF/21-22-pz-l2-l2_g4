@@ -285,8 +285,8 @@ public class MainController implements Initializable {
         orderTabContentController.informationArea.clear();
         orderTabContentController.ordersTable.getItems().clear();
         orderTabContentController.ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
-        orderTabContentController.customerIdTextField.clear();
-        orderTabContentController.dateTextField.clear();
+        orderTabContentController.customerComboBox.setValue(null);
+        orderTabContentController.dateTextField.setValue(null);
         orderTabContentController.discountTextField.clear();
         orderTabContentController.idSearchField.clear();
         orderTabContentController.orderIdSearchField.clear();
@@ -298,8 +298,8 @@ public class MainController implements Initializable {
         orderItemTabContentController.informationArea.clear();
         orderItemTabContentController.orderItemTable.getItems().clear();
         orderItemTabContentController.orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
-        orderItemTabContentController.productIdTextField.clear();
-        orderItemTabContentController.orderIdTextField.clear();
+        orderItemTabContentController.productComboBox.setValue(null);
+        orderItemTabContentController.orderComboBox.setValue(null);
         orderItemTabContentController.numberTextField.clear();
         orderItemTabContentController.idSearchField.clear();
         orderItemTabContentController.orderIdSearchField.clear();
@@ -312,9 +312,9 @@ public class MainController implements Initializable {
         productTabContentController.productsTable.getItems().clear();
         productTabContentController.productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         productTabContentController.priceTextField.clear();
-        productTabContentController.supplierIdTextField.clear();
+        productTabContentController.supplierComboBox.setValue(null);
         productTabContentController.numberTextField.clear();
-        productTabContentController.unitTextField.clear();
+        productTabContentController.unitComboBox.setValue(null);
         productTabContentController.codeTextField.clear();
         productTabContentController.colorTextField.clear();
         productTabContentController.countryTextField.clear();

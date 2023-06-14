@@ -1,5 +1,7 @@
 package com.example.hurtownia.validation;
 
+import java.time.LocalDate;
+
 /**
  * Klasa obsługująca walidację w aplikacji
  */
@@ -26,6 +28,7 @@ public class TextFieldsValidators {
 
     /**
      * Funkcja służy do walidowania adresu nip
+     *
      * @param phoneNumber
      * @return true, jeśli nip poprawny, w przeciwnym wypadku false
      */
@@ -35,6 +38,7 @@ public class TextFieldsValidators {
 
     /**
      * Funkcja służy do walidowania numeru pese
+     *
      * @param phoneNumber
      * @return true, jeśli numer poprawny, w przeciwnym wypadku false
      */
@@ -44,6 +48,7 @@ public class TextFieldsValidators {
 
     /**
      * Funkcja do walidacji liczb typu int
+     *
      * @param input
      * @return wartość logiczna założeń funkcji
      */
@@ -57,6 +62,7 @@ public class TextFieldsValidators {
 
     /**
      * Funkcja waliduje liczby typu double
+     *
      * @param input
      * @return wartość logiczna jeśli liczba typu double, wieksza od 0
      */
@@ -70,6 +76,7 @@ public class TextFieldsValidators {
 
     /**
      * Funckja waliduje kod pocztowy
+     *
      * @param postalCode
      * @return wartość typu boolean, w zależności czy kod jest poprawny
      */
@@ -77,6 +84,10 @@ public class TextFieldsValidators {
         String postalCodePattern = "\\d{2}-\\d{3}";
 
         return postalCode.matches(postalCodePattern);
+    }
+
+    public static boolean validateDate(LocalDate date) {
+        return date != null && (date.isBefore(LocalDate.now()) || date.equals(LocalDate.now())) && date.isAfter(LocalDate.of(1999, 1, 1));
     }
 
 }

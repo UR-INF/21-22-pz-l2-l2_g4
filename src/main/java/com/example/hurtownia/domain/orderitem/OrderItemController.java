@@ -1,13 +1,18 @@
 package com.example.hurtownia.domain.orderitem;
 
 import com.example.hurtownia.controllers.ReportController;
+import com.example.hurtownia.domain.customer.CustomerService;
+import com.example.hurtownia.domain.order.OrderDTO;
+import com.example.hurtownia.domain.order.OrderService;
 import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
+import com.example.hurtownia.domain.product.ProductDTO;
+import com.example.hurtownia.domain.product.ProductService;
+import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,6 +33,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
@@ -38,6 +44,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -47,14 +54,27 @@ import java.util.stream.Collectors;
 @Controller
 public class OrderItemController implements Initializable {
     public static ObservableList<OrderItemDTO> orderItems = FXCollections.observableArrayList();
+    public static ObservableList<OrderDTO> orders = FXCollections.observableArrayList();
+    public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
+    @Autowired
+    private OrderService orderService;
     @Autowired
     private OrderItemService orderItemService;
     @Autowired
     public OrderItemReport orderItemReport;
+    @Autowired
+    public CustomerService customerService;
+    @Autowired
+    public ProductService productService;
+
     @FXML
     public TextArea informationArea;
     @FXML
-    public TextField productIdTextField, orderIdTextField, numberTextField;
+    public TextField numberTextField;
+    @FXML
+    public ComboBox<OrderDTO> orderComboBox;
+    @FXML
+    public ComboBox<ProductDTO> productComboBox;
     @FXML
     public TableView<OrderItemDTO> orderItemTable;
     @FXML
@@ -68,10 +88,95 @@ public class OrderItemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        products.setAll(productService.findAll());
+        setCustomerComboBox();
+        setProductComboBox();
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.setEditable(false);
-        productIdTextField.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+    }
+
+    public void setProductComboBox() {
+        productComboBox.setPrefWidth(150);
+        productComboBox.setItems(FXCollections.observableArrayList(products));
+        productComboBox.setCellFactory(new Callback<ListView<ProductDTO>, ListCell<ProductDTO>>() {
+            @Override
+            public ListCell<ProductDTO> call(ListView<ProductDTO> param) {
+                return new ListCell<ProductDTO>() {
+                    @Override
+                    protected void updateItem(ProductDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName() + " " + item.getNumber() + item.getUnitOfMeasurement() + " (" + item.getPrice() + "zł)");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        productComboBox.setConverter(new StringConverter<ProductDTO>() {
+            @Override
+            public String toString(ProductDTO product) {
+                if (product != null) {
+                    return product.getName() + " " + product.getNumber() + product.getUnitOfMeasurement() + " (" + product.getPrice() + "zł)";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public ProductDTO fromString(String string) {
+                return null;
+            }
+        });
+        productComboBox.setOnMouseClicked(event -> {
+            products.setAll(productService.findAll().stream().filter(
+                    p -> p.getNumber() > 0
+            ).collect(Collectors.toList()));
+            productComboBox.setItems(products);
+        });
+    }
+
+    public void setCustomerComboBox() {
+        orderComboBox.setPrefWidth(150);
+        orderComboBox.setItems(FXCollections.observableArrayList(orders));
+        orderComboBox.setCellFactory(new Callback<ListView<OrderDTO>, ListCell<OrderDTO>>() {
+            @Override
+            public ListCell<OrderDTO> call(ListView<OrderDTO> param) {
+                return new ListCell<OrderDTO>() {
+                    @Override
+                    protected void updateItem(OrderDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(customerService.findById(item.getCustomerId()).getEmail() + " " + item.getDate() + " (ID: " + item.getId() + ")");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        orderComboBox.setConverter(new StringConverter<OrderDTO>() {
+            @Override
+            public String toString(OrderDTO customer) {
+                if (customer != null) {
+                    return customerService.findById(customer.getCustomerId()).getEmail() + " " + customer.getDate() + " (ID: " + customer.getId() + ")";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public OrderDTO fromString(String string) {
+                // Nie jest używane w tym przykładzie
+                return null;
+            }
+        });
+        orderComboBox.setOnMouseClicked(event -> {
+            orders.setAll(orderService.findAll());
+            orderComboBox.setItems(orders);
+        });
     }
 
     /**
@@ -111,9 +216,42 @@ public class OrderItemController implements Initializable {
             return;
         }
         try {
-            Long orderId = Long.valueOf(orderIdTextField.getText());
-            Long productId = Long.valueOf(productIdTextField.getText());
+            Long orderId = orderComboBox.getValue().getId();
+            Long productId = productComboBox.getValue().getId();
             Integer amount = Integer.valueOf(numberTextField.getText());
+
+            Integer availableAmount = productService.findById(Long.valueOf(productId)).getNumber();
+            if (availableAmount < amount) {
+                if (availableAmount == 0) {
+                    informationArea.appendText("\nProduktu nie ma w magazynie");
+                    return;
+                }
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Potwierdzenie");
+                alert.setHeaderText("Nie ma wystarczającej ilości sztuk w magazynie.");
+                alert.setContentText("Czy chcesz dodać pozostałe sztuki do zamówienia?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    amount = availableAmount;
+                    ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
+                    BeanUtils.copyProperties(productUpdateRequest, products.stream()
+                            .filter(p -> p.getId() == productId)
+                            .findFirst().get());
+                    productUpdateRequest.setNumber(0);
+                    productService.update(productUpdateRequest);
+                    informationArea.appendText("\nNie ma wystarczającej ilości sztuk w magazynie. Dodano pozostałe sztuki do zamówienia.");
+                } else {
+                    informationArea.appendText("\nAnulowano zamówienie");
+                    return;
+                }
+            } else {
+                ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
+                BeanUtils.copyProperties(productUpdateRequest, products.stream()
+                        .filter(p -> p.getId() == productId)
+                        .findFirst().get());
+                productUpdateRequest.setNumber(availableAmount - amount);
+                productService.update(productUpdateRequest);
+            }
             OrderItemCreateRequest orderItemCreateRequest = OrderItemCreateRequest.builder()
                     .orderId(orderId)
                     .productId(productId)

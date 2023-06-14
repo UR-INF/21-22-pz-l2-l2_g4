@@ -1,84 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.order.OrderController">
-    <TableView fx:id="ordersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="557.0" prefWidth="1188.0" tableMenuButtonVisible="true">
+<?import javafx.scene.text.*?>
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="710.0" prefWidth="1561.0" xmlns="http://javafx.com/javafx/18"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.hurtownia.domain.order.OrderController">
+    <TableView fx:id="ordersTable" editable="true" layoutX="330.0" layoutY="131.0" prefHeight="557.0" prefWidth="1188.0"
+               tableMenuButtonVisible="true">
         <columns>
-            <TableColumn fx:id="idColumn" editable="false" prefWidth="100.0" text="Id" />
-            <TableColumn fx:id="customerIdColumn" prefWidth="150.0" text="Id klienta" />
-            <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Data zamówienia" />
-            <TableColumn fx:id="valueColumn" editable="false" prefWidth="200.0" text="Wartosc" />
-            <TableColumn fx:id="discountColumn" prefWidth="125.0" text="Rabat" />
-            <TableColumn fx:id="stateColumn" prefWidth="175.0" text="Stan zamówienia" />
-            <TableColumn fx:id="invoiceColumn" editable="false" prefWidth="189.5999755859375" text="Generuj fakturę" />
-            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="96.0" style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń" />
+            <TableColumn fx:id="idColumn" editable="false" prefWidth="100.0" text="Id"/>
+            <TableColumn fx:id="customerIdColumn" prefWidth="150.0" text="Id klienta"/>
+            <TableColumn fx:id="dateColumn" prefWidth="150.0" text="Data zamówienia"/>
+            <TableColumn fx:id="valueColumn" editable="false" prefWidth="200.0" text="Wartosc"/>
+            <TableColumn fx:id="discountColumn" prefWidth="125.0" text="Rabat"/>
+            <TableColumn fx:id="stateColumn" prefWidth="175.0" text="Stan zamówienia"/>
+            <TableColumn fx:id="invoiceColumn" editable="false" prefWidth="189.5999755859375" text="Generuj fakturę"/>
+            <TableColumn fx:id="deleteColumn" editable="false" prefWidth="96.0"
+                         style="-fx-border-color: #427aa1; -fx-border-width: 0 0 0 0.5px;" text="Usuń"/>
         </columns>
     </TableView>
-    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0" style="-fx-background-color: #e3e3e3;">
+    <AnchorPane layoutX="-86.0" layoutY="-2.0" prefHeight="714.0" prefWidth="407.0"
+                style="-fx-background-color: #e3e3e3;">
         <Text layoutX="179.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dodaj zmówienie">
             <font>
-                <Font size="18.0" />
+                <Font size="18.0"/>
             </font>
         </Text>
-        <Text layoutX="110.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id klienta" />
-        <TextField fx:id="dateTextField" layoutX="220.0" layoutY="140.0" />
-        <Text layoutX="110.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data zamówienia" />
-        <Button layoutX="110.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#ordersBtnAddClicked" prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Dodaj">
+        <Text layoutX="110.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id klienta"/>
+        <DatePicker fx:id="dateTextField" layoutX="220.0" layoutY="140.0"/>
+        <Text layoutX="110.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Data zamówienia"/>
+        <Button layoutX="110.0" layoutY="272.0" mnemonicParsing="false" onMouseClicked="#ordersBtnAddClicked"
+                prefHeight="38.0" prefWidth="260.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;"
+                text="Dodaj">
             <font>
-                <Font size="16.0" />
+                <Font size="16.0"/>
             </font>
             <cursor>
-                <Cursor fx:constant="HAND" />
+                <Cursor fx:constant="HAND"/>
             </cursor>
         </Button>
         <Text fill="#427aa1" layoutX="179.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Zamówienia">
             <font>
-                <Font name="Arial Bold" size="24.0" />
+                <Font name="Arial Bold" size="24.0"/>
             </font>
         </Text>
-        <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:" />
-        <TextField fx:id="customerIdTextField" layoutX="220.0" layoutY="182.0" />
-        <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rabat" />
-        <TextField fx:id="discountTextField" layoutX="220.0" layoutY="223.0" />
-        <TextArea fx:id="informationArea" layoutX="114.0" layoutY="619.0" prefHeight="68.0" prefWidth="268.0" AnchorPane.leftAnchor="110.0" />
+        <Text layoutX="110.0" layoutY="602.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Informacje:"/>
+        <ComboBox fx:id="customerComboBox" layoutX="220.0" layoutY="182.0"/>
+        <Text layoutX="110.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rabat"/>
+        <TextField fx:id="discountTextField" layoutX="220.0" layoutY="223.0"/>
+        <TextArea fx:id="informationArea" layoutX="114.0" layoutY="619.0" prefHeight="68.0" prefWidth="268.0"
+                  AnchorPane.leftAnchor="110.0"/>
     </AnchorPane>
-    <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0" />
-    <TextField fx:id="discountSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="125.0" />
-    <TextField fx:id="dateSearchField" layoutX="580.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
-    <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ordersBtnSearchClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
+    <TextField fx:id="idSearchField" layoutX="330.0" layoutY="100.0" prefHeight="26.0" prefWidth="100.0"/>
+    <TextField fx:id="discountSearchField" layoutX="930.0" layoutY="100.0" prefHeight="26.0" prefWidth="125.0"/>
+    <TextField fx:id="dateSearchField" layoutX="580.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0"/>
+    <Button layoutX="380.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ordersBtnSearchClicked"
+            prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Szukaj">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
         <cursor>
-            <Cursor fx:constant="HAND" />
+            <Cursor fx:constant="HAND"/>
         </cursor>
     </Button>
-    <Button layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ordersBtnShowClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Pokaż wszystko">
+    <Button layoutX="580.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ordersBtnShowClicked"
+            prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;"
+            text="Pokaż wszystko">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
         <cursor>
-            <Cursor fx:constant="HAND" />
+            <Cursor fx:constant="HAND"/>
         </cursor>
     </Button>
-    <Button fx:id="generateReportBtn" layoutX="780.0" layoutY="30.0" mnemonicParsing="false" onMouseClicked="#ordersBtnReportClicked" prefHeight="38.0" prefWidth="150.0" style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
+    <Button fx:id="generateReportBtn" layoutX="780.0" layoutY="30.0" mnemonicParsing="false"
+            onMouseClicked="#ordersBtnReportClicked" prefHeight="38.0" prefWidth="150.0"
+            style="-fx-border-color: #427aa1; -fx-border-width: 1;" text="Generuj raport">
         <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
         </font>
         <cursor>
-            <Cursor fx:constant="HAND" />
+            <Cursor fx:constant="HAND"/>
         </cursor>
     </Button>
-    <TextField fx:id="orderIdSearchField" layoutX="430.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0" />
-    <TextField fx:id="valueSearchField" layoutX="730.0" layoutY="100.0" prefHeight="26.0" prefWidth="200.0" />
-    <TextField fx:id="stateSearchField" layoutX="1056.0" layoutY="100.0" prefHeight="26.0" prefWidth="175.0" />
+    <TextField fx:id="orderIdSearchField" layoutX="430.0" layoutY="100.0" prefHeight="26.0" prefWidth="150.0"/>
+    <TextField fx:id="valueSearchField" layoutX="730.0" layoutY="100.0" prefHeight="26.0" prefWidth="200.0"/>
+    <TextField fx:id="stateSearchField" layoutX="1056.0" layoutY="100.0" prefHeight="26.0" prefWidth="175.0"/>
 </AnchorPane>

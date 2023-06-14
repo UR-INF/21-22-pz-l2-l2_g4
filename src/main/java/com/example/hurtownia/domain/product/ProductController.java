@@ -3,6 +3,7 @@ package com.example.hurtownia.domain.product;
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.product.request.ProductCreateRequest;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
+import com.example.hurtownia.domain.supplier.SupplierDTO;
 import com.example.hurtownia.domain.supplier.SupplierService;
 import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -23,6 +24,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,6 +53,8 @@ import java.util.stream.Collectors;
 @Controller
 public class ProductController implements Initializable {
     public static ObservableList<ProductDTO> products = FXCollections.observableArrayList();
+    public static ObservableList<SupplierDTO> suppliers = FXCollections.observableArrayList();
+    private final String[] units = {"m^2", "m^3", "m", "kg", "szt", "l"};
     @Autowired
     private SupplyReport supplyReport;
     @Autowired
@@ -58,7 +62,11 @@ public class ProductController implements Initializable {
     @FXML
     public TextArea informationArea;
     @FXML
-    public TextField priceTextField, supplierIdTextField, numberTextField, unitTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    public TextField priceTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
+    @FXML
+    public ComboBox<SupplierDTO> supplierComboBox;
+    @FXML
+    public ComboBox<String> unitComboBox;
     @FXML
     public TableView<ProductDTO> productsTable;
     @FXML
@@ -82,10 +90,55 @@ public class ProductController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setComboBox();
         productsTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+        unitComboBox.setItems(FXCollections.observableArrayList(units
+        ));
+    }
+
+    public void setComboBox() {
+        supplierComboBox.setPrefWidth(150);
+        suppliers.setAll(supplierService.findAll());
+        supplierComboBox.setItems(FXCollections.observableArrayList(suppliers));
+        supplierComboBox.setCellFactory(new Callback<ListView<SupplierDTO>, ListCell<SupplierDTO>>() {
+            @Override
+            public ListCell<SupplierDTO> call(ListView<SupplierDTO> param) {
+                return new ListCell<SupplierDTO>() {
+                    @Override
+                    protected void updateItem(SupplierDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName() + " (ID: " + item.getId() + ")");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        supplierComboBox.setConverter(new StringConverter<SupplierDTO>() {
+            @Override
+            public String toString(SupplierDTO customer) {
+                if (customer != null) {
+                    return customer.getName() + " (ID: " + customer.getId() + ")";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public SupplierDTO fromString(String string) {
+                // Nie jest używane w tym przykładzie
+                return null;
+            }
+        });
+        supplierComboBox.setOnMouseClicked(event -> {
+            suppliers.setAll(supplierService.findAll());
+            supplierComboBox.setItems(suppliers);
+        });
     }
 
     /**
@@ -181,9 +234,9 @@ public class ProductController implements Initializable {
             return;
         }
         try {
-            Long supplierId = Long.valueOf(supplierIdTextField.getText());
+            Long supplierId = supplierComboBox.getValue().getId();
             String name = nameTextField.getText();
-            String unitOfMeasurement = unitTextField.getText();
+            String unitOfMeasurement = unitComboBox.getValue();
             Double price = Double.valueOf(priceTextField.getText());
             String country = countryTextField.getText();
             String code = codeTextField.getText();
@@ -411,6 +464,10 @@ public class ProductController implements Initializable {
                     informationArea.appendText("\nPodaj nieujemną liczbę");
                     return;
                 }
+                if (newValue.intValue() > productsTable.getSelectionModel().getSelectedItem().getMaxNumber()) {
+                    informationArea.appendText("\nPodaj ilosc mniejsza niz maksymalna");
+                    return;
+                }
                 if (!Objects.equals(newValue, getItem())) {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
                     try {
@@ -427,23 +484,22 @@ public class ProductController implements Initializable {
                 super.commitEdit(newValue);
             }
         });
-        unitColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
-            @Override
-            public void commitEdit(String newValue) {
-                if (!Objects.equals(newValue, getItem())) {
+        unitColumn.setCellFactory(ComboBoxTableCell.forTableColumn(units));
+        unitColumn.setOnEditCommit(t -> {
                     ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
-                    try {
-                        BeanUtils.copyProperties(productUpdateRequest, productsTable.getSelectionModel().getSelectedItem());
-                        productUpdateRequest.setUnitOfMeasurement(newValue);
-                        productService.update(productUpdateRequest);
-                        informationArea.appendText("\nPomyślnie edytowano produkt o id " + productUpdateRequest.getId());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować produktu o id " + productUpdateRequest.getId());
+                    if (!Objects.equals(t.getNewValue(), t.getOldValue())) {
+                        try {
+                            BeanUtils.copyProperties(productUpdateRequest, productsTable.getSelectionModel().getSelectedItem());
+                            productUpdateRequest.setUnitOfMeasurement(t.getNewValue());
+                            productService.update(productUpdateRequest);
+                            informationArea.appendText("\nPomyślnie edytowano produkt o id " + productUpdateRequest.getId());
+                        } catch (Exception e) {
+                            informationArea.appendText("\nNie udało się edytować produktu o id " + productUpdateRequest.getId());
+                        }
                     }
                 }
-                super.commitEdit(newValue);
-            }
-        });
+
+        );
         countryColumn.setCellFactory(cell -> new TextFieldTableCell<>(stringConverter) {
             @Override
             public void commitEdit(String newValue) {
@@ -483,6 +539,10 @@ public class ProductController implements Initializable {
             public void commitEdit(Number newValue) {
                 if (newValue.intValue() < 0) {
                     informationArea.appendText("\nPodaj nieujemną liczbę");
+                    return;
+                }
+                if (newValue.intValue() < productsTable.getSelectionModel().getSelectedItem().getNumber()) {
+                    informationArea.appendText("\nPodaj maksymalna liczbe wieksza niz obecny stan");
                     return;
                 }
                 if (!Objects.equals(newValue, getItem())) {
