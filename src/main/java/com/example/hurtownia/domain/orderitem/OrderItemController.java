@@ -1,7 +1,6 @@
 package com.example.hurtownia.domain.orderitem;
 
 import com.example.hurtownia.controllers.ReportController;
-import com.example.hurtownia.domain.customer.CustomerDTO;
 import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.order.OrderDTO;
 import com.example.hurtownia.domain.order.OrderService;
@@ -14,7 +13,6 @@ import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -72,9 +70,11 @@ public class OrderItemController implements Initializable {
     @FXML
     private TextArea informationArea;
     @FXML
-    private TextField numberTextField, productIdTextField;
+    private TextField numberTextField;
     @FXML
-    private ComboBox<OrderDTO> orderIdTextField;
+    private ComboBox<OrderDTO> orderComboBox;
+    @FXML
+    private ComboBox<ProductDTO> productComboBox;
     @FXML
     private TableView<OrderItemDTO> orderItemTable;
     @FXML
@@ -90,16 +90,57 @@ public class OrderItemController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         products.setAll(productService.findAll());
         setCustomerComboBox();
+        setProductComboBox();
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
-        productIdTextField.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
     }
 
+    public void setProductComboBox() {
+        productComboBox.setPrefWidth(150);
+        productComboBox.setItems(FXCollections.observableArrayList(products));
+        productComboBox.setCellFactory(new Callback<ListView<ProductDTO>, ListCell<ProductDTO>>() {
+            @Override
+            public ListCell<ProductDTO> call(ListView<ProductDTO> param) {
+                return new ListCell<ProductDTO>() {
+                    @Override
+                    protected void updateItem(ProductDTO item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            setText(item.getName() + " " + item.getNumber() + item.getUnitOfMeasurement() + " (" + item.getPrice() + "zł)");
+                        } else {
+                            setText(null);
+                        }
+                    }
+                };
+            }
+        });
+        productComboBox.setConverter(new StringConverter<ProductDTO>() {
+            @Override
+            public String toString(ProductDTO product) {
+                if (product != null) {
+                    return product.getName() + " " + product.getNumber() + product.getUnitOfMeasurement() + " (" + product.getPrice() + "zł)";
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public ProductDTO fromString(String string) {
+                return null;
+            }
+        });
+        productComboBox.setOnMouseClicked(event -> {
+            products.setAll(productService.findAll().stream().filter(
+                    p -> p.getNumber() > 0
+            ).collect(Collectors.toList()));
+            productComboBox.setItems(products);
+        });
+    }
+
     public void setCustomerComboBox() {
-        orderIdTextField.setPrefWidth(150);
-        orders.setAll(orderService.findAll());
-        orderIdTextField.setItems(FXCollections.observableArrayList(orders));
-        orderIdTextField.setCellFactory(new Callback<ListView<OrderDTO>, ListCell<OrderDTO>>() {
+        orderComboBox.setPrefWidth(150);
+        orderComboBox.setItems(FXCollections.observableArrayList(orders));
+        orderComboBox.setCellFactory(new Callback<ListView<OrderDTO>, ListCell<OrderDTO>>() {
             @Override
             public ListCell<OrderDTO> call(ListView<OrderDTO> param) {
                 return new ListCell<OrderDTO>() {
@@ -115,7 +156,7 @@ public class OrderItemController implements Initializable {
                 };
             }
         });
-        orderIdTextField.setConverter(new StringConverter<OrderDTO>() {
+        orderComboBox.setConverter(new StringConverter<OrderDTO>() {
             @Override
             public String toString(OrderDTO customer) {
                 if (customer != null) {
@@ -131,9 +172,9 @@ public class OrderItemController implements Initializable {
                 return null;
             }
         });
-        orderIdTextField.setOnMouseClicked(event -> {
+        orderComboBox.setOnMouseClicked(event -> {
             orders.setAll(orderService.findAll());
-            orderIdTextField.setItems(orders);
+            orderComboBox.setItems(orders);
         });
     }
 
@@ -174,11 +215,11 @@ public class OrderItemController implements Initializable {
             return;
         }
         try {
-            Long orderId = orderIdTextField.getValue().getId();
-            Long productId = Long.valueOf(productIdTextField.getText());
+            Long orderId = orderComboBox.getValue().getId();
+            Long productId = productComboBox.getValue().getId();
             Integer amount = Integer.valueOf(numberTextField.getText());
 
-            Integer availableAmount = productService.findById(Long.valueOf(productIdTextField.getText())).getNumber();
+            Integer availableAmount = productService.findById(Long.valueOf(productId)).getNumber();
             if (availableAmount < amount) {
                 if (availableAmount == 0) {
                     informationArea.appendText("\nProduktu nie ma w magazynie");
@@ -218,6 +259,7 @@ public class OrderItemController implements Initializable {
             orderItemService.create(orderItemCreateRequest);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
+            e.printStackTrace();
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
         }
     }

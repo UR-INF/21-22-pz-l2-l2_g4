@@ -66,7 +66,7 @@ public class OrderController implements Initializable {
     @FXML
     private TextField discountTextField;
     @FXML
-    private ComboBox<CustomerDTO> customerIdTextField;
+    private ComboBox<CustomerDTO> customerComboBox;
     @FXML
     private DatePicker dateTextField;
     @FXML
@@ -141,17 +141,19 @@ public class OrderController implements Initializable {
             }
         });
     }
-    public void setCustomers(){
+
+    public void setCustomers() {
         customers.setAll(customerService.findAll());
         List<CustomerDTO> sortedCustomers = customers.stream().sorted(Comparator.comparing(CustomerDTO::getName)).collect(Collectors.toList());
         customers.clear();
         customers.setAll(sortedCustomers);
     }
-    public void setComboBox(){
-        customerIdTextField.setPrefWidth(150);
+
+    public void setComboBox() {
+        customerComboBox.setPrefWidth(150);
         setCustomers();
-        customerIdTextField.setItems(customers);
-        customerIdTextField.setCellFactory(new Callback<ListView<CustomerDTO>, ListCell<CustomerDTO>>() {
+        customerComboBox.setItems(customers);
+        customerComboBox.setCellFactory(new Callback<ListView<CustomerDTO>, ListCell<CustomerDTO>>() {
             @Override
             public ListCell<CustomerDTO> call(ListView<CustomerDTO> param) {
                 return new ListCell<CustomerDTO>() {
@@ -159,7 +161,7 @@ public class OrderController implements Initializable {
                     protected void updateItem(CustomerDTO item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null) {
-                            setText(item.getName()+" "+item.getSurname() + " (ID: " + item.getId() + ")");
+                            setText(item.getName() + " " + item.getSurname() + " (ID: " + item.getId() + ")");
                         } else {
                             setText(null);
                         }
@@ -167,11 +169,11 @@ public class OrderController implements Initializable {
                 };
             }
         });
-        customerIdTextField.setConverter(new StringConverter<CustomerDTO>() {
+        customerComboBox.setConverter(new StringConverter<CustomerDTO>() {
             @Override
             public String toString(CustomerDTO customer) {
                 if (customer != null) {
-                    return customer.getName()+" "+customer.getSurname() + " (ID: " + customer.getId() + ")";
+                    return customer.getName() + " " + customer.getSurname() + " (ID: " + customer.getId() + ")";
                 } else {
                     return null;
                 }
@@ -183,11 +185,12 @@ public class OrderController implements Initializable {
                 return null;
             }
         });
-        customerIdTextField.setOnMouseClicked(event ->{
+        customerComboBox.setOnMouseClicked(event -> {
             setCustomers();
-            customerIdTextField.setItems(customers);
+            customerComboBox.setItems(customers);
         });
     }
+
     /**
      * Aktywuje możliwość generowania raportów.
      */
@@ -271,8 +274,8 @@ public class OrderController implements Initializable {
             Double discount;
             if (discountTextField.getText() == null) discount = 0.0;
             else discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
-            System.out.println(customerIdTextField.getValue().getId());
-            Long customerId = customerIdTextField.getValue().getId();
+            System.out.println(customerComboBox.getValue().getId());
+            Long customerId = customerComboBox.getValue().getId();
             String date = dateTextField.getValue().toString();
             String state = orderStates[0];
             OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()

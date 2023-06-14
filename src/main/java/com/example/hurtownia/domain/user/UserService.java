@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.List;
 
 /**
@@ -113,12 +112,13 @@ public class UserService {
         if (!userUpdateRequest.getEmail().equals(user.getEmail()) && findByEmail(userUpdateRequest.getEmail()) != null) {
             throw new UnsupportedOperationException();
         }
-
-        String password = passwordEncoder.encode(userUpdateRequest.getPassword());
+        if (!user.getPassword().equals(userUpdateRequest.getPassword())) {
+            String password = passwordEncoder.encode(userUpdateRequest.getPassword());
+            user.setPassword(password);
+        }
         user.setName(userUpdateRequest.getName());
         user.setSurname(userUpdateRequest.getSurname());
         user.setEmail(userUpdateRequest.getEmail());
-        user.setPassword(password);
         user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
         user.setIsAdmin(userUpdateRequest.getIsAdmin());
         user.setGeneratingReports(userUpdateRequest.getGeneratingReports());

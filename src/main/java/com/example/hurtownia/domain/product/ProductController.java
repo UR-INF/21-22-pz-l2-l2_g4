@@ -64,7 +64,7 @@ public class ProductController implements Initializable {
     @FXML
     private TextField priceTextField, numberTextField, codeTextField, colorTextField, countryTextField, maxNumberTextField, nameTextField;
     @FXML
-    private ComboBox<SupplierDTO> supplierIdTextField;
+    private ComboBox<SupplierDTO> supplierComboBox;
     @FXML
     private ComboBox<String> unitComboBox;
     @FXML
@@ -100,10 +100,10 @@ public class ProductController implements Initializable {
     }
 
     public void setComboBox() {
-        supplierIdTextField.setPrefWidth(150);
+        supplierComboBox.setPrefWidth(150);
         suppliers.setAll(supplierService.findAll());
-        supplierIdTextField.setItems(FXCollections.observableArrayList(suppliers));
-        supplierIdTextField.setCellFactory(new Callback<ListView<SupplierDTO>, ListCell<SupplierDTO>>() {
+        supplierComboBox.setItems(FXCollections.observableArrayList(suppliers));
+        supplierComboBox.setCellFactory(new Callback<ListView<SupplierDTO>, ListCell<SupplierDTO>>() {
             @Override
             public ListCell<SupplierDTO> call(ListView<SupplierDTO> param) {
                 return new ListCell<SupplierDTO>() {
@@ -119,7 +119,7 @@ public class ProductController implements Initializable {
                 };
             }
         });
-        supplierIdTextField.setConverter(new StringConverter<SupplierDTO>() {
+        supplierComboBox.setConverter(new StringConverter<SupplierDTO>() {
             @Override
             public String toString(SupplierDTO customer) {
                 if (customer != null) {
@@ -135,9 +135,9 @@ public class ProductController implements Initializable {
                 return null;
             }
         });
-        supplierIdTextField.setOnMouseClicked(event -> {
+        supplierComboBox.setOnMouseClicked(event -> {
             suppliers.setAll(supplierService.findAll());
-            supplierIdTextField.setItems(suppliers);
+            supplierComboBox.setItems(suppliers);
         });
     }
 
@@ -234,7 +234,7 @@ public class ProductController implements Initializable {
             return;
         }
         try {
-            Long supplierId = supplierIdTextField.getValue().getId();
+            Long supplierId = supplierComboBox.getValue().getId();
             String name = nameTextField.getText();
             String unitOfMeasurement = unitComboBox.getValue();
             Double price = Double.valueOf(priceTextField.getText());
