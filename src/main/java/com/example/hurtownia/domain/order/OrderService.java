@@ -1,6 +1,7 @@
 package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.domain.customer.Customer;
+import com.example.hurtownia.domain.customer.CustomerDTO;
 import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
@@ -39,6 +40,10 @@ public class OrderService {
                     List<OrderItem> orderItems = orderItemService.findAllByOrderId(order.getId());
                     return orderMapper.mapToDto(order, calculateValue(orderItems));
                 }).collect(Collectors.toList());
+    }
+
+    public List<CustomerDTO> getCustomersForComboBox() {
+        return customerService.findAll();
     }
 
     private double calculateValue(List<OrderItem> orderItems) {
@@ -134,7 +139,7 @@ public class OrderService {
     /**
      * Oblicza wartość zamówienia po zniżce.
      *
-     * @param order zamówienie
+     * @param order      zamówienie
      * @param orderItems lista elementów zamówienia
      * @return
      */

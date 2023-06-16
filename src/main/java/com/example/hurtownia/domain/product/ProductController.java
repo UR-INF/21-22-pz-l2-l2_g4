@@ -101,7 +101,6 @@ public class ProductController implements Initializable {
 
     public void setComboBox() {
         supplierComboBox.setPrefWidth(150);
-        suppliers.setAll(supplierService.findAll());
         supplierComboBox.setItems(FXCollections.observableArrayList(suppliers));
         supplierComboBox.setCellFactory(new Callback<ListView<SupplierDTO>, ListCell<SupplierDTO>>() {
             @Override

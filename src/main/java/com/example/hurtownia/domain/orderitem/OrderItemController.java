@@ -8,7 +8,6 @@ import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
 import com.example.hurtownia.domain.product.ProductDTO;
 import com.example.hurtownia.domain.product.ProductService;
-import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
 import com.example.hurtownia.validation.TextFieldsValidators;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -88,7 +87,6 @@ public class OrderItemController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        products.setAll(productService.findAll());
         setCustomerComboBox();
         setProductComboBox();
         orderItemTable.setPlaceholder(new Label("Brak danych w tabeli"));
@@ -220,7 +218,7 @@ public class OrderItemController implements Initializable {
             Long productId = productComboBox.getValue().getId();
             Integer amount = Integer.valueOf(numberTextField.getText());
 
-            Integer availableAmount = productService.findById(Long.valueOf(productId)).getNumber();
+            Integer availableAmount = productService.findById(productId).getNumber();
             if (availableAmount < amount) {
                 if (availableAmount == 0) {
                     informationArea.appendText("\nProduktu nie ma w magazynie");
@@ -232,25 +230,11 @@ public class OrderItemController implements Initializable {
                 alert.setContentText("Czy chcesz dodać pozostałe sztuki do zamówienia?");
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.OK) {
-                    amount = availableAmount;
-                    ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
-                    BeanUtils.copyProperties(productUpdateRequest, products.stream()
-                            .filter(p -> p.getId() == productId)
-                            .findFirst().get());
-                    productUpdateRequest.setNumber(0);
-                    productService.update(productUpdateRequest);
                     informationArea.appendText("\nNie ma wystarczającej ilości sztuk w magazynie. Dodano pozostałe sztuki do zamówienia.");
                 } else {
                     informationArea.appendText("\nAnulowano zamówienie");
                     return;
                 }
-            } else {
-                ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
-                BeanUtils.copyProperties(productUpdateRequest, products.stream()
-                        .filter(p -> p.getId() == productId)
-                        .findFirst().get());
-                productUpdateRequest.setNumber(availableAmount - amount);
-                productService.update(productUpdateRequest);
             }
             OrderItemCreateRequest orderItemCreateRequest = OrderItemCreateRequest.builder()
                     .orderId(orderId)
@@ -260,6 +244,7 @@ public class OrderItemController implements Initializable {
             orderItemService.create(orderItemCreateRequest);
             informationArea.appendText("\nDodano nowy element zamówienia");
         } catch (Exception e) {
+            e.printStackTrace();
             informationArea.appendText("\nNie udało się dodać nowego elementu zamówienia");
         }
     }

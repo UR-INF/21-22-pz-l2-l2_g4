@@ -97,6 +97,12 @@ public class ProductService {
         product.setColor(productCreateRequest.getColor());
         product.setNumber(productCreateRequest.getNumber());
         product.setMaxNumber(productCreateRequest.getMaxNumber());
+        if (productCreateRequest.getNumber() > productCreateRequest.getMaxNumber()) {
+            product.setNumber(productCreateRequest.getMaxNumber());
+        }
+        if (productCreateRequest.getNumber() < 0) {
+            product.setNumber(0);
+        }
         return productRepository.save(product);
     }
 
