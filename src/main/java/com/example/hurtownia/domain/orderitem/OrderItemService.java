@@ -6,12 +6,14 @@ import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
 import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductService;
+import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
+import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Zawiera metody dla tabeli 'element_zamowienia'.
@@ -66,6 +68,15 @@ public class OrderItemService {
      */
     public boolean delete(Long id) {
         try {
+            OrderItem orderItem = findById(id);
+            if (orderItem.getOrder().getState().equals("w przygotowaniu")) {
+                Product product = productService.findById(orderItem.getProduct().getId());
+                ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
+                BeanUtils.copyProperties(productUpdateRequest, product);
+                productUpdateRequest.setSupplierId(product.getSupplier().getId());
+                productUpdateRequest.setNumber(orderItem.getAmount() + product.getNumber());
+                productService.update(productUpdateRequest);
+            }
             orderItemRepository.delete(findById(id));
             return true;
         } catch (Exception e) {
@@ -78,9 +89,19 @@ public class OrderItemService {
      *
      * @param orderItemCreateRequest nowy element zamówienia
      */
-    public OrderItem create(OrderItemCreateRequest orderItemCreateRequest) {
+    public OrderItem create(OrderItemCreateRequest orderItemCreateRequest) throws InvocationTargetException, IllegalAccessException {
         Order order = orderService.findById(orderItemCreateRequest.getOrderId());
         Product product = productService.findById(orderItemCreateRequest.getProductId());
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
+        BeanUtils.copyProperties(productUpdateRequest, product);
+        if (product.getNumber() > orderItemCreateRequest.getAmount()) {
+            productUpdateRequest.setNumber(product.getNumber() - orderItemCreateRequest.getAmount());
+        } else {
+            orderItemCreateRequest.setAmount(product.getNumber());
+            productUpdateRequest.setNumber(0);
+        }
+        productUpdateRequest.setSupplierId(product.getSupplier().getId());
+        productService.update(productUpdateRequest);
         OrderItem orderItem = OrderItem.builder()
                 .order(order)
                 .product(product)
@@ -95,9 +116,34 @@ public class OrderItemService {
      *
      * @param orderItemUpdateRequest aktualizowany element zamówienia
      */
-    public OrderItem update(OrderItemUpdateRequest orderItemUpdateRequest) {
+    public OrderItem update(OrderItemUpdateRequest orderItemUpdateRequest) throws InvocationTargetException, IllegalAccessException {
+        OrderItem oldOrderItem = findById(orderItemUpdateRequest.getId());
         Order order = orderService.findById(orderItemUpdateRequest.getOrderId());
         Product product = productService.findById(orderItemUpdateRequest.getProductId());
+        ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest();
+        BeanUtils.copyProperties(productUpdateRequest, product);
+        if (order.getState().equals("w przygotowaniu")) {
+            if (product.getId().equals(oldOrderItem.getProduct().getId())) {
+                int amount = Math.abs(oldOrderItem.getAmount() - orderItemUpdateRequest.getAmount());
+                if (oldOrderItem.getAmount() - orderItemUpdateRequest.getAmount() >= 0) {
+                    productUpdateRequest.setNumber(product.getNumber() + amount);
+                } else {
+                    productUpdateRequest.setNumber(product.getNumber() - amount);
+                }
+                productUpdateRequest.setSupplierId(product.getSupplier().getId());
+                productService.update(productUpdateRequest);
+            } else {
+                Product oldProduct = oldOrderItem.getProduct();
+                BeanUtils.copyProperties(productUpdateRequest, product);
+                productUpdateRequest.setSupplierId(product.getSupplier().getId());
+                productUpdateRequest.setNumber(product.getNumber() - orderItemUpdateRequest.getAmount());
+                productService.update(productUpdateRequest);
+                BeanUtils.copyProperties(productUpdateRequest, oldProduct);
+                productUpdateRequest.setNumber(oldProduct.getNumber() + oldOrderItem.getAmount());
+                productUpdateRequest.setSupplierId(oldProduct.getSupplier().getId());
+                productService.update(productUpdateRequest);
+            }
+        }
         OrderItem orderItem = findById(orderItemUpdateRequest.getId());
         orderItem.setOrder(order);
         orderItem.setProduct(product);

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -262,6 +263,10 @@ public class ImportCSVController implements Initializable {
             throw new IndexOutOfBoundsException("Zła struktura pliku.");
         } catch (ObjectNotFoundException e) {
             throw new ObjectNotFoundException(e.getIdentifier().toString(), "Nie znaleziono obiektu o danym id.");
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 

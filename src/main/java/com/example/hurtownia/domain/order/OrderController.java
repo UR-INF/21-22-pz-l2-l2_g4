@@ -2,7 +2,6 @@ package com.example.hurtownia.domain.order;
 
 import com.example.hurtownia.controllers.ReportController;
 import com.example.hurtownia.domain.customer.CustomerDTO;
-import com.example.hurtownia.domain.customer.CustomerService;
 import com.example.hurtownia.domain.order.request.OrderCreateRequest;
 import com.example.hurtownia.domain.order.request.OrderUpdateRequest;
 import com.example.hurtownia.validation.TextFieldsValidators;
@@ -58,8 +57,6 @@ public class OrderController implements Initializable {
     @Autowired
     public OrderService orderService;
     @Autowired
-    public CustomerService customerService;
-    @Autowired
     public OrderReport orderReport;
     @Autowired
     private InvoiceReport invoiceReport;
@@ -84,13 +81,14 @@ public class OrderController implements Initializable {
     @FXML
     private Button generateReportBtn;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setComboBox();
         ordersTable.setPlaceholder(new Label("Brak danych w tabeli"));
         informationArea.setEditable(false);
         informationArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> informationArea.setScrollTop(Double.MAX_VALUE));
         setTable();
+        setComboBox();
     }
 
 
@@ -144,7 +142,7 @@ public class OrderController implements Initializable {
     }
 
     public void setCustomers() {
-        customers.setAll(customerService.findAll());
+        customers.setAll(orderService.getCustomersForComboBox());
         List<CustomerDTO> sortedCustomers = customers.stream().sorted(Comparator.comparing(CustomerDTO::getName)).collect(Collectors.toList());
         customers.clear();
         customers.setAll(sortedCustomers);
@@ -152,7 +150,6 @@ public class OrderController implements Initializable {
 
     public void setComboBox() {
         customerComboBox.setPrefWidth(150);
-        setCustomers();
         customerComboBox.setItems(customers);
         customerComboBox.setCellFactory(new Callback<ListView<CustomerDTO>, ListCell<CustomerDTO>>() {
             @Override
@@ -275,7 +272,6 @@ public class OrderController implements Initializable {
             Double discount;
             if (discountTextField.getText() == null) discount = 0.0;
             else discount = DiscountConverter.fromCodeToNumeric(discountTextField.getText());
-            System.out.println(customerComboBox.getValue().getId());
             Long customerId = customerComboBox.getValue().getId();
             String date = dateTextField.getValue().toString();
             String state = orderStates[0];

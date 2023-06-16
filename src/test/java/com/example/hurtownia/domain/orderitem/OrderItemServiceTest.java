@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
@@ -155,7 +156,7 @@ class OrderItemServiceTest {
     }
 
     @Test
-    void create() {
+    void create() throws InvocationTargetException, IllegalAccessException {
         when(orderService.findById(any())).thenReturn(order);
         when(productService.findById(any())).thenReturn(product);
         when(orderItemRepository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -169,7 +170,7 @@ class OrderItemServiceTest {
     }
 
     @Test
-    void update() {
+    void update() throws InvocationTargetException, IllegalAccessException {
         when(orderItemRepository.findById(any())).thenReturn(Optional.ofNullable(orderItem));
         when(orderService.findById(any())).thenReturn(order);
         when(productService.findById(any())).thenReturn(product);

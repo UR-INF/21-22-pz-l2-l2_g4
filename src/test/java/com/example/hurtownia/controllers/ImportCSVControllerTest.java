@@ -31,6 +31,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -361,7 +362,7 @@ class ImportCSVControllerTest extends ApplicationTest {
     }
 
     @Test
-    void importOrderItems() throws CsvValidationException, IOException {
+    void importOrderItems() throws CsvValidationException, IOException, InvocationTargetException, IllegalAccessException {
         File file = new File(new File("").getAbsolutePath() + "/OrderItems.csv");
         try {
             FileWriter outputFile = new FileWriter(file);

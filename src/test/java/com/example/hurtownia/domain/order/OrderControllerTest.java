@@ -8,20 +8,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.framework.junit5.Start;
 
 import java.io.IOException;
 
+@ExtendWith(MockitoExtension.class)
 class OrderControllerTest extends ApplicationTest {
 
-    ObservableList<OrderDTO> items = FXCollections.observableArrayList();
+    private ObservableList<OrderDTO> items = FXCollections.observableArrayList();
+
 
     @Start
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Start.class.getResource("/FXML/orderTab.fxml"));
         Parent root = fxmlLoader.load();
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
