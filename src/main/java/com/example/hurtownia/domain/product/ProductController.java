@@ -99,6 +99,9 @@ public class ProductController implements Initializable {
         ));
     }
 
+    /**
+     * Konfiguruje ComboBox dla dostawców.
+     */
     public void setComboBox() {
         supplierComboBox.setPrefWidth(150);
         supplierComboBox.setItems(FXCollections.observableArrayList(suppliers));

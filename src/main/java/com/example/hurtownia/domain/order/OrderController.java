@@ -141,6 +141,10 @@ public class OrderController implements Initializable {
         });
     }
 
+    /**
+     * Ustawia listę klientów na podstawie danych pobranych z serwisu zamówień.
+     * Klienci są sortowani alfabetycznie po nazwie przed ustawieniem listy.
+     */
     public void setCustomers() {
         customers.setAll(orderService.getCustomersForComboBox());
         List<CustomerDTO> sortedCustomers = customers.stream().sorted(Comparator.comparing(CustomerDTO::getName)).collect(Collectors.toList());
@@ -148,6 +152,9 @@ public class OrderController implements Initializable {
         customers.setAll(sortedCustomers);
     }
 
+    /**
+     * Konfiguruje ComboBox dla klientów.
+     */
     public void setComboBox() {
         customerComboBox.setPrefWidth(150);
         customerComboBox.setItems(customers);

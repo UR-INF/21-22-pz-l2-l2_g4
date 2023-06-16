@@ -94,6 +94,9 @@ public class OrderItemController implements Initializable {
         setTable();
     }
 
+    /**
+     * Konfiguruje ComboBox dla produktów.
+     */
     public void setProductComboBox() {
         productComboBox.setPrefWidth(150);
         productComboBox.setItems(FXCollections.observableArrayList(products));
@@ -136,6 +139,9 @@ public class OrderItemController implements Initializable {
         });
     }
 
+    /**
+     * Konfiguruje ComboBox dla zamówień.
+     */
     public void setCustomerComboBox() {
         orderComboBox.setPrefWidth(150);
         orderComboBox.setItems(FXCollections.observableArrayList(orders));
