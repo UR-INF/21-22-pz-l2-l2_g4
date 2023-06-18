@@ -137,10 +137,15 @@ Interesariusze zewnętrzni
 ###### Skrypt do utworzenia struktury bazy danych
 Aplikacja utworzy domyślną bazę danych o nazwie ‘hurtownia’ podczas pierwszego uruchomienia.
 Dane konfiguracyjne domyślnej bazy danych:
+
 ·	Nazwa hosta: localhost/127.0.0.1
+
 ·	Port: 3306
+
 ·	Nazwa bazy danych: hurtownia
+
 ·	Nazwa użytkownika: root
+
 ·	Hasło:
 
 
