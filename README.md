@@ -131,8 +131,9 @@ Interesariusze zewnętrzni
 ## Baza danych
 
 ###### Diagram ERD
-![ERD](https://user-images.githubusercontent.com/101945722/229322756-70a6d276-24de-4883-bf04-e3916451418a.PNG)
-
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/101945722/229322756-70a6d276-24de-4883-bf04-e3916451418a.PNG">
+</p>
 
 ###### Skrypt do utworzenia struktury bazy danych
 Aplikacja utworzy domyślną bazę danych o nazwie ‘hurtownia’ podczas pierwszego uruchomienia.
