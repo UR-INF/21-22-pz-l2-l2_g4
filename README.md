@@ -252,8 +252,3 @@ Tabela ‘ElementZamowienia’ zawiera informacje na temat elementów zamówień
 <p align="center">
  <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/bb7ce12a-12c7-447f-9309-cb2602b1e06a">
 </p>
-
-12.	Zawartość folderu instalacyjnego.
-<p align="center">
- <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/4a79e00d-8cb1-4cfa-b75d-424fe48b00f6">
-</p>
