@@ -237,7 +237,7 @@ Tabela ‘ElementZamowienia’ zawiera informacje na temat elementów zamówień
 
 9.	Program zostanie zainstalowany.
 <p align="center">
- <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/973de678-2b62-4097-92a3-6aaec73990d6">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/dd609ce5-2767-4560-ad01-059c24439eb0">
 </p>
 
 10.	Instalator poinformuje o zakończeniu instalacji oraz wyświetli opcję otwarcia aplikacji po jego zamknięciu. 
