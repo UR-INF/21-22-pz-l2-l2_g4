@@ -174,61 +174,59 @@ Tabela ‘ElementZamowienia’ zawiera informacje na temat elementów zamówień
 ## Pliki instalacyjne wraz z opisem instalacji i konfiguracji wraz pierwszego uruchomienia
 
 1.	W celu zainstalowania aplikacji należy uruchomić instalator Hurtownia Setup.exe.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/97a88ae2-6cc8-4303-820c-7d76eccb0c3a)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/97a88ae2-6cc8-4303-820c-7d76eccb0c3a">
+</p>
 
 2.	Po uruchomieniu pliku Hurtownia Setup.exe ukaże się okno z możliwością wyboru typu instalacji.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/c6dbe738-2a14-4486-b610-5a8b00524cd5)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/c6dbe738-2a14-4486-b610-5a8b00524cd5">
+</p>
 
 3.	Kolejnym krokiem jest wybór języka podczas instalacji.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/d63defff-d174-4171-bce7-a1b8043aad97)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/d63defff-d174-4171-bce7-a1b8043aad97">
+</p>
 
 4.	Następnie należy zaakceptować umowę licencyjną.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/3e324bc4-2781-47da-a7b5-13c6c960e500)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/3e324bc4-2781-47da-a7b5-13c6c960e500">
+</p>
 
 5.	Kolejnym krokiem jest wybór lokalizacji instalacji.
-
-![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/f259ac5e-c0ef-4300-a8cb-7eb3fa74679f)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/f259ac5e-c0ef-4300-a8cb-7eb3fa74679f">
+</p>
  
 6.	W następnym kroku należy wskazać lokalizację folderu Menu Start lub zaznaczyć opcję „Nie twórz folderu w Menu Start”.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/d12909d9-9840-47b2-ba12-a6e15a92f1e8)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/d12909d9-9840-47b2-ba12-a6e15a92f1e8">
+</p>
 
 7.	Następnie należy zdecydować, czy instalator ma utworzyć skrót na pulpicie.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/6f5755d5-b1f9-47e0-ac2c-de4ac9dc78fa)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/6f5755d5-b1f9-47e0-ac2c-de4ac9dc78fa">
+</p>
 
 8.	W ostatnim kroku instalator poinformuje o gotowości do instalacji. W celu instalacji należy kliknąć przycisk Instaluj. W celu dokonania zmian w konfiguracji należy kliknąć przycisk Wstecz.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/7619a110-cb6a-43d0-9730-cedffd9c8b64)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/7619a110-cb6a-43d0-9730-cedffd9c8b64">
+</p>
 
 9.	Program zostanie zainstalowany.
- 
-![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/973de678-2b62-4097-92a3-6aaec73990d6)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/973de678-2b62-4097-92a3-6aaec73990d6">
+</p>
 
 10.	Instalator poinformuje o zakończeniu instalacji oraz wyświetli opcję otwarcia aplikacji po jego zamknięciu. 
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/170d07f0-767e-492b-a4de-5481f9220510)
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/170d07f0-767e-492b-a4de-5481f9220510">
+</p>
 
 11.	Wygląd skrótu na pulpicie oraz w Menu Start.
-
- ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/cf33e715-f5a0-4bc1-9d67-b5da34c78cd8)
-
-
-
+<p align="center">
+ <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/cf33e715-f5a0-4bc1-9d67-b5da34c78cd8">
+</p>
 <p align="center">
  <img src="https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/101945722/bb7ce12a-12c7-447f-9309-cb2602b1e06a">
 </p>
