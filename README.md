@@ -153,7 +153,8 @@ Interesariusze zewnętrzni
 
 ###### Diagram ERD
 <p align="center">
- <img src="https://user-images.githubusercontent.com/101945722/229322756-70a6d276-24de-4883-bf04-e3916451418a.PNG">
+ ![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/82969695/33c50ad5-db0e-4065-9bfb-b20bff3659fb)
+
 </p>
 
 ###### Skrypt do utworzenia struktury bazy danych
