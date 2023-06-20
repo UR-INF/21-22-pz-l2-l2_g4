@@ -153,7 +153,7 @@ Interesariusze zewnętrzni
 
 ###### Diagram ERD
 <p align="center">
-![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/82969695/b2d532c3-e593-4bf3-8ca8-34ad1e35692e)
+![image](https://github.com/UR-INF/21-22-pz-l2-l2_g4/assets/82969695/b358e538-e6fe-454c-a2fd-dea069698efa)
 
 
 </p>
