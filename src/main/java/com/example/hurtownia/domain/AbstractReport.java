@@ -40,13 +40,6 @@ public abstract class AbstractReport {
     protected LoginService loginService;
 
     protected AbstractReport() throws IOException {
-        fontBold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD, PdfEncodings.CP1250);
-        fontNormal = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN, PdfEncodings.CP1250);
-
-        styleTableHeader = new Style().setFont(fontBold).setFontSize(8);
-        styleGeneratingInfo = new Style().setFont(fontNormal).setFontSize(10);
-        styleTableContent = new Style().setFont(fontNormal).setFontSize(8);
-        styleTitle = new Style().setFont(fontBold).setFontSize(12);
     }
 
     /**
@@ -66,7 +59,15 @@ public abstract class AbstractReport {
      * @throws FileNotFoundException
      * @throws MalformedURLException
      */
-    protected void generateReportHeader(String path, String title) throws FileNotFoundException, MalformedURLException {
+    protected void generateReportHeader(String path, String title) throws IOException {
+        fontBold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD, PdfEncodings.CP1250);
+        fontNormal = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN, PdfEncodings.CP1250);
+
+        styleTableHeader = new Style().setFont(fontBold).setFontSize(8);
+        styleGeneratingInfo = new Style().setFont(fontNormal).setFontSize(10);
+        styleTableContent = new Style().setFont(fontNormal).setFontSize(8);
+        styleTitle = new Style().setFont(fontBold).setFontSize(12);
+
         PdfWriter pdfWriter = new PdfWriter(path, new WriterProperties().setPdfVersion(PdfVersion.PDF_2_0));
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();

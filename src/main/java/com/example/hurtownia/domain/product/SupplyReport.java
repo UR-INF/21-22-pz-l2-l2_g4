@@ -35,7 +35,7 @@ public class SupplyReport extends AbstractReport {
      * @throws MalformedURLException
      */
     @Override
-    public void generateReport(String path, String title) throws FileNotFoundException, MalformedURLException {
+    public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);
 
         float columnWidth[] = {10f, 150f, 150f, 150f, 150f};
