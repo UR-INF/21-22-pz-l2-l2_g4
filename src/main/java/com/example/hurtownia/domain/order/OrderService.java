@@ -146,6 +146,7 @@ public class OrderService {
     private String calculateValueAfterDiscount(Order order, List<OrderItem> orderItems) {
         double value = calculateValue(orderItems);
         double valueAfterDiscount = value - (value * order.getDiscount());
+        valueAfterDiscount = Math.round(valueAfterDiscount * 100.0) / 100.0;
         return String.valueOf(valueAfterDiscount);
     }
 }
