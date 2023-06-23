@@ -128,6 +128,19 @@ public class CustomerController implements Initializable {
             String zipCode = zipCodeTextField.getText();
             Integer buildingNumber = Integer.valueOf(buildingNumberTextField.getText());
             Integer apartmentNumber = Integer.valueOf(apartmentNumberTextField.getText());
+
+            if (name.isEmpty()
+                    || surname.isEmpty()
+                    || pesel.isEmpty()
+                    || phoneNumber.isEmpty()
+                    || email.isEmpty()
+                    || place.isEmpty()
+                    || street.isEmpty()
+                    || zipCode.isEmpty()
+            ) {
+                informationArea.appendText("\n Podaj wszystkie informacje");
+                return;
+            }
             if (!TextFieldsValidators.validateEmail(email)) {
                 informationArea.appendText("\n Podaj email w poprawnym formacie");
                 return;

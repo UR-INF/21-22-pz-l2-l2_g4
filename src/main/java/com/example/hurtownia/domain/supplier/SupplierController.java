@@ -115,6 +115,16 @@ public class SupplierController implements Initializable {
             String place = placeTextField.getText();
             String street = streetTextField.getText();
             String nip = nipTextField.getText();
+
+            if (name.isEmpty()
+                    || email.isEmpty()
+                    || country.isEmpty()
+                    || place.isEmpty()
+                    || street.isEmpty()
+                    || nip.isEmpty()) {
+                informationArea.appendText("\n Podaj wszystkie informacje");
+                return;
+            }
             if (!TextFieldsValidators.validateEmail(email)) {
                 informationArea.appendText("\n Podaj email w poprawnym formacie");
                 return;
