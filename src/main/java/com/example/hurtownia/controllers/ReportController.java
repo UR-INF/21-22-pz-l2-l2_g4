@@ -28,15 +28,12 @@ public class ReportController implements Initializable {
     private Button saveBtn;
     @FXML
     private TextField fileNameTextField, directoryTextField, titleTextField;
-    @FXML
-    private ComboBox<String> fileExtensionComboBox;
     private AbstractReport report;
     private Stage stage;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fileExtensionComboBox.getItems().addAll(".pdf");
-        saveBtn.disableProperty().bind(fileNameTextField.textProperty().isEmpty().or(fileExtensionComboBox.getSelectionModel().selectedItemProperty().isNull().or(directoryTextField.textProperty().isEmpty())));
+        saveBtn.disableProperty().bind(fileNameTextField.textProperty().isEmpty().or(directoryTextField.textProperty().isEmpty()));
     }
 
     /**
@@ -55,7 +52,7 @@ public class ReportController implements Initializable {
     @FXML
     public void handleSaveBtnClick() {
         stage = (Stage) ap.getScene().getWindow();
-        Path file = Paths.get(directoryTextField.getText(), fileNameTextField.getText().trim() + fileExtensionComboBox.getSelectionModel().getSelectedItem());
+        Path file = Paths.get(directoryTextField.getText(), fileNameTextField.getText().trim() + ".pdf");
         if (!Files.exists(file)) {
             try {
                 report.generateReport(file.toAbsolutePath().toString(), titleTextField.getText());
@@ -69,10 +66,16 @@ public class ReportController implements Initializable {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
                 alert.setHeaderText("ERROR");
-                alert.setContentText("Taki plik już istnieje w podanej lokalizacji.");
+                alert.setContentText("Błąd zapisu.");
                 alert.showAndWait();
             }
-        }
+        } else {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("ERROR");
+        alert.setHeaderText("ERROR");
+        alert.setContentText("Taki plik już istnieje w podanej lokalizacji.");
+        alert.showAndWait();
+    }
     }
 
     public void setReport(AbstractReport report) {
