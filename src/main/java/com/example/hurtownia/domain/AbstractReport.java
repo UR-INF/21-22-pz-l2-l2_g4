@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,20 +40,10 @@ public abstract class AbstractReport {
     @Autowired
     protected LoginService loginService;
 
-    protected AbstractReport() throws IOException {
-        fontBold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD, PdfEncodings.CP1250);
-        fontNormal = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN, PdfEncodings.CP1250);
-
-        styleTableHeader = new Style().setFont(fontBold).setFontSize(8);
-        styleGeneratingInfo = new Style().setFont(fontNormal).setFontSize(10);
-        styleTableContent = new Style().setFont(fontNormal).setFontSize(8);
-        styleTitle = new Style().setFont(fontBold).setFontSize(12);
-    }
-
     /**
      * Metoda abstrakcyjna generowania raportu.
      *
-     * @param path ścieżka zapisu
+     * @param path  ścieżka zapisu
      * @param title tytuł raportu
      * @throws IOException
      */
@@ -61,12 +52,20 @@ public abstract class AbstractReport {
     /**
      * Generuje nagłówek dokumentu.
      *
-     * @param path ścieżka zapisu
+     * @param path  ścieżka zapisu
      * @param title tytuł dokumentu
      * @throws FileNotFoundException
      * @throws MalformedURLException
      */
-    protected void generateReportHeader(String path, String title) throws FileNotFoundException, MalformedURLException {
+    protected void generateReportHeader(String path, String title) throws IOException {
+        fontBold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD, PdfEncodings.CP1250);
+        fontNormal = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN, PdfEncodings.CP1250);
+
+        styleTableHeader = new Style().setFont(fontBold).setFontSize(8);
+        styleGeneratingInfo = new Style().setFont(fontNormal).setFontSize(10);
+        styleTableContent = new Style().setFont(fontNormal).setFontSize(8);
+        styleTitle = new Style().setFont(fontBold).setFontSize(12);
+
         PdfWriter pdfWriter = new PdfWriter(path, new WriterProperties().setPdfVersion(PdfVersion.PDF_2_0));
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.addNewPage();
@@ -78,8 +77,7 @@ public abstract class AbstractReport {
         Date date = new Date();
         document.add(new Paragraph("Data wygenerowania: " + formatter.format(date)).addStyle(styleGeneratingInfo).setTextAlignment(TextAlignment.LEFT));
 
-        String imagePath = getClass().getResource("/Images/logo_black.png").getPath();
-        ImageData imageData = ImageDataFactory.create(imagePath);
+        ImageData imageData = ImageDataFactory.create(loadImageByte("/Images/logo_black.png"), true);
         Image image = new Image(imageData);
         image.setHeight(80);
         image.setWidth(80);
@@ -92,5 +90,17 @@ public abstract class AbstractReport {
         document.add(new Paragraph(title).addStyle(styleTitle).setTextAlignment(TextAlignment.LEFT));
 
         for (int i = 0; i < 3; i++) document.add(new Paragraph(""));
+    }
+
+    private byte[] loadImageByte(String imageFilename) throws FileNotFoundException {
+        byte[] dataBytes = null;
+        try {
+            InputStream is = getClass().getResourceAsStream(imageFilename);
+            dataBytes = new byte[is.available()];
+            is.read(dataBytes);
+        } catch (IOException ex) {
+            throw new FileNotFoundException();
+        }
+        return dataBytes;
     }
 }

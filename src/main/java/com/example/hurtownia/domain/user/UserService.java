@@ -112,8 +112,9 @@ public class UserService {
         if (!userUpdateRequest.getEmail().equals(user.getEmail()) && findByEmail(userUpdateRequest.getEmail()) != null) {
             throw new UnsupportedOperationException();
         }
-        String password = passwordEncoder.encode(userUpdateRequest.getPassword());
-        user.setPassword(password);
+        if (!user.getPassword().equals(userUpdateRequest.getPassword())) {
+            user.setPassword(passwordEncoder.encode(userUpdateRequest.getPassword()));
+        }
         user.setName(userUpdateRequest.getName());
         user.setSurname(userUpdateRequest.getSurname());
         user.setEmail(userUpdateRequest.getEmail());

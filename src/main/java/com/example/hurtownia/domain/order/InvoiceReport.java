@@ -38,7 +38,7 @@ public class InvoiceReport extends AbstractReport {
      * @throws MalformedURLException
      */
     @Override
-    public void generateReport(String path, String title) throws FileNotFoundException, MalformedURLException {
+    public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);
 
         float columnWidth[] = {120f, 120f, 120f, 120f};

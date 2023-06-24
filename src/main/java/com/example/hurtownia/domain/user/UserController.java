@@ -118,6 +118,15 @@ public class UserController implements Initializable {
             Boolean isAdmin = isAdminCheckBox.isSelected();
             Boolean generatingReports = generatingReportsCheckBox.isSelected();
             Boolean grantingDiscounts = grantingDiscountsCheckBox.isSelected();
+
+            if (name.isEmpty()
+                    || surname.isEmpty()
+                    || email.isEmpty()
+                    || password.isEmpty()
+                    || phoneNumber.isEmpty()) {
+                informationArea.appendText("\n Podaj wszystkie informacje");
+                return;
+            }
             if (!TextFieldsValidators.validateEmail(email)) {
                 informationArea.appendText("\n Podaj email w poprawnym formacie");
                 return;

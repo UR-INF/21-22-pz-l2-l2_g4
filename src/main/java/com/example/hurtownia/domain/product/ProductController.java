@@ -228,11 +228,11 @@ public class ProductController implements Initializable {
             return;
         }
         if (!TextFieldsValidators.validateInteger(numberTextField.getText())) {
-            informationArea.appendText("\n Podaj liczbę sztuk w poprawnym formacie");
+            informationArea.appendText("\n Podaj ilość w poprawnym formacie");
             return;
         }
         if (!TextFieldsValidators.validateInteger(maxNumberTextField.getText())) {
-            informationArea.appendText("\n Podaj maksymalną liczbę sztuk w poprawnym formacie");
+            informationArea.appendText("\n Podaj maksymalną ilość w poprawnym formacie");
             return;
         }
         try {
@@ -245,6 +245,16 @@ public class ProductController implements Initializable {
             String color = colorTextField.getText();
             Integer number = Integer.valueOf(numberTextField.getText());
             Integer maxNumber = Integer.valueOf(maxNumberTextField.getText());
+
+            if (name.isEmpty()
+                    || unitOfMeasurement.isEmpty()
+                    || country.isEmpty()
+                    || code.isEmpty()
+                    || color.isEmpty()) {
+                informationArea.appendText("\n Podaj wszystkie informacje");
+                return;
+            }
+
             ProductCreateRequest productCreateRequest = ProductCreateRequest.builder()
                     .supplierId(supplierId)
                     .name(name)
