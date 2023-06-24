@@ -228,11 +228,11 @@ public class ProductController implements Initializable {
             return;
         }
         if (!TextFieldsValidators.validateInteger(numberTextField.getText())) {
-            informationArea.appendText("\n Podaj liczbę sztuk w poprawnym formacie");
+            informationArea.appendText("\n Podaj ilość w poprawnym formacie");
             return;
         }
         if (!TextFieldsValidators.validateInteger(maxNumberTextField.getText())) {
-            informationArea.appendText("\n Podaj maksymalną liczbę sztuk w poprawnym formacie");
+            informationArea.appendText("\n Podaj maksymalną ilość w poprawnym formacie");
             return;
         }
         try {
