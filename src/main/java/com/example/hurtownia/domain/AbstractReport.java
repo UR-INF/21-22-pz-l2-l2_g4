@@ -40,13 +40,10 @@ public abstract class AbstractReport {
     @Autowired
     protected LoginService loginService;
 
-    protected AbstractReport() throws IOException {
-    }
-
     /**
      * Metoda abstrakcyjna generowania raportu.
      *
-     * @param path ścieżka zapisu
+     * @param path  ścieżka zapisu
      * @param title tytuł raportu
      * @throws IOException
      */
@@ -55,7 +52,7 @@ public abstract class AbstractReport {
     /**
      * Generuje nagłówek dokumentu.
      *
-     * @param path ścieżka zapisu
+     * @param path  ścieżka zapisu
      * @param title tytuł dokumentu
      * @throws FileNotFoundException
      * @throws MalformedURLException
