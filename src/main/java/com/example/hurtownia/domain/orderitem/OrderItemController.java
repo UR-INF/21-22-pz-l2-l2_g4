@@ -6,6 +6,7 @@ import com.example.hurtownia.domain.order.OrderDTO;
 import com.example.hurtownia.domain.order.OrderService;
 import com.example.hurtownia.domain.orderitem.request.OrderItemCreateRequest;
 import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
+import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductDTO;
 import com.example.hurtownia.domain.product.ProductService;
 import com.example.hurtownia.validation.TextFieldsValidators;
@@ -345,31 +346,19 @@ public class OrderItemController implements Initializable {
                 super.commitEdit(newValue);
             }
         });
-        productIdColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
-            @Override
-            public void commitEdit(Number newValue) {
-                if (!Objects.equals(newValue, getItem())) {
-                    OrderItemUpdateRequest orderItemUpdateRequest = new OrderItemUpdateRequest();
-                    try {
-                        BeanUtils.copyProperties(orderItemUpdateRequest, orderItemTable.getSelectionModel().getSelectedItem());
-                        orderItemUpdateRequest.setProductId(newValue.longValue());
-                        orderItemService.update(orderItemUpdateRequest);
-                        informationArea.appendText("\nPomyślnie edytowano element zamówienia o id " + orderItemUpdateRequest.getId());
-                    } catch (ObjectNotFoundException e) {
-                        informationArea.appendText("\n" + e.getMessage());
-                    } catch (Exception e) {
-                        informationArea.appendText("\nNie udało się edytować elementu zamowienia o id " + orderItemUpdateRequest.getId());
-                    }
-                }
-                super.commitEdit(newValue);
-            }
-        });
         amountColumn.setCellFactory(cell -> new TextFieldTableCell<>(numberConverter) {
             @Override
             public void commitEdit(Number newValue) {
                 if (newValue.intValue() < 0) {
                     informationArea.appendText("\nPodaj nieujemną liczbę");
                     return;
+                }
+                Product product = productService.findById(orderItemTable.getSelectionModel().getSelectedItem().getProductId());
+                if(newValue.intValue()> product.getNumber()){
+                    informationArea.appendText("\nProduktu nie ma w magazynie, lub jest go mniej niż podano.\nDodano pozostałe sztuki do zamówienia.");
+                }
+                if(product.getNumber()+(orderItemTable.getSelectionModel().getSelectedItem().getAmount()-newValue.intValue())>product.getMaxNumber()){
+                    informationArea.appendText("\nZwrócone produkty przekroczyłyby pojemność magazynu.\nZwrócono maksymalną ilość");
                 }
                 if (!Objects.equals(newValue, getItem())) {
                     OrderItemUpdateRequest orderItemUpdateRequest = new OrderItemUpdateRequest();
@@ -402,7 +391,7 @@ public class OrderItemController implements Initializable {
                                 orderItems.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + id);
+                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + id+"\nsprawdz czy po usunięciu stan produktów nie przekraczałby pojemności magazynu");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
