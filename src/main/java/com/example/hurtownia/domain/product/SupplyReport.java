@@ -20,7 +20,8 @@ public class SupplyReport extends AbstractReport {
 
     private List<SupplyData> data;
 
-    protected SupplyReport() throws IOException {}
+    protected SupplyReport() throws IOException {
+    }
 
     public void setData(List<SupplyData> data) {
         this.data = data;
@@ -29,7 +30,7 @@ public class SupplyReport extends AbstractReport {
     /**
      * Generuje raport dostawy.
      *
-     * @param path ścieżka zapisu
+     * @param path  ścieżka zapisu
      * @param title tytuł raportu
      * @throws FileNotFoundException
      * @throws MalformedURLException
@@ -38,19 +39,21 @@ public class SupplyReport extends AbstractReport {
     public void generateReport(String path, String title) throws IOException {
         generateReportHeader(path, title);
 
-        float columnWidth[] = {10f, 150f, 150f, 150f, 150f};
+        float columnWidth[] = {10f, 150f, 150f, 150f, 150f, 150f};
         Table table = new Table(columnWidth);
-        String[] tableHeader = {"Lp.", "Nazwa dostawcy", "Kod produktu", "Jednostka miary", "Ilosc"};
+        String[] tableHeader = {"Lp.", "Nazwa dostawcy", "Nazwa Produktu", "Kod produktu", "Jednostka miary", "Ilosc"};
         table.addCell(new Cell().add(new Paragraph(tableHeader[0]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[1]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[2]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[3]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
         table.addCell(new Cell().add(new Paragraph(tableHeader[4]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
+        table.addCell(new Cell().add(new Paragraph(tableHeader[5]).addStyle(styleTableHeader)).setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
-        int n =1;
+        int n = 1;
         for (SupplyData datum : data) {
             table.addCell(new Cell().add(new Paragraph(String.valueOf(n)).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getSupplierName()).addStyle(styleTableContent)));
+            table.addCell(new Cell().add(new Paragraph(datum.getProductName()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getProductCode()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getProductUnitOfMeasurement()).addStyle(styleTableContent)));
             table.addCell(new Cell().add(new Paragraph(datum.getAmount()).addStyle(styleTableContent)));

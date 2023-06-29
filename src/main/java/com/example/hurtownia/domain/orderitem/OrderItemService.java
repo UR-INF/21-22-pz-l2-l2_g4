@@ -7,6 +7,8 @@ import com.example.hurtownia.domain.orderitem.request.OrderItemUpdateRequest;
 import com.example.hurtownia.domain.product.Product;
 import com.example.hurtownia.domain.product.ProductService;
 import com.example.hurtownia.domain.product.request.ProductUpdateRequest;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,10 +130,9 @@ public class OrderItemService {
             int amount = Math.abs(oldOrderItem.getAmount() - orderItemUpdateRequest.getAmount());
             if (oldOrderItem.getAmount() - orderItemUpdateRequest.getAmount() >= 0) {
                 if (product.getNumber() + amount > product.getMaxNumber()) {
-                    orderItemUpdateRequest.setAmount(oldOrderItem.getAmount()-(product.getMaxNumber()-product.getNumber()));
+                    orderItemUpdateRequest.setAmount(oldOrderItem.getAmount() - (product.getMaxNumber() - product.getNumber()));
                     productUpdateRequest.setNumber(product.getMaxNumber());
-                }
-                else {
+                } else {
                     productUpdateRequest.setNumber(product.getNumber() + amount);
                 }
             } else {
@@ -163,5 +164,21 @@ public class OrderItemService {
         orderItem.setAmount(orderItemUpdateRequest.getAmount());
         orderItem.setPricePerUnit(product.getPrice());
         return orderItemRepository.save(orderItem);
+    }
+
+    private OrderItemData getOrderItemData(OrderItemDTO orderItem) {
+        Product product = productService.findById(orderItem.getProductId());
+        OrderItemData orderItemData = new OrderItemData();
+        orderItemData.setOrderItem(orderItem);
+        orderItemData.setProduct(product);
+        return orderItemData;
+    }
+
+    public List<OrderItemData> getOrderItemDataList(List<OrderItemDTO> list) {
+        ObservableList<OrderItemData> orderItemDataObservableList = FXCollections.observableArrayList();
+        for (OrderItemDTO orderItemDTO : list) {
+            orderItemDataObservableList.add(getOrderItemData(orderItemDTO));
+        }
+        return orderItemDataObservableList;
     }
 }

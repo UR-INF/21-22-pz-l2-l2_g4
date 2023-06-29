@@ -120,6 +120,7 @@ public class ProductService {
                     return SupplyData.builder()
                             .supplierName(supplier.getName())
                             .productCode(product.getCode())
+                            .productName(product.getName())
                             .productUnitOfMeasurement(product.getUnitOfMeasurement())
                             .amount(String.valueOf(product.getMaxNumber() - product.getNumber()))
                             .build();

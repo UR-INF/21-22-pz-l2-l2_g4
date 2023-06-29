@@ -346,7 +346,7 @@ public class SupplierController implements Initializable {
                                 suppliers.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto dostawcę o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia dostawcy o id " + id);
+                                informationArea.appendText("\nBłąd przy próbie usunięcia dostawcy o id " + id + "\nUsuń rekordy w innych tabelach gdzie ten dostawca występuje");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
