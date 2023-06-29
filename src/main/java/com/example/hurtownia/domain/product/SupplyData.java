@@ -17,6 +17,7 @@ import lombok.experimental.SuperBuilder;
 public class SupplyData {
     private String supplierName;
     private String productCode;
+    private String productName;
     private String productUnitOfMeasurement;
     private String amount;
 }

@@ -472,7 +472,7 @@ public class CustomerController implements Initializable {
                                 customers.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto klienta o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia klienta o id " + id);
+                                informationArea.appendText("\nBłąd przy próbie usunięcia klienta o id " + id + "\nUsuń rekordy w innych tabelach gdzie ten klient występuje");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));

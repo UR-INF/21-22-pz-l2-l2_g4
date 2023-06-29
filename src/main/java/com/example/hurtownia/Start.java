@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.management.ObjectName;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,6 +33,7 @@ public class Start extends Application {
     private static String port = "3306";
     private static String username = "root";
     private static String password = "";
+    private static int iterations = 0;
     private boolean showLoginPane = true;
     public static User user;
     public static String rawUserPassword;
@@ -122,8 +124,8 @@ public class Start extends Application {
 
     @Override
     public void init() {
+        iterations++;
         SpringApplication application = new SpringApplication(HurtowniaApplication.class);
-
         Properties properties = new Properties();
         properties.put("spring.datasource.url", "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?createDatabaseIfNotExist=true");
         properties.put("spring.datasource.username", username);
@@ -139,6 +141,13 @@ public class Start extends Application {
         properties.put("spring.datasource.hikari.connection-timeout", 1000);
         properties.put("spring.datasource.hikari.validation-timeout", 1000);
         properties.put("spring.datasource.hikari.maximum-pool-size", 1000);
+        String objectNameString = "spring.application.admin.jmx-name=" +
+                ObjectName.quote("org.springframework.boot") +
+                ":type=Admin" +
+                ",name=" +
+                ObjectName.quote("App+" + iterations);
+        properties.put("spring.application.admin.jmx-name", objectNameString);
+        properties.put("spring.jmx.default-domain", "App" + iterations);
         application.setDefaultProperties(properties);
 
         applicationContext = application.run();

@@ -293,7 +293,7 @@ public class OrderItemController implements Initializable {
      */
     @FXML
     public void orderItemsBtnReportClicked(MouseEvent event) {
-        orderItemReport.setData(orderItemTable.getItems());
+        orderItemReport.setData(orderItemService.getOrderItemDataList(orderItemTable.getItems()));
         try {
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -354,10 +354,10 @@ public class OrderItemController implements Initializable {
                     return;
                 }
                 Product product = productService.findById(orderItemTable.getSelectionModel().getSelectedItem().getProductId());
-                if(newValue.intValue()> product.getNumber()){
+                if (newValue.intValue() > product.getNumber()) {
                     informationArea.appendText("\nProduktu nie ma w magazynie, lub jest go mniej niż podano.\nDodano pozostałe sztuki do zamówienia.");
                 }
-                if(product.getNumber()+(orderItemTable.getSelectionModel().getSelectedItem().getAmount()-newValue.intValue())>product.getMaxNumber()){
+                if (product.getNumber() + (orderItemTable.getSelectionModel().getSelectedItem().getAmount() - newValue.intValue()) > product.getMaxNumber()) {
                     informationArea.appendText("\nZwrócone produkty przekroczyłyby pojemność magazynu.\nZwrócono maksymalną ilość");
                 }
                 if (!Objects.equals(newValue, getItem())) {
@@ -391,7 +391,7 @@ public class OrderItemController implements Initializable {
                                 orderItems.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto element zamowienia o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + id+"\nsprawdz czy po usunięciu stan produktów nie przekraczałby pojemności magazynu");
+                                informationArea.appendText("\nBłąd przy próbie usunięcia elementu zamowienia o id " + id + "\nsprawdz czy po usunięciu stan produktów nie przekraczałby pojemności magazynu");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
