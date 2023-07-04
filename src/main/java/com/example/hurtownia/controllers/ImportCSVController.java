@@ -129,7 +129,7 @@ public class ImportCSVController implements Initializable {
      */
     public void importCustomers() throws CsvValidationException, IOException {
         try {
-            CSVReader reader = new CSVReader(new FileReader(selectedFile,StandardCharsets.UTF_8));
+            CSVReader reader = new CSVReader(new FileReader(selectedFile, StandardCharsets.UTF_8));
             String[] record = null;
             reader.readNext();
 
@@ -167,7 +167,7 @@ public class ImportCSVController implements Initializable {
                 throw new UnsupportedOperationException("Zaimportuj dane o dostawcach przed zaimportowaniem danych o produktach.");
             }
 
-            CSVReader reader = new CSVReader(new FileReader(selectedFile,StandardCharsets.UTF_8));
+            CSVReader reader = new CSVReader(new FileReader(selectedFile, StandardCharsets.UTF_8));
             String[] record = null;
             reader.readNext();
 
@@ -202,7 +202,7 @@ public class ImportCSVController implements Initializable {
      */
     public void importUsers() throws CsvValidationException, IOException, IndexOutOfBoundsException {
         try {
-            CSVReader reader = new CSVReader(new FileReader(selectedFile,StandardCharsets.UTF_8));
+            CSVReader reader = new CSVReader(new FileReader(selectedFile, StandardCharsets.UTF_8));
             String[] record = null;
             reader.readNext();
 
@@ -243,7 +243,7 @@ public class ImportCSVController implements Initializable {
                 throw new UnsupportedOperationException("Zaimportuj dane o produktach przed zaimportowaniem danych o elementach zamówień.");
             }
 
-            CSVReader reader = new CSVReader(new FileReader(selectedFile,StandardCharsets.UTF_8));
+            CSVReader reader = new CSVReader(new FileReader(selectedFile, StandardCharsets.UTF_8));
             String[] record = null;
             reader.readNext();
 
@@ -280,7 +280,7 @@ public class ImportCSVController implements Initializable {
                 throw new UnsupportedOperationException("Zaimportuj dane o klientach przed zaimportowaniem danych o zamówieniach.");
             }
 
-            CSVReader reader = new CSVReader(new FileReader(selectedFile,StandardCharsets.UTF_8));
+            CSVReader reader = new CSVReader(new FileReader(selectedFile, StandardCharsets.UTF_8));
             String[] record = null;
             reader.readNext();
 

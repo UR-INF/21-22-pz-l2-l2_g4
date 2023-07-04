@@ -498,7 +498,7 @@ public class OrderController implements Initializable {
                                 orders.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto zamowienie o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + id + "\nUsuń rekordy w innych tabelach gdzie to zamówienie występuje");
+                                informationArea.appendText("\nBłąd przy próbie usunięcia zamowienia o id " + id + "\nUsuń rekordy zawierające to zamówienie w innych tabelach");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
