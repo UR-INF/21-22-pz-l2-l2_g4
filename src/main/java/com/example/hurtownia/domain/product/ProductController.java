@@ -611,7 +611,7 @@ public class ProductController implements Initializable {
                                 products.remove(getTableView().getItems().get(getIndex()));
                                 informationArea.appendText("\nPomyślnie usunięto produktu o id " + id);
                             } else
-                                informationArea.appendText("\nBłąd przy próbie usunięcia produktu o id " + id + "\nUsuń rekordy w innych tabelach gdzie ten produkt występuje");
+                                informationArea.appendText("\nBłąd przy próbie usunięcia produktu o id " + id + "\nUsuń rekordy zawierające ten produkt w innych tabelach");
                         });
                         btn.setOnMouseEntered((EventHandler<Event>) event -> getScene().setCursor(Cursor.HAND));
                         btn.setOnMouseExited((EventHandler<Event>) event -> getScene().setCursor(Cursor.DEFAULT));
