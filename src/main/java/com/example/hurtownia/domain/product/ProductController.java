@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
@@ -240,6 +241,7 @@ public class ProductController implements Initializable {
             String name = nameTextField.getText();
             String unitOfMeasurement = unitComboBox.getValue();
             Double price = Double.valueOf(priceTextField.getText());
+            Double roundOffPrice = Math.round(price * 100.0) / 100.0;
             String country = countryTextField.getText();
             String code = codeTextField.getText();
             String color = colorTextField.getText();
@@ -259,7 +261,7 @@ public class ProductController implements Initializable {
                     .supplierId(supplierId)
                     .name(name)
                     .unitOfMeasurement(unitOfMeasurement)
-                    .price(price)
+                    .price(roundOffPrice)
                     .country(country)
                     .code(code)
                     .color(color)
