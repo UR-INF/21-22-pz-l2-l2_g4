@@ -52,15 +52,6 @@ Wymagania niefunkcjonalne
 
 Podczas pierwszego uruchomienia aplikacji nastąpi próba połączenia się z domyślną bazą danych. 
 
-Dane połączenia:  
-Nazwa hosta: localhost/127.0.0.1  
-Port: 3306   
-Nazwa bazy danych: hurtownia   
-Nazwa użytkownika: root  
-Hasło:   
-  
-Jeśli nastąpi połączenie z serwerem, ale baza nie istnieje, zostanie ona utworzona razem z całą strukturą. 
-
 Podstawowy login i hasło automatycznie utworzonego konta administratora to:   
 Login: admin   
 Hasło: admin 
