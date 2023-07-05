@@ -24,6 +24,8 @@ class OrderItemReportTest {
     static User user;
     @Mock
     LoginService loginService;
+    @Mock
+    OrderItemService orderItemService;
     @InjectMocks
     @Spy
     OrderItemReport orderItemReport;
@@ -35,7 +37,8 @@ class OrderItemReportTest {
                 new OrderItemDTO(2L, 5L, 5L, 50, 30.00, 1500.00),
                 new OrderItemDTO(3L, 10L, 10L, 100, 5.00, 500.00)
         );
-        orderItemReport.setData(data);
+        List <OrderItemData> dataList = orderItemService.getOrderItemDataList(data);
+        orderItemReport.setData(dataList);
 
         user = User.builder()
                 .id(1L)
