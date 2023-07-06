@@ -106,6 +106,7 @@ public class MainController implements Initializable {
         }
 
         new Thread(this::runClock).start();
+        clearData();
     }
 
     /**
@@ -256,7 +257,7 @@ public class MainController implements Initializable {
     /**
      * Czyści widoki po wylogowaniu.
      */
-    private void clearData() {
+    public void clearData() {
         customerTabContentController.informationArea.clear();
         customerTabContentController.customersTable.getItems().clear();
         customerTabContentController.customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
