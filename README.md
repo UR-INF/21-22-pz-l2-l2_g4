@@ -22,7 +22,10 @@ W aplikacji wyróżnione będą dwie role:
 System powinien w łatwy sposób umożliwiać pracownikom wykonywanie operacji dodawania, przeglądania, edytowania i usuwania informacji w lokalnej bazie danych oraz generowania niezbędnych raportów, w tym generowania faktury z zamówienia oraz generowanie raportu dostawy. Aplikacja powinna obsługiwać system udzielania rabatów.
 
 Po uruchomieniu aplikacji pierwszym widokiem będzie panel logowania, gdzie można się zalogować korzystając z wbudowanego konta administratora lub korzystając z konta utworzonego przez administratora systemu.
- 
+
+Podstawowy login i hasło wbudowanego konta administratora to:   
+Login: admin   
+Hasło: admin 
 
 ## Cel projektu 
 Celem projektu jest zaprojektowanie i stworzenie opisanego powyżej systemu. Zakłada się dostarczenie gotowego produktu wraz z instalatorem, podręcznikiem użytkownika i dokumentacją techniczną.
@@ -51,19 +54,6 @@ Wymagania niefunkcjonalne
 5.	Aplikację powinna cechować wspólna kolorystyka.
 
 Podczas pierwszego uruchomienia aplikacji nastąpi próba połączenia się z domyślną bazą danych. 
-
-Dane połączenia:  
-Nazwa hosta: localhost/127.0.0.1  
-Port: 3306   
-Nazwa bazy danych: hurtownia   
-Nazwa użytkownika: root  
-Hasło:   
-  
-Jeśli nastąpi połączenie z serwerem, ale baza nie istnieje, zostanie ona utworzona razem z całą strukturą. 
-
-Podstawowy login i hasło automatycznie utworzonego konta administratora to:   
-Login: admin   
-Hasło: admin 
 
 ## Panele / zakładki systemu, które będą oferowały potrzebne funkcjonalności 
 1.	Panel administratora
