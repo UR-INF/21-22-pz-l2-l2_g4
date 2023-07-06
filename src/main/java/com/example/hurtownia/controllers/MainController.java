@@ -257,7 +257,7 @@ public class MainController implements Initializable {
     /**
      * Czyści widoki po wylogowaniu.
      */
-    public void clearData() {
+    private void clearData() {
         customerTabContentController.informationArea.clear();
         customerTabContentController.customersTable.getItems().clear();
         customerTabContentController.customersTable.setPlaceholder(new Label("Brak danych w tabeli"));
