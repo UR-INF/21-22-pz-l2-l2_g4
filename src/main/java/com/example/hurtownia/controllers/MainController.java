@@ -106,6 +106,7 @@ public class MainController implements Initializable {
         }
 
         new Thread(this::runClock).start();
+        clearData();
     }
 
     /**
